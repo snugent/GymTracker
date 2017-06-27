@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.admin1.gymtracker.activities.MemberProfile"
+    tools:layout_editor_absoluteY="81dp"
+    tools:layout_editor_absoluteX="0dp">
+
+
+    <EditText
+        android:id="@+id/etName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:hint="@string/name"
+        android:text="" />
+
+    <EditText
+        android:id="@+id/etDob"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/etName"
+        android:layout_below="@+id/etName"
+        android:layout_marginTop="11dp"
+        android:ems="10"
+        android:hint="@string/date_of_birth"
+        android:inputType="date" />
+
+    <Spinner
+        android:id="@+id/spnSex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="23dp"
+        android:layout_below="@+id/etDob"
+        android:layout_alignStart="@+id/etWeight" />
+
+    <EditText
+        android:id="@+id/etWeight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/etDob"
+        android:layout_below="@+id/spnSex"
+        android:layout_marginTop="13dp"
+        android:ems="10"
+        android:hint="@string/weight"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/etHeight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/etWeight"
+        android:layout_below="@+id/etWeight"
+        android:layout_marginTop="14dp"
+        android:ems="10"
+        android:hint="@string/height"
+        android:inputType="numberDecimal" />
+
+    <CheckBox
+        android:id="@+id/chkAdmin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/etHeight"
+        android:layout_below="@+id/etHeight"
+        android:layout_marginTop="14dp"
+        android:text="@string/admin_user" />
+
+    <CheckBox
+        android:id="@+id/chkDeleted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/deleted"
+        android:layout_below="@+id/chkAdmin"
+        android:layout_alignStart="@+id/chkAdmin" />
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/chkDeleted"
+        android:layout_below="@+id/chkDeleted"
+        android:layout_marginTop="21dp"
+        android:text="@string/save" />
+
+    <Button
+        android:id="@+id/btnCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        android:layout_alignBaseline="@+id/btnSave"
+        android:layout_alignBottom="@+id/btnSave"
+        android:layout_toEndOf="@+id/btnSave"
+        android:layout_marginStart="11dp" />
+
+</android.widget.RelativeLayout>

@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Gym Tracker</string>
+    <string name="title_activity_member_profile">MemberProfile</string>
+    <string name="name">Name</string>
+    <string name="date_of_birth">Date Of Birth</string>
+    <string name="weight">Weight(Kg)</string>
+    <string name="height">Height(Metres)</string>
+    <string name="admin_user">Admin User</string>
+    <string name="deleted">Deleted</string>
+    <string name="profile">Profile</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
 </resources>
