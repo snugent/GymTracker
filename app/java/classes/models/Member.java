@@ -77,7 +77,7 @@ public class Member {
         this.weight = weight;
     }
 
-    public boolean isAdmin() {
+    public boolean getIsAdmin() {
         return isAdmin;
     }
 

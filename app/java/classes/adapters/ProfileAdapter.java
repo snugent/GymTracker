@@ -16,15 +16,21 @@ import java.util.List;
 public class ProfileAdapter extends ArrayAdapter<Member>{
     private Context         context;
     private int             resourceId;
-    private List<Member>    objects;
+    private List<Member>    members;
 
 
     // Default Constructor
-    public ProfileAdapter(Context context, int resourceId, List<Member> objects){
-        super(context, resourceId, objects);
+    public ProfileAdapter(Context context, int resourceId, List<Member> members){
+        super(context, resourceId, members);
         this.context    = context;
         this.resourceId = resourceId;
-        this.objects    = objects;
+        this.members    = members;
+    }
+
+    public void updateList(List<Member> memberList){
+        members.clear();
+        memberList.addAll(memberList);
+        this.notifyDataSetChanged();
     }
 
     @Override
