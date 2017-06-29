@@ -9,15 +9,18 @@ import java.util.Date;
 public class Member {
     private String  memberId;
     private String  name;
-    private Date    dob;
-    private char    sex;
+    private String    dob;
+    private String    sex;
     private double  height;
     private double  weight;
     private boolean isAdmin;
     private boolean isDeleted;
 
+    public Member(){
 
-    public Member(String memberId, String name, Date dob, char sex,
+    }
+
+    public Member(String memberId, String name, String dob, String sex,
                   double height, double weight, boolean isAdmin, boolean isDeleted){
         this.memberId = memberId;
         this.name      = name;
@@ -45,19 +48,19 @@ public class Member {
         this.name = name;
     }
 
-    public Date getDob() {
+    public String getDob() {
         return dob;
     }
 
-    public void setDob(Date dob) {
+    public void setDob(String dob) {
         this.dob = dob;
     }
 
-    public char getSex() {
+    public String getSex() {
         return sex;
     }
 
-    public void setSex(char sex) {
+    public void setSex(String sex) {
         this.sex = sex;
     }
 

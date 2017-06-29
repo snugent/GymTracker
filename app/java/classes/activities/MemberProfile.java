@@ -2,12 +2,14 @@ package com.example.admin1.gymtracker.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.adapters.ProfileAdapter;
@@ -16,7 +18,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +42,10 @@ public class MemberProfile extends AppCompatActivity {
     private List<Member> members;
 
     //Firebase Database query fields
-    private ProfileAdapter memberAdapter;
     private FirebaseDatabase  dbRef;
     private DatabaseReference tableMemRef;
     private ValueEventListener eventListener;
+    private final String TAG = "MemberProfile";
 
 
 
@@ -61,7 +65,7 @@ public class MemberProfile extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isValidProfile) {
+                if (isValidProfile()) {
                     saveProfile();
                 }
             }
@@ -81,12 +85,22 @@ public class MemberProfile extends AppCompatActivity {
         ValueEventListener elPost = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d("MemberProfile", "onResume");
+
                 members = new ArrayList<>();
+                Log.d("MemberProfile", "onResume2");
                 for(DataSnapshot child : dataSnapshot.getChildren()){
                     Member mMember = child.getValue(Member.class);
                     members.add(mMember);
                 }
-                memberAdapter.updateList(members);
+                Log.d("MemberProfile", "onResume3");
+                if (members.size() > 0) {
+                    Log.d("MemberProfile", "onResume4" + members.get(0).getName());
+                    Toast.makeText(getApplicationContext(), "in here" + members.get(0).getMemberId() + members.get(0).getName(), Toast.LENGTH_LONG).show();
+
+                }
+                Log.d("MemberProfile", "onResume5");
+                getCurrentMember();
             }
 
             @Override
@@ -145,35 +159,27 @@ public class MemberProfile extends AppCompatActivity {
         members = new ArrayList<>();
         dbRef = FirebaseDatabase.getInstance();
         tableMemRef = dbRef.getReference().child("Member");
-        getCurrentMember();
-
-
     }
 
     // This method gets the Current Member and poulates the data
     private void getCurrentMember(){
-        if (members != null) {
+        Log.d("Member", stUid );
+        if (members.size() > 0) {
             for (Member currentMember : members) {
+                Log.d("Member", stUid + " - " + currentMember.getMemberId());
                 if (currentMember.getMemberId().equals(stUid)) {
                     currentMember.getMemberId();
                     etName.setText(currentMember.getName());
-                    etDob.setText(currentMember.getDob().toString());
-                    etWeight.setText((int) currentMember.getWeight());
-                    etHeight.setText((int) currentMember.getHeight());
+                    etDob.setText(currentMember.getDob());
+                    etWeight.setText(Double.toString(currentMember.getWeight()));
+                    etHeight.setText(Double.toString(currentMember.getHeight()));
                     chkAdmin.setChecked(currentMember.getIsAdmin());
                     chkDeleted.setChecked(currentMember.getIsDeleted());
 
-                    // Variables to populate sex spinner
-                    char sex = currentMember.getSex();
                     int iPos = 0;
 
-                    // Set the value on the Sex spinner to male or female depending on what was
-                    // selected.
-                    if (sex == 'm') {
-                        iPos = stAdapter.getPosition("Male");
-                        spnSex.setSelection(iPos);
-                    } else {
-                        iPos = stAdapter.getPosition("Female");
+                    iPos = stAdapter.getPosition("Male");
+                    if (iPos >= 0){
                         spnSex.setSelection(iPos);
                     }
 
@@ -182,31 +188,63 @@ public class MemberProfile extends AppCompatActivity {
         }
     } // End getProfile Method
 
-
+    //Saves Profile Details to the database
     private void saveProfile(){
         boolean blFound = false;
-        Member savingData ;
+        final Member savingData ;
+
+        Log.d("MemberProfile", "saveProfile" + stUid + " " + etName.getText().toString() );
+
+        savingData= new Member( stUid,
+                                etName.getText().toString(),
+                                etDob.getText().toString(),
+                                spnSex.getSelectedItem().toString(),
+                                Double.parseDouble(etHeight.getText().toString()),
+                                Double.parseDouble(etWeight.getText().toString()),
+                                chkAdmin.isChecked(),
+                                chkDeleted.isChecked());
+
         int iIndex = -1;
-        if (members != null) {
-            for (Member currentMember : members) {
+        if (members.size() > 0 ) {
+            for (final Member currentMember : members) {
                 if(!blFound){
                     iIndex++;
                 }
+
                 if (currentMember.getMemberId().equals(stUid)) {
                     blFound = true;
                     members.set(iIndex, savingData);
+
+                    Query userQuery = tableMemRef.orderByChild("memberId").equalTo(stUid);
+
+                    userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot curentRec: dataSnapshot.getChildren()) {
+                                curentRec.getRef().setValue(savingData);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.e(TAG, "onCancelled", databaseError.toException());
+                        }
+                    });
                 }
             }
         }
         // New Record
         if (!blFound){
-            tableMemRef.push().setValue(members);
+            tableMemRef.push().setValue(savingData);
         }
-    }
+    }// End Save Profile
+
+
 
     // This method will validate the user data entered.
     private boolean isValidProfile(){
         return true;
     }
+
 
 }

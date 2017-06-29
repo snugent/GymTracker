@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent iProfile = new Intent(getApplicationContext(), MemberProfile.class);
-                iProfile.putExtra("uid", stUid);
-                iProfile.putExtra("", false);
+                iProfile.putExtra("uId", stUid);
+                iProfile.putExtra("isAdmin", false);
                 startActivity(iProfile);
             }
         });

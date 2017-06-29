@@ -29,7 +29,7 @@ public class ProfileAdapter extends ArrayAdapter<Member>{
 
     public void updateList(List<Member> memberList){
         members.clear();
-        memberList.addAll(memberList);
+        members.addAll(memberList);
         this.notifyDataSetChanged();
     }
 

@@ -9,9 +9,9 @@ import java.util.Date;
 public class Workout {
     private String workoutId;
     private String memberId;
-    private Date   workoutDate;
+    private String workoutDate;
 
-    public Workout(String workoutId, String memberId, Date workoutDate) {
+    public Workout(String workoutId, String memberId, String workoutDate) {
         this.workoutId = workoutId;
         this.memberId = memberId;
         this.workoutDate = workoutDate;
@@ -33,7 +33,11 @@ public class Workout {
         this.memberId = memberId;
     }
 
-    public Date getWorkoutDate() {
+    public String getWorkoutDate() {
         return workoutDate;
+    }
+
+    public void setWorkoutDate(String workoutDate) {
+        this.workoutDate= workoutDate;
     }
 }
