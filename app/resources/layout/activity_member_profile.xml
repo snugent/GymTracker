@@ -13,11 +13,11 @@
         android:id="@+id/etName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:ems="10"
         android:hint="@string/name"
-        android:text="" />
+        android:text=""
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <EditText
         android:id="@+id/etDob"
@@ -82,10 +82,10 @@
         android:id="@+id/btnSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/chkDeleted"
+        android:layout_marginTop="18dp"
+        android:text="@string/save"
         android:layout_below="@+id/chkDeleted"
-        android:layout_marginTop="21dp"
-        android:text="@string/save" />
+        android:layout_alignEnd="@+id/chkDeleted" />
 
     <Button
         android:id="@+id/btnCancel"

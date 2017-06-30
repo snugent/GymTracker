@@ -17,6 +17,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
 
+import static com.example.admin1.gymtracker.R.id.btnExercise;
+
 public class MainActivity extends AppCompatActivity {
     private static FirebaseDatabase mFirebaseDatabase;
     private String stUid;
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button btnSignOut = (Button) findViewById(R.id.btnSignOut);
         Button btnProfile = (Button) findViewById(R.id.btnProfile);
+        Button btnExercise = (Button) findViewById(R.id.btnExercise);
 
         setmAuthStateListener();
         btnSignOut.setOnClickListener(new View.OnClickListener() {
@@ -54,6 +57,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(iProfile);
             }
         });
+
+        btnExercise.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent itBrowse = new Intent(getApplicationContext(), ExerciseBrowse.class);
+                startActivity(itBrowse);
+            }
+        });
+
     }
 
     @Override

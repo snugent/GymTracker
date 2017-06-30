@@ -25,4 +25,13 @@
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/btnSignOut"
         android:layout_marginStart="12dp" />
+
+    <Button
+        android:id="@+id/btnExercise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/exercise"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/btnProfile"
+        android:layout_marginStart="24dp" />
 </android.widget.RelativeLayout>

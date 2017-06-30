@@ -10,4 +10,11 @@
     <string name="profile">Profile</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="title_activity_exercise_browse">ExerciseBrowse</string>
+    <string name="exercise_name">Exercise Name</string>
+    <string name="strength">Strength</string>
+    <string name="cardio">Cardiovascular</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="exercise">Exercise</string>
 </resources>

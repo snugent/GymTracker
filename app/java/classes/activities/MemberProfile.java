@@ -1,5 +1,6 @@
 package com.example.admin1.gymtracker.activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -139,7 +140,7 @@ public class MemberProfile extends AppCompatActivity {
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
         // Array and array adapter for Member Sex Dropdown
-        String stSex[] = {"Male", "Female"};
+        String stSex[] = {getString(R.string.male), getString(R.string.female)};
         stAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, stSex);
         stAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -177,8 +178,7 @@ public class MemberProfile extends AppCompatActivity {
                     chkDeleted.setChecked(currentMember.getIsDeleted());
 
                     int iPos = 0;
-
-                    iPos = stAdapter.getPosition("Male");
+                    iPos = stAdapter.getPosition(currentMember.getSex());
                     if (iPos >= 0){
                         spnSex.setSelection(iPos);
                     }
