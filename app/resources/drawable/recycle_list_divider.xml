@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Important Note:
+    This class was already part of my CA3 Assignment.  I have reused it entirely.
+    The original class was created with the help of
+
+    http://stackoverflow.com/questions/28713231/android-add-divider-between-items-in-recyclerview
+    http://stackoverflow.com/questions/31242812/how-can-a-divider-line-be-added-in-an-android-recyclerview
+-->
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+            android:shape="rectangle">
+
+    <size android:height="@dimen/card_separator_bottom" />
+    <solid android:color="@color/light_grey" />
+</shape>

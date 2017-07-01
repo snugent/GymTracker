@@ -7,7 +7,6 @@ import java.util.Date;
  */
 
 public class Member {
-    private String  memberId;
     private String  name;
     private String    dob;
     private String    sex;
@@ -20,9 +19,8 @@ public class Member {
 
     }
 
-    public Member(String memberId, String name, String dob, String sex,
+    public Member(String name, String dob, String sex,
                   double height, double weight, boolean isAdmin, boolean isDeleted){
-        this.memberId = memberId;
         this.name      = name;
         this.dob       = dob;
         this.sex       = sex;
@@ -30,14 +28,6 @@ public class Member {
         this.weight    = weight;
         this.isAdmin   = isAdmin;
         this.isDeleted = isDeleted;
-    }
-
-    public String getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(String memberId) {
-        this.memberId = memberId;
     }
 
     public String getName() {

@@ -15,9 +15,9 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/name"
-        android:text=""
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:maxLines="1" />
 
     <EditText
         android:id="@+id/etDob"

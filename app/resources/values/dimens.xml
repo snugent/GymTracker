@@ -1,3 +1,59 @@
+<!--
+  Import Note: The below dimension were taken from a previous project I did for
+               Advanced Mobile Application Development.
+               They were taken from various research on material design .
+               See: I did on From Google Responsive
+  -->
 <resources>
+    <!-- Default Logo Height-->
+    <dimen name="main_image_height">300dp</dimen>
+
+    <!-- Default Image Setting -->
+    <dimen name="default_image_width">24dp</dimen>
+    <dimen name="default_image_height">24dp</dimen>
+
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+
+    <!-- Card Dimenstions-->
+    <dimen name="card_height">72dp</dimen>
+    <dimen name="card_font_primary">16sp</dimen>
+    <dimen name="card_font_secondary">14sp</dimen>
+    <dimen name="card_image_width">40dp</dimen>
+    <dimen name="card_image_height">40dp</dimen>
+    <dimen name="card_padding_standard">16dp</dimen>
+    <dimen name="card_padding_top">8dp</dimen>
+    <dimen name="card_padding_bottom">8dp</dimen>
+    <dimen name="card_margin_text">72dp</dimen>
+    <dimen name="card_separator_bottom">1dp</dimen>
+    <dimen name="card_delete_button_width">25dp</dimen>
+    <dimen name="card_delete_button_height">25dp</dimen>
+
+    <!-- Detail Card Dimensions-->
+
+    <!-- Floating Button Dimensions -->
+    <dimen name="float_button_elevation">2dp</dimen>
+    <dimen name="float_image_width">56dp</dimen>
+    <dimen name="float_image_height">56dp</dimen>
+    <!--Always images height + half the size of the floating button -->
+    <dimen name="float_detail_frame_height">248dp</dimen>
+
+    <!-- List Dimensions-->
+    <dimen name="list_padding_standard">16dp</dimen>
+    <dimen name="list_padding_top">8dp</dimen>
+    <dimen name="list_padding_bottom">8dp</dimen>
+    <dimen name="list_margin_text">72dp</dimen>
+    <dimen name="list_image_width">56dp</dimen>
+    <dimen name="list_image_height">56dp</dimen>
+    <dimen name="list_font_primary">16sp</dimen>
+    <dimen name="list_font_secondary">14sp</dimen>
+
+    <!-- Main Screen Dimensions-->
+    <dimen name="main_padding_standard">10dp</dimen>
+    <dimen name="main_padding_small">5dp</dimen>
 </resources>

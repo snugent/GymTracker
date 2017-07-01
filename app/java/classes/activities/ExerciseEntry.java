@@ -18,8 +18,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.EventListener;
+import java.util.HashMap;
 
 public class ExerciseEntry extends AppCompatActivity {
     private ArrayAdapter<String> stAdapter;
@@ -31,9 +31,10 @@ public class ExerciseEntry extends AppCompatActivity {
     final String TAG = "ExerciseEntry";
 
     // Database queries
-    private FirebaseDatabase dbRef;
-    private DatabaseReference tableMemRef;
-    private List<Exercise> exercises;
+    private DatabaseReference tableExRef;
+    private HashMap<String, Exercise> exercises;
+    private ValueEventListener eventListener;
+    private EventListener elExercise;
 
 
 
@@ -46,17 +47,26 @@ public class ExerciseEntry extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveExercise();
+                saveExercise(stExerciseId);
+            }
+        });
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
 
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
+        FirebaseDatabase dbRef;
         // Array and array adapter for Exercise Sex Dropdown
         String stType[] = {getString(R.string.strength), getString(R.string.cardio)};
         Bundle extras = getIntent().getExtras();
         stExerciseId = extras.getString("exerciseId");
+
+        // Setup GUI Elemeents
         stAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, stType);
         stAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         etExerciseName = (EditText) findViewById(R.id.etExerciseName);
@@ -65,53 +75,78 @@ public class ExerciseEntry extends AppCompatActivity {
         btnCancel = (Button) findViewById(R.id.btnCancel);
         spnType.setAdapter(stAdapter);
 
+
         dbRef = FirebaseDatabase.getInstance();
-        tableMemRef = dbRef.getReference().child("Exercise");
-        exercises = new ArrayList<>();
+        tableExRef = dbRef.getReference().child("Exercise");
     }
 
     //Saves Profile Details to the database
-    private void saveExercise(){
+    private void saveExercise(String ipstExerciseId){
         boolean blFound = false;
         final Exercise savingData ;
+        DatabaseReference dbNewRef;
 
         savingData= new Exercise(
-                stExerciseId,
                 etExerciseName.getText().toString(),
                 spnType.getSelectedItem().toString());
 
-        int iIndex = -1;
-        if (exercises.size() > 0 ) {
-            for (final Exercise currentExercise : exercises) {
-                if(!blFound){
-                    iIndex++;
-                }
-
-                if (currentExercise.getExerciseId().equals(stExerciseId)) {
-                    blFound = true;
-                    exercises.set(iIndex, savingData);
-
-                    Query userQuery = tableMemRef.orderByChild("exerciseId").equalTo(stExerciseId);
-
-                    userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot curentRec: dataSnapshot.getChildren()) {
-                                curentRec.getRef().setValue(savingData);
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Log.e(TAG, "onCancelled", databaseError.toException());
-                        }
-                    });
-                }
-            }
+        // Save the Record
+        if (ipstExerciseId.equals("") || ipstExerciseId == null){
+            //New Record
+            dbNewRef = tableExRef.push();
+            stExerciseId = dbNewRef.getKey();
+            dbNewRef.setValue(savingData);
         }
-        // New Record
-        if (!blFound){
-            tableMemRef.push().setValue(savingData);
+        else{
+            //Existing Record
+            tableExRef.child(ipstExerciseId).setValue(savingData);
         }
+
     }// End Save Profile
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        createEventListener();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+
+        deleteEventListener();
+    }
+
+    // Creates an event listener for when we change data
+    private void createEventListener(){
+        if(eventListener == null) {
+            ValueEventListener elExercise = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    exercises = new HashMap<>();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Exercise mExercise = child.getValue(Exercise.class);
+                        exercises.put(child.getKey(), mExercise);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            tableExRef.addValueEventListener(elExercise);
+            eventListener = elExercise;
+        } // End if eventListener == null
+
+    }
+
+    // Detaches the event listener when activity goes into background
+    private void deleteEventListener(){
+        if(eventListener  != null){
+            tableExRef.removeEventListener(eventListener);
+        }
+    }
+
 }
