@@ -40,9 +40,6 @@ public class MemberEntry extends AppCompatActivity {
     private ValueEventListener eventListener;
     private final String TAG = "MemberEntry";
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -170,10 +167,6 @@ public class MemberEntry extends AppCompatActivity {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         Member mMember = child.getValue(Member.class);
                         members.put(child.getKey(), mMember);
-                    }
-                    if (members.size() > 0) {
-                        Toast.makeText(getApplicationContext(), "in here" + members.get(stUid).getName(), Toast.LENGTH_LONG).show();
-
                     }
                     getCurrentMember(stUid);
                 }

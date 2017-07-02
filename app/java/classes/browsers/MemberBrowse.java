@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.example.admin1.gymtracker.R;
+import com.example.admin1.gymtracker.activities.BaseClass;
 import com.example.admin1.gymtracker.activities.MemberEntry;
 import com.example.admin1.gymtracker.adapters.MemberRVAdapter;
 import com.example.admin1.gymtracker.layout.SimpleDividerItemDecoration;
@@ -22,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 
 
-public class MemberBrowse extends AppCompatActivity {
+public class MemberBrowse extends BaseClass {
     private RecyclerView rvList;
     private final String TAG = "MemberBrowse";
 
@@ -35,9 +36,8 @@ public class MemberBrowse extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member_browse);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
+        initialiseDatabase();
         initialiseScreen();
         createEventListener();
         initialiseAdapter();

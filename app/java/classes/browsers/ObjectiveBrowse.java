@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.example.admin1.gymtracker.R;
+import com.example.admin1.gymtracker.activities.BaseClass;
 import com.example.admin1.gymtracker.activities.ObjectiveEntry;
 import com.example.admin1.gymtracker.adapters.ObjectiveRVAdapter;
 import com.example.admin1.gymtracker.layout.SimpleDividerItemDecoration;
@@ -22,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
-public class ObjectiveBrowse extends AppCompatActivity {
+public class ObjectiveBrowse extends BaseClass {
 
     private RecyclerView rvList;
     private final String TAG = "ObjectiveBrowse";
@@ -36,9 +37,7 @@ public class ObjectiveBrowse extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_objective_browse);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
+        initialiseDatabase();
         initialiseScreen();
         createEventListener();
         initialiseAdapter();
