@@ -54,13 +54,6 @@
             android:layout_below="@+id/tvHeading"
             android:layout_toEndOf="@+id/ivIcon"
             android:textSize="@dimen/card_font_secondary" />
-        <TextView
-            android:id="@+id/tvId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvHeading"
-            android:layout_toEndOf="@+id/ivIcon"
-            android:textSize="@dimen/card_font_secondary" />
 
         <ImageButton
             android:id="@+id/btnDelete"

@@ -23,8 +23,7 @@
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="100dp"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/btnSignOut"
-        android:layout_marginStart="12dp" />
+        android:layout_toEndOf="@+id/btnObjective" />
 
     <Button
         android:id="@+id/btnExercise"
@@ -34,4 +33,23 @@
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/btnProfile"
         android:layout_marginStart="24dp" />
+
+    <Button
+        android:id="@+id/btnObjective"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/btnSignOut"
+        android:layout_marginTop="12dp"
+        android:text="@string/objective" />
+
+    <Button
+        android:id="@+id/btnOtherMember"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_member"
+        android:layout_alignBaseline="@+id/btnObjective"
+        android:layout_alignBottom="@+id/btnObjective"
+        android:layout_alignStart="@+id/btnProfile"
+        android:layout_marginStart="21dp" />
 </android.widget.RelativeLayout>

@@ -10,32 +10,31 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.admin1.gymtracker.R;
-import com.example.admin1.gymtracker.models.Exercise;
+import com.example.admin1.gymtracker.models.Member;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
 /**
- * Created by admin1 on 01/07/2017.
+ * Created by admin1 on 02/07/2017.
  */
 
-public class ExerciseRVAdapter extends RecyclerView.Adapter<ExerciseRVAdapter.ItemViewActivity>{
+public class MemberRVAdapter extends RecyclerView.Adapter<MemberRVAdapter.ItemViewActivity>{
     private OnItemClickListener mItemClickListener;
-    private HashMap<String, Exercise> exercises;
-    private List<Exercise> exerciseList;
+    private HashMap<String, Member> members;
+    private List<Member> memberList;
     private List<String> keysList;
 
-    private final String TAG = "ExerciseRVAdapter";
+    private final String TAG = "MemberRVAdapter";
     private DatabaseReference tblRecord;
 
-    public ExerciseRVAdapter(HashMap<String, Exercise> exercises, DatabaseReference tblRecord){
-        this.exercises = exercises;
+    public MemberRVAdapter(HashMap<String, Member> members, DatabaseReference tblRecord){
+        this.members = members;
         this.tblRecord = tblRecord;
-        keysList = new ArrayList<>(exercises.keySet());
-        exerciseList = new ArrayList<>(exercises.values());
+        keysList = new ArrayList<>(members.keySet());
+        memberList = new ArrayList<>(members.values());
     }
 
     public interface OnItemClickListener {
@@ -47,7 +46,7 @@ public class ExerciseRVAdapter extends RecyclerView.Adapter<ExerciseRVAdapter.It
     }
     @Override
     public int getItemCount() {
-        return exercises.size();
+        return members.size();
     }
 
     @Override
@@ -62,13 +61,13 @@ public class ExerciseRVAdapter extends RecyclerView.Adapter<ExerciseRVAdapter.It
     }
 
     @Override
-    public void onBindViewHolder(ItemViewActivity exerciseViewHolder, final int pos) {
-        Exercise mExercise;
-        mExercise= exerciseList.get(pos);
-        exerciseViewHolder.tvHeading.setText(mExercise.getName());
-        exerciseViewHolder.tvDetail.setText(mExercise.getType());
+    public void onBindViewHolder(ItemViewActivity memberViewHolder, final int pos) {
+        Member mMember;
+        mMember= memberList.get(pos);
+        memberViewHolder.tvHeading.setText(mMember.getName());
+        memberViewHolder.tvDetail.setText("");
 
-        exerciseViewHolder.btnDelete.setOnClickListener(new View.OnClickListener() {
+        memberViewHolder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 deleteRow(pos);
@@ -79,9 +78,9 @@ public class ExerciseRVAdapter extends RecyclerView.Adapter<ExerciseRVAdapter.It
     private void deleteRow(int index ){
         String stKey = keysList.get(index);
         try{
-            exerciseList.remove(index);
+            memberList.remove(index);
             keysList.remove(index);
-            exercises.remove(stKey);
+            members.remove(stKey);
             notifyItemRemoved(index);
             tblRecord.getRef().child(stKey).removeValue();
         }
@@ -115,5 +114,4 @@ public class ExerciseRVAdapter extends RecyclerView.Adapter<ExerciseRVAdapter.It
             }
         }
     }// End ItemViewAcitivty Class
-
-}// End ExerciseRVAdapter class
+}

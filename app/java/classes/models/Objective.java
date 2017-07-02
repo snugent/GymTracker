@@ -5,28 +5,22 @@ package com.example.admin1.gymtracker.models;
  */
 
 public class Objective {
-    private String  objectiveId;
     private String  name;
     private String  label;
     private boolean isDeleted;
     private String  viewType;
 
-    public Objective(String objectiveId, String name, String label, boolean isDeleted, String viewType) {
-        this.objectiveId = objectiveId;
+    public Objective(){
+
+    }
+
+    public Objective(String name, String label, boolean isDeleted, String viewType) {
         this.name = name;
         this.label = label;
         this.isDeleted = isDeleted;
         this.viewType = viewType;
     }
 
-
-    public String getObjectiveId() {
-        return objectiveId;
-    }
-
-    public void setObjectiveId(String objectiveId) {
-        this.objectiveId = objectiveId;
-    }
 
     public String getName() {
         return name;

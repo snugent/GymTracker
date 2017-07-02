@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.admin1.gymtracker.browsers.ExerciseBrowse;
+import com.example.admin1.gymtracker.browsers.MemberBrowse;
+import com.example.admin1.gymtracker.browsers.ObjectiveBrowse;
 import com.example.admin1.gymtracker.models.Login;
 import com.example.admin1.gymtracker.R;
 import com.firebase.ui.auth.AuthUI;
@@ -16,8 +19,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
-
-import static com.example.admin1.gymtracker.R.id.btnExercise;
 
 public class MainActivity extends AppCompatActivity {
     private static FirebaseDatabase mFirebaseDatabase;
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
         Button btnSignOut = (Button) findViewById(R.id.btnSignOut);
         Button btnProfile = (Button) findViewById(R.id.btnProfile);
         Button btnExercise = (Button) findViewById(R.id.btnExercise);
+        Button btnObjective = (Button) findViewById(R.id.btnObjective);
+        Button btnOtherMember = (Button) findViewById(R.id.btnOtherMember);
 
         setmAuthStateListener();
         btnSignOut.setOnClickListener(new View.OnClickListener() {
@@ -51,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
         btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent iProfile = new Intent(getApplicationContext(), MemberProfile.class);
-                iProfile.putExtra("uId", stUid);
+                Intent iProfile = new Intent(getApplicationContext(), MemberEntry.class);
+                iProfile.putExtra("memberId", stUid);
                 iProfile.putExtra("isAdmin", false);
                 startActivity(iProfile);
             }
@@ -66,6 +69,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btnObjective.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent itBrowse = new Intent(getApplicationContext(), ObjectiveBrowse.class);
+                startActivity(itBrowse);
+            }
+        });
+        btnOtherMember.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent itBrowse = new Intent(getApplicationContext(), MemberBrowse.class);
+                startActivity(itBrowse);
+            }
+        });
     }
 
     @Override

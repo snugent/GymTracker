@@ -2,7 +2,6 @@ package com.example.admin1.gymtracker.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,7 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 
-public class MemberProfile extends AppCompatActivity {
+public class MemberEntry extends AppCompatActivity {
     String stUid;
     boolean blIsAdmin;
 
@@ -37,9 +36,9 @@ public class MemberProfile extends AppCompatActivity {
     private HashMap<String, Member> members;
 
     //Firebase Database query fields
-    private DatabaseReference tableMemRef;
+    private DatabaseReference tableRef;
     private ValueEventListener eventListener;
-    private final String TAG = "MemberProfile";
+    private final String TAG = "MemberEntry";
 
 
 
@@ -50,7 +49,7 @@ public class MemberProfile extends AppCompatActivity {
         setContentView(R.layout.activity_member_profile);
         // Get Initial Variables.
         Bundle extras = getIntent().getExtras();
-        stUid = extras.getString("uId");
+        stUid = extras.getString("memberId");
         blIsAdmin = extras.getBoolean("isAdmin");
 
         // Set up Initial Screen objects
@@ -59,9 +58,11 @@ public class MemberProfile extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isValidProfile()) {
-                    saveProfile(stUid);
-                }
+            if (isValidRecord()) {
+                saveRecord(stUid);
+                finish();
+            }
+
             }
         });
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -108,13 +109,13 @@ public class MemberProfile extends AppCompatActivity {
         spnSex.setAdapter(stAdapter);
 
         dbRef = FirebaseDatabase.getInstance();
-        tableMemRef = dbRef.getReference().child("Member");
+        tableRef = dbRef.getReference().child("Member");
         createEventListener();
         getCurrentMember(stUid);
 
     }
 
-    // This method gets the Current Member and poulates the data
+    // If doing a modify task this method gets the Current Record and poulates the GUI fields
     private void getCurrentMember(String ipstUid){
         int iPos;
         Member currentMember ;
@@ -136,11 +137,9 @@ public class MemberProfile extends AppCompatActivity {
 
     } // End getProfile Method
 
-    //Saves Profile Details to the database
-    private void saveProfile(String ipStUid){
+    //Saves Record Details to the database
+    private void saveRecord(String ipStUid){
         final Member savingData ;
-
-        Log.d(TAG, "saveProfile" + ipStUid + " " + etName.getText().toString() );
 
         savingData= new Member( etName.getText().toString(),
                                 etDob.getText().toString(),
@@ -151,38 +150,31 @@ public class MemberProfile extends AppCompatActivity {
                                 chkDeleted.isChecked());
 
         // Saver the Record
-        tableMemRef.child(ipStUid).setValue(savingData);
+        tableRef.child(ipStUid).setValue(savingData);
 
     }// End Save Profile
 
-
-
     // This method will validate the user data entered.
-    private boolean isValidProfile(){
+    private boolean isValidRecord(){
+        //To do Validate User Input
         return true;
     }
 
     // Creates an event listener for when we change data
     private void createEventListener(){
         if(eventListener == null) {
-            ValueEventListener elPost = new ValueEventListener() {
+            ValueEventListener mEventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.d(TAG, "onResume");
-
                     members = new HashMap<>();
-                    Log.d(TAG, "onResume2");
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         Member mMember = child.getValue(Member.class);
                         members.put(child.getKey(), mMember);
                     }
-                    Log.d(TAG, "onResume3");
                     if (members.size() > 0) {
-                        Log.d(TAG, "onResume4" + members.get(stUid).getName());
                         Toast.makeText(getApplicationContext(), "in here" + members.get(stUid).getName(), Toast.LENGTH_LONG).show();
 
                     }
-                    Log.d(TAG, "onResume5");
                     getCurrentMember(stUid);
                 }
 
@@ -191,8 +183,8 @@ public class MemberProfile extends AppCompatActivity {
 
                 }
             };
-            tableMemRef.addValueEventListener(elPost);
-            eventListener = elPost;
+            tableRef.addValueEventListener(mEventListener);
+            eventListener = mEventListener;
         } // End if eventListener == null
 
     }
@@ -200,7 +192,7 @@ public class MemberProfile extends AppCompatActivity {
     // Detaches the event listener when activity goes into background
     private void deleteEventListener(){
         if(eventListener != null){
-            tableMemRef.removeEventListener(eventListener);
+            tableRef.removeEventListener(eventListener);
         }
     }
 

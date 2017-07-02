@@ -5,9 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.admin1.gymtracker.browsers.ExerciseBrowse"
-    tools:showIn="@layout/activity_exercise_browse">
-
+    tools:context="com.example.admin1.gymtracker.browsers.ObjectiveBrowse"
+    tools:showIn="@layout/activity_objective_browse">
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvList"
         android:layout_width="368dp"

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Gym Tracker</string>
-    <string name="title_activity_member_profile">MemberProfile</string>
+    <string name="title_activity_member_profile">Member Entry</string>
     <string name="name">Name</string>
     <string name="date_of_birth">Date Of Birth</string>
     <string name="weight">Weight(Kg)</string>
@@ -10,11 +10,19 @@
     <string name="profile">Profile</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
-    <string name="title_activity_exercise_browse">ExerciseBrowse</string>
+    <string name="title_activity_exercise_browse">Exercises</string>
     <string name="exercise_name">Exercise Name</string>
     <string name="strength">Strength</string>
     <string name="cardio">Cardiovascular</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="exercise">Exercise</string>
+    <string name="title_activity_objective_browse">Objectives</string>
+    <string name="objective_name">Objective Name</string>
+    <string name="view_label">View Label</string>
+    <string name="objective">Objective</string>
+    <string name="time">Time</string>
+    <string name="number">Number</string>
+    <string name="title_activity_member_browse">Members</string>
+    <string name="edit_member">Edit Member</string>
 </resources>

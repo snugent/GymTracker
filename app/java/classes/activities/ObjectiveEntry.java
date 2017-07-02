@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.example.admin1.gymtracker.R;
-import com.example.admin1.gymtracker.models.Exercise;
+import com.example.admin1.gymtracker.models.Objective;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,34 +20,36 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.EventListener;
 import java.util.HashMap;
 
-public class ExerciseEntry extends AppCompatActivity {
+public class ObjectiveEntry extends AppCompatActivity {
+
     private ArrayAdapter<String> stAdapter;
     Button btnSave;
     Button btnCancel;
-    EditText etExerciseName;
+    EditText etObjectiveName;
+    EditText etLabel;
     Spinner spnType;
-    String stExerciseId;
-    final String TAG = "ExerciseEntry";
+    String stObjectiveId;
+    final String TAG = "ObjectiveEntry";
 
     // Database queries
     private DatabaseReference tableExRef;
-    private HashMap<String, Exercise> exercises;
+    private HashMap<String, Objective> objectives;
     private ValueEventListener eventListener;
-    private EventListener elExercise;
+    private EventListener elObjective;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_exercise_entry);
+        setContentView(R.layout.activity_objective_entry);
         initialiseScreen();
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isValidRecord()) {
-                    saveRecord(stExerciseId);
+                    saveRecord(stObjectiveId);
                     finish();
                 }
             }
@@ -63,67 +65,71 @@ public class ExerciseEntry extends AppCompatActivity {
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
         FirebaseDatabase dbRef;
-        // Array and array adapter for Exercise Sex Dropdown
-        String stType[] = {getString(R.string.strength), getString(R.string.cardio)};
+        // Array and array adapter for Objective Sex Dropdown
+        String stType[] = {getString(R.string.number),getString(R.string.time)};
         Bundle extras = getIntent().getExtras();
-        stExerciseId = extras.getString("exerciseId");
+        stObjectiveId = extras.getString("objectiveId");
         int iPos = 0;
 
         // Setup GUI Elements
         stAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, stType);
         stAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        etExerciseName = (EditText) findViewById(R.id.etExerciseName);
-        spnType        = (Spinner)  findViewById(R.id.spnType);
-        btnSave = (Button) findViewById(R.id.btnSave);
-        btnCancel = (Button) findViewById(R.id.btnCancel);
+        etObjectiveName = (EditText) findViewById(R.id.etObjectiveName);
+        etLabel         = (EditText) findViewById(R.id.etLabel);
+        spnType         = (Spinner)  findViewById(R.id.spnType);
+        btnSave         = (Button) findViewById(R.id.btnSave);
+        btnCancel       = (Button) findViewById(R.id.btnCancel);
         spnType.setAdapter(stAdapter);
 
 
         dbRef = FirebaseDatabase.getInstance();
-        tableExRef = dbRef.getReference().child("Exercise");
+        tableExRef = dbRef.getReference().child("Objective");
 
         //Populate Data
-        getCurrentRecord(stExerciseId);
+        getCurrentRecord(stObjectiveId);
     }
 
     // If doing a modify task this method gets the Current Record and poulates the GUI fields
     private void getCurrentRecord(String ipstId){
         int iPos;
-        Exercise currentExercise;
+        Objective currentObjective;
         Log.d(TAG, "getCurrentId " + ipstId + (ipstId == ""));
         if (!ipstId.equalsIgnoreCase("")){
-            if (exercises != null) {
-                currentExercise = exercises.get(ipstId);
-                etExerciseName.setText(currentExercise.getName());
-                iPos = stAdapter.getPosition(currentExercise.getType());
+            if (objectives != null) {
+                currentObjective = objectives.get(ipstId);
+                etObjectiveName.setText(currentObjective.getName());
+                etLabel.setText(currentObjective.getLabel());
+                iPos = stAdapter.getPosition(currentObjective.getViewType());
                 if (iPos >= 0) {
                     spnType.setSelection(iPos);
                 }
-            }// exercises != null
+            }// objectives != null
         }// if(ipstId != "" ....
     } // End getProfile Method
 
 
     //Saves Record Details to the database
-    private void saveRecord(String ipstExerciseId){
+    private void saveRecord(String ipstObjectiveId){
         boolean blFound = false;
-        final Exercise savingData ;
+        final Objective savingData ;
         DatabaseReference dbNewRef;
 
-        savingData= new Exercise(
-                etExerciseName.getText().toString(),
+        savingData= new Objective(
+                etObjectiveName.getText().toString(),
+                etLabel.getText().toString(),
+                false,
                 spnType.getSelectedItem().toString());
 
         // Save the Record
-        if (ipstExerciseId.equals("") || ipstExerciseId == null){
+        if (ipstObjectiveId.equals("") || ipstObjectiveId == null){
             //New Record
             dbNewRef = tableExRef.push();
-            stExerciseId = dbNewRef.getKey();
+            stObjectiveId = dbNewRef.getKey();
             dbNewRef.setValue(savingData);
         }
         else{
             //Existing Record
-            tableExRef.child(ipstExerciseId).setValue(savingData);
+            tableExRef.child(ipstObjectiveId).setValue(savingData);
         }
 
     }// End Save Profile
@@ -150,16 +156,16 @@ public class ExerciseEntry extends AppCompatActivity {
     // Creates an event listener for when we change data
     private void createEventListener(){
         if(eventListener == null) {
-            ValueEventListener elExercise = new ValueEventListener() {
+            ValueEventListener elObjective = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    exercises = new HashMap<>();
+                    objectives = new HashMap<>();
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        Exercise mExercise = child.getValue(Exercise.class);
-                        exercises.put(child.getKey(), mExercise);
+                        Objective mObjective = child.getValue(Objective.class);
+                        objectives.put(child.getKey(), mObjective);
                     }
-                    getCurrentRecord(stExerciseId);
+                    getCurrentRecord(stObjectiveId);
                 }
 
                 @Override
@@ -167,8 +173,8 @@ public class ExerciseEntry extends AppCompatActivity {
 
                 }
             };
-            tableExRef.addValueEventListener(elExercise);
-            eventListener = elExercise;
+            tableExRef.addValueEventListener(elObjective);
+            eventListener = elObjective;
         } // End if eventListener == null
 
     }
@@ -179,5 +185,4 @@ public class ExerciseEntry extends AppCompatActivity {
             tableExRef.removeEventListener(eventListener);
         }
     }
-
 }

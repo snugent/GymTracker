@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.admin1.gymtracker.activities.ObjectiveEntry">
+
+
+    <EditText
+        android:id="@+id/etObjectiveName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="37dp"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:hint="@string/objective_name"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:layout_editor_absoluteY="16dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:maxLines="1" />
+
+    <EditText
+        android:id="@+id/etLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:hint="@string/view_label"
+        app:layout_constraintTop_toBottomOf="@+id/etObjectiveName"
+        android:maxLines="1"
+        tools:layout_editor_absoluteX="37dp"
+        android:layout_below="@+id/etObjectiveName"
+        android:layout_alignStart="@+id/etObjectiveName" />
+
+    <Spinner
+        android:id="@+id/spnType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="30dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/etLabel"
+        android:layout_below="@+id/etLabel"
+        android:layout_alignStart="@+id/etLabel" />
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:layout_below="@+id/spnType"
+        android:layout_alignStart="@+id/spnType" />
+
+    <Button
+        android:id="@+id/btnCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        android:layout_alignBaseline="@+id/btnSave"
+        android:layout_alignBottom="@+id/btnSave"
+        android:layout_toEndOf="@+id/btnSave"
+        android:layout_marginStart="11dp" />
+
+</android.widget.RelativeLayout>
