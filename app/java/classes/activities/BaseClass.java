@@ -6,13 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.browsers.ExerciseBrowse;
 import com.example.admin1.gymtracker.browsers.MemberBrowse;
 import com.example.admin1.gymtracker.browsers.ObjectiveBrowse;
-import com.example.admin1.gymtracker.models.Login;
 import com.example.admin1.gymtracker.models.Member;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,10 +31,8 @@ import java.util.HashMap;
 public class BaseClass extends AppCompatActivity {
     private Menu     menu;
     private static FirebaseDatabase mFirebaseDatabase;
-    private String stUid;
     private FirebaseAuth mFirebaseAuth ;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private Login mLogin;
     private static final int RP_SIGN_IN_ID = 1;
 
     //Firebase Database query fields
@@ -56,31 +52,71 @@ public class BaseClass extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        switch(id){
-            case R.id.profile:
-                launchProfileActivity();
-                return true;
-            case R.id.exercise:
-                launchExerciseActivity();
-                return true;
-            case R.id.objective:
-                launchObjectiveActivity();
-                return true;
-            case R.id.edit_member:
-                launchMemberActivity();
-            case R.id.sign_out:
-                signOut();
-                return true;
-        }
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean isAdmin = isAdminUser(getCurrentUserId());
+        MenuItem item;
+        item = menu.findItem(R.id.exercise);
+        item.setVisible(isAdmin);
+        item = menu.findItem(R.id.objective);
+        item.setVisible(isAdmin);
+        item = menu.findItem(R.id.workout_setup);
+        item.setVisible(isAdmin);
+        item = menu.findItem(R.id.edit_member);
+        item.setVisible(isAdmin);
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        boolean blResult = false;
+        int id = item.getItemId();
+
+        switch(id){
+            case R.id.workout_entry:
+                launchWorkoutActivity();
+                blResult = true;
+                break;
+            case R.id.profile:
+                launchProfileActivity();
+                blResult = true;
+                break;
+            case R.id.exercise:
+                launchExerciseActivity();
+                blResult = true;
+                break;
+            case R.id.objective:
+                launchObjectiveActivity();
+                blResult = true;
+                break;
+            case R.id.workout_setup:
+                launchWorkoutSetupActivity();
+                blResult = true;
+                break;
+            case R.id.edit_member:
+                launchMemberActivity();
+                blResult = true;
+                break;
+            case R.id.sign_out:
+                signOut();
+                blResult = true;
+                break;
+        }
+        return blResult;
+    }
+
     // Checks if the user has a profile
-    protected boolean hasProfile(){
-        return true;
+    protected boolean hasProfile(String uid){
+        boolean hasProfile;
+        Member currentMember ;
+
+        if (members!= null) {
+            currentMember = members.get(uid);
+            hasProfile = (currentMember != null);
+        }
+        else {
+            hasProfile = false;
+        }
+        return hasProfile;
     }
 
     // Gets the current user
@@ -92,11 +128,16 @@ public class BaseClass extends AppCompatActivity {
         AuthUI.getInstance().signOut(this);
     }
 
+    // Calls the User Workout Entry Browse Screen
+    private void launchWorkoutActivity(){
+        Intent iWorkout = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(iWorkout);
+    }
     // Calls the User Profile Maintenance Screen
     private void launchProfileActivity(){
         Intent iProfile = new Intent(getApplicationContext(), MemberEntry.class);
         iProfile.putExtra("memberId", getCurrentUserId());
-        iProfile.putExtra("isAdmin", isAdminUser());
+        iProfile.putExtra("isAdmin", isAdminUser(getCurrentUserId()));
         startActivity(iProfile);
     }
 
@@ -112,6 +153,11 @@ public class BaseClass extends AppCompatActivity {
         startActivity(itBrowse);
     }
 
+    // Calls the User Profile Maintenance Screen
+    private void launchWorkoutSetupActivity(){
+        //To Do
+    }
+
     //Calls the Member screen to allow trainers (admin members) delete other users
     // Promote and delete Member functionality
     private void launchMemberActivity() {
@@ -121,9 +167,9 @@ public class BaseClass extends AppCompatActivity {
 
 
     protected void initialiseDatabase(){
-        mLogin             = new Login();
         mFirebaseDatabase  = FirebaseDatabase.getInstance();
         mFirebaseAuth      = FirebaseAuth.getInstance();
+        tableRef = mFirebaseDatabase.getReference().child("Member");
         setmAuthStateListener();
     }
 
@@ -156,12 +202,14 @@ public class BaseClass extends AppCompatActivity {
     } //End setmAuthSateListener method
 
     private void onSignedInInitialise(String uid){
-        stUid      = getCurrentUserId();
+
+        createEventListener();
+
 
     }
 
     private void onSignedOutCleanUp(){
-        stUid = null;
+        deleteEventListener();
     }
 
     @Override
@@ -169,6 +217,7 @@ public class BaseClass extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RP_SIGN_IN_ID){
             if(resultCode == RESULT_OK){
+                //To do
             }
             else if( resultCode == RESULT_CANCELED){
                 Log.e(TAG, "Signed in cancelled");
@@ -187,7 +236,7 @@ public class BaseClass extends AppCompatActivity {
         }
     }
 
-    public String getCurrentUserId(){
+    protected String getCurrentUserId(){
         FirebaseUser user = getUser();
         String uId ="";
         if (user != null) {
@@ -200,15 +249,15 @@ public class BaseClass extends AppCompatActivity {
     }
 
     // Checks is the user is a Trainer
-    public boolean isAdminUser(){
-        boolean isAdmin = false;
-        tableRef = mFirebaseDatabase.getReference().child("Member");
+    protected boolean isAdminUser(String uid){
+        boolean isAdmin;
         Member currentMember ;
 
-        if (members!= null) {
-            currentMember = members.get(getCurrentUserId());
-            if (!currentMember.getIsAdmin() || currentMember.getIsDeleted()){
-                isAdmin = false;
+        if (members!= null && hasProfile(uid)) {
+            currentMember = members.get(uid);
+            //If the user is an admin user and the current user is not deleted
+            if (currentMember.getIsAdmin() && isDeletedUser(uid)) {
+                isAdmin = true;
             }
             else{
                 isAdmin = true;
@@ -221,13 +270,12 @@ public class BaseClass extends AppCompatActivity {
     }
 
     // Checks is the user is a Trainer
-    public boolean isDeletedUser(){
+    protected boolean isDeletedUser(String uid){
         boolean isDeleted = false;
-        tableRef = mFirebaseDatabase.getReference().child("Member");
         Member currentMember ;
 
         if (members!= null) {
-            currentMember = members.get(getCurrentUserId());
+            currentMember = members.get(uid);
             isDeleted = currentMember.getIsDeleted();
         }
         return isDeleted;
@@ -255,7 +303,14 @@ public class BaseClass extends AppCompatActivity {
             tableRef.addValueEventListener(mEventListener);
             eventListener = mEventListener;
         } // End if eventListener == null
+    }// End CreatesEventListener
 
-    }
+
+    // Detaches the event listener when activity goes into background
+    private void deleteEventListener(){
+        if(eventListener  != null){
+            tableRef.removeEventListener(eventListener);
+        }
+    }// End DeleteEventListener
 
 }

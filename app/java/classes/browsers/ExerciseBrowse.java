@@ -3,10 +3,9 @@ package com.example.admin1.gymtracker.browsers;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 
@@ -105,6 +104,7 @@ public class ExerciseBrowse extends BaseClass {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         Exercise mExercise = child.getValue(Exercise.class);
                         exercises.put(child.getKey(), mExercise);
+                        Log.d(TAG, "New" + mExercise.getName());
                     }
                     initialiseAdapter();
                 }

@@ -19,7 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 
-public class MemberEntry extends AppCompatActivity {
+public class MemberEntry extends BaseClass {
     String stUid;
     boolean blIsAdmin;
 
@@ -50,6 +50,7 @@ public class MemberEntry extends AppCompatActivity {
         blIsAdmin = extras.getBoolean("isAdmin");
 
         // Set up Initial Screen objects
+        initialiseDatabase();
         initialiseScreen();
 
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -118,18 +119,20 @@ public class MemberEntry extends AppCompatActivity {
         Member currentMember ;
         if (members!= null){
             currentMember = members.get(ipstUid);
-            etName.setText(currentMember.getName());
-            etDob.setText(currentMember.getDob());
-            etWeight.setText(Double.toString(currentMember.getWeight()));
-            etHeight.setText(Double.toString(currentMember.getHeight()));
-            chkAdmin.setChecked(currentMember.getIsAdmin());
-            chkDeleted.setChecked(currentMember.getIsDeleted());
+            if (currentMember != null) {
+                etName.setText(currentMember.getName());
+                etDob.setText(currentMember.getDob());
+                etWeight.setText(Double.toString(currentMember.getWeight()));
+                etHeight.setText(Double.toString(currentMember.getHeight()));
+                chkAdmin.setChecked(currentMember.getIsAdmin());
+                chkDeleted.setChecked(currentMember.getIsDeleted());
 
-
-            iPos = stAdapter.getPosition(currentMember.getSex());
-            if (iPos >= 0){
-                spnSex.setSelection(iPos);
+                iPos = stAdapter.getPosition(currentMember.getSex());
+                if (iPos >= 0){
+                    spnSex.setSelection(iPos);
+                }
             }
+
         }
 
     } // End getProfile Method

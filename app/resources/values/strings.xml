@@ -26,4 +26,6 @@
     <string name="title_activity_member_browse">Members</string>
     <string name="edit_member">Edit Member</string>
     <string name="sign_out">Sign Out</string>
+    <string name="workout_entry">Workout Entry</string>
+    <string name="workout_setup">Workout Setup</string>
 </resources>

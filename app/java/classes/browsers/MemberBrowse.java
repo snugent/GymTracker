@@ -2,10 +2,9 @@ package com.example.admin1.gymtracker.browsers;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import com.example.admin1.gymtracker.R;
@@ -95,6 +94,7 @@ public class MemberBrowse extends BaseClass {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         Member mMember = child.getValue(Member.class);
                         members.put(child.getKey(), mMember);
+                        Log.d(TAG, "New" + mMember.getName());
                     }
                     initialiseAdapter();
                 }
