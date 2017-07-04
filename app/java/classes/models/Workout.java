@@ -1,5 +1,9 @@
 package com.example.admin1.gymtracker.models;
 
+import android.support.v7.widget.RecyclerView;
+
+
+
 import java.util.Date;
 
 /**
@@ -7,22 +11,18 @@ import java.util.Date;
  */
 
 public class Workout {
-    private String workoutId;
     private String memberId;
     private String workoutDate;
+    private String comment;
 
-    public Workout(String workoutId, String memberId, String workoutDate) {
-        this.workoutId = workoutId;
+    private Workout(){
+
+    }
+
+    public Workout(String memberId, String workoutDate, String comment) {
         this.memberId = memberId;
         this.workoutDate = workoutDate;
-    }
-
-    public String getWorkoutId() {
-        return workoutId;
-    }
-
-    public void setWorkoutId(String workoutId) {
-        this.workoutId = workoutId;
+        this.comment = comment;
     }
 
     public String getMemberId() {
@@ -39,5 +39,13 @@ public class Workout {
 
     public void setWorkoutDate(String workoutDate) {
         this.workoutDate= workoutDate;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

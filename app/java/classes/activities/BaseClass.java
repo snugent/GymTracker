@@ -11,6 +11,7 @@ import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.browsers.ExerciseBrowse;
 import com.example.admin1.gymtracker.browsers.MemberBrowse;
 import com.example.admin1.gymtracker.browsers.ObjectiveBrowse;
+import com.example.admin1.gymtracker.browsers.WorkoutBrowse;
 import com.example.admin1.gymtracker.models.Member;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -130,7 +131,7 @@ public class BaseClass extends AppCompatActivity {
 
     // Calls the User Workout Entry Browse Screen
     private void launchWorkoutActivity(){
-        Intent iWorkout = new Intent(getApplicationContext(), MainActivity.class);
+        Intent iWorkout = new Intent(getApplicationContext(), WorkoutBrowse.class);
         startActivity(iWorkout);
     }
     // Calls the User Profile Maintenance Screen

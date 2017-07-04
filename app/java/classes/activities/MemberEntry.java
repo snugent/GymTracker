@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.models.Member;
@@ -19,7 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 
-public class MemberEntry extends BaseClass {
+public class MemberEntry extends AppCompatActivity {
     String stUid;
     boolean blIsAdmin;
 
@@ -43,14 +42,13 @@ public class MemberEntry extends BaseClass {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_member_profile);
+        setContentView(R.layout.activity_member_entry);
         // Get Initial Variables.
         Bundle extras = getIntent().getExtras();
         stUid = extras.getString("memberId");
         blIsAdmin = extras.getBoolean("isAdmin");
 
         // Set up Initial Screen objects
-        initialiseDatabase();
         initialiseScreen();
 
         btnSave.setOnClickListener(new View.OnClickListener() {

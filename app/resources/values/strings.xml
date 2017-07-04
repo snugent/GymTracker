@@ -28,4 +28,6 @@
     <string name="sign_out">Sign Out</string>
     <string name="workout_entry">Workout Entry</string>
     <string name="workout_setup">Workout Setup</string>
+    <string name="workout_date">Workout Date</string>
+    <string name="week_commencing">Week Commencing</string>
 </resources>
