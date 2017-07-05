@@ -30,4 +30,6 @@
     <string name="workout_setup">Workout Setup</string>
     <string name="workout_date">Workout Date</string>
     <string name="week_commencing">Week Commencing</string>
+    <string name="comment">Comment</string>
+    <string name="title_activity_workout_setup_browse">WorkoutSetupBrowse</string>
 </resources>

@@ -19,16 +19,20 @@
         <activity android:name=".activities.MemberEntry" />
         <activity
             android:name=".browsers.ExerciseBrowse"
-            android:label="@string/title_activity_exercise_browse"></activity>
+            android:label="@string/title_activity_exercise_browse" />
         <activity android:name=".activities.ExerciseEntry" />
         <activity
             android:name=".browsers.ObjectiveBrowse"
-            android:label="@string/title_activity_objective_browse"></activity>
+            android:label="@string/title_activity_objective_browse" />
         <activity android:name=".activities.ObjectiveEntry" />
         <activity
             android:name=".browsers.MemberBrowse"
-            android:label="@string/title_activity_member_browse"></activity>
-        <activity android:name=".activities.WorkoutEntry"></activity>
+            android:label="@string/title_activity_member_browse" />
+        <activity android:name=".activities.WorkoutEntry" />
+        <activity
+            android:name=".browsers.ExerciseObjectiveBrowse"
+            android:label="@string/title_activity_workout_setup_browse"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

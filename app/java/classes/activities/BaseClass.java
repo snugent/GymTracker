@@ -9,9 +9,11 @@ import android.view.MenuItem;
 
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.browsers.ExerciseBrowse;
+import com.example.admin1.gymtracker.browsers.ExerciseObjectiveBrowse;
 import com.example.admin1.gymtracker.browsers.MemberBrowse;
 import com.example.admin1.gymtracker.browsers.ObjectiveBrowse;
 import com.example.admin1.gymtracker.browsers.WorkoutBrowse;
+import com.example.admin1.gymtracker.models.Exercise;
 import com.example.admin1.gymtracker.models.Member;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -127,6 +129,7 @@ public class BaseClass extends AppCompatActivity {
     //Signs the user out of the system
     protected void signOut(){
         AuthUI.getInstance().signOut(this);
+        onSignedOutCleanUp();
     }
 
     // Calls the User Workout Entry Browse Screen
@@ -156,7 +159,8 @@ public class BaseClass extends AppCompatActivity {
 
     // Calls the User Profile Maintenance Screen
     private void launchWorkoutSetupActivity(){
-        //To Do
+        Intent itBrowse = new Intent(getApplicationContext(), ExerciseObjectiveBrowse.class);
+        startActivity(itBrowse);
     }
 
     //Calls the Member screen to allow trainers (admin members) delete other users
@@ -171,10 +175,10 @@ public class BaseClass extends AppCompatActivity {
         mFirebaseDatabase  = FirebaseDatabase.getInstance();
         mFirebaseAuth      = FirebaseAuth.getInstance();
         tableRef = mFirebaseDatabase.getReference().child("Member");
-        setmAuthStateListener();
+        createAuthStateListener();
     }
 
-    private void setmAuthStateListener(){
+    private void createAuthStateListener(){
 
         //Authenticatin Listener
         mAuthStateListener = new FirebaseAuth.AuthStateListener(){
@@ -204,13 +208,10 @@ public class BaseClass extends AppCompatActivity {
 
     private void onSignedInInitialise(String uid){
 
-        createEventListener();
-
-
     }
 
     private void onSignedOutCleanUp(){
-        deleteEventListener();
+
     }
 
     @Override
@@ -227,11 +228,11 @@ public class BaseClass extends AppCompatActivity {
         } // if (requestCode == RC_SIGN_IN){
     } // onActivityResult Method
 
-    protected void createAuthStateListener(){
-        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+    protected void setAuthStateListener(){
+            mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
-    protected void deleteAuthStateListener(){
+    protected void removeAuthStateListener(){
         if (mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
@@ -267,6 +268,9 @@ public class BaseClass extends AppCompatActivity {
         else {
             isAdmin = false;
         }
+        /***** Test code ******/
+        isAdmin = true;
+        /* ***** Test Code ***** */
         return isAdmin;
     }
 
