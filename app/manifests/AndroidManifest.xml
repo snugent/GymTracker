@@ -31,8 +31,7 @@
         <activity android:name=".activities.WorkoutEntry" />
         <activity
             android:name=".browsers.ExerciseObjectiveBrowse"
-            android:label="@string/title_activity_workout_setup_browse"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label="@string/title_activity_workout_setup_browse" />
     </application>
 
 </manifest>

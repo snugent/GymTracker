@@ -41,6 +41,7 @@ public class ExerciseObjectiveBrowse extends BaseClass {
         initialiseAdapter();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

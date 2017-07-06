@@ -11,7 +11,12 @@ import android.widget.TextView;
 
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.models.ExerciseObjective;
+import com.example.admin1.gymtracker.models.Objective;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +35,10 @@ public class ExerciseObjectiveRVAdapter extends RecyclerView.Adapter<ExerciseObj
 
     private final String TAG = "ExerciseObjRVAdapter";
     private DatabaseReference tblRecord;
+
+    private String stExerciseName;
+    private String stObjectiveName;
+    private FirebaseDatabase dbRef = FirebaseDatabase.getInstance();
 
     public ExerciseObjectiveRVAdapter(HashMap<String, ExerciseObjective> exerciseObjectives, DatabaseReference tblRecord){
         this.exerciseObjectives = exerciseObjectives;
@@ -61,13 +70,34 @@ public class ExerciseObjectiveRVAdapter extends RecyclerView.Adapter<ExerciseObj
         return new ItemViewActivity(v);
     }
 
+
+
     @Override
     public void onBindViewHolder(ItemViewActivity exerciseViewHolder, final int pos) {
         ExerciseObjective mExerciseObjective;
-        mExerciseObjective = exerciseObjectveList.get(pos);
-        exerciseViewHolder.tvHeading.setText(mExerciseObjective.getObjectiveId());
-        exerciseViewHolder.tvDetail.setText(keysList.get(pos));
+        DatabaseReference exerciseRef;
+        DatabaseReference objectiveRef = dbRef.getReference().child("Objective").child(keysList.get(pos));
 
+
+        mExerciseObjective = exerciseObjectveList.get(pos);
+
+
+        // Get associated exercise
+        exerciseRef        = dbRef.getReference().child("Exercise").child(keysList.get(pos));
+        getExerciseName(exerciseRef);
+
+        // Get associated Objective
+        getObjectiveName(mExerciseObjective.getObjectiveId());
+        //Objective obj = objectiveRef.Value;
+        Log.d(TAG, "onBind " + stObjectiveName);
+
+        //For now code
+        stExerciseName = keysList.get(pos);
+        stObjectiveName = mExerciseObjective.getObjectiveId();
+
+        // Set GUI elements
+        exerciseViewHolder.tvHeading.setText(stExerciseName);
+        exerciseViewHolder.tvDetail.setText(stObjectiveName);
         exerciseViewHolder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,5 +145,61 @@ public class ExerciseObjectiveRVAdapter extends RecyclerView.Adapter<ExerciseObj
             }
         }
     }// End ItemViewAcitivty Class
+
+    // Queries the database and gets the current exercise name
+    private void getExerciseName(DatabaseReference recordRef){
+        stExerciseName = "Unknown";
+      /*  recordRef.addListenerForSingleValueEvent(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
+                Exercise exercise = dataSnapshot.getValue(Exercise.class);
+                stExerciseName = exercise.getName();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "getName - Database Query Error");
+
+            }
+        });
+            */
+    }
+
+    // Queries the database and gets the current objective name
+    private void getObjectiveName(String key){
+        DatabaseReference objectiveRef = dbRef.getReference().child("Objective").child(key);
+
+        stObjectiveName = "";
+        ValueEventListener velListen = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Objective objective = dataSnapshot.getValue(Objective.class);
+                stObjectiveName = objective.getName();
+                Log.d(TAG, "VALUE EVENTLISTENER" + objective.getName() + stObjectiveName);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        objectiveRef.addListenerForSingleValueEvent(velListen);
+    }
+
 
 }// End ExerciseObjectiveRVAdapter class
