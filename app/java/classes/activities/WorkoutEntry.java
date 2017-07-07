@@ -1,5 +1,7 @@
 package com.example.admin1.gymtracker.activities;
 
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -56,6 +58,16 @@ public class WorkoutEntry extends BaseClass {
                 finish();
             }
         });
+
+         // Floating Action Bar
+         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+         fab.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 Intent itExerciseEntry = new Intent(getApplicationContext(), WorkoutLineEntry.class);
+                 startActivity(itExerciseEntry);
+             }
+         });
     }
 
     // Sets up the initial values for the screen

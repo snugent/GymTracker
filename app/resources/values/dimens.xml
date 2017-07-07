@@ -56,4 +56,9 @@
     <!-- Main Screen Dimensions-->
     <dimen name="main_padding_standard">10dp</dimen>
     <dimen name="main_padding_small">5dp</dimen>
+
+    <!-- Standard Button Dimensions -->
+    <dimen name="button_padding_standard">16dp</dimen>
+    <dimen name="button_height">36dp</dimen>
+    <dimen name="button_min_width">64dp</dimen>
 </resources>

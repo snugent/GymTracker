@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,13 +12,14 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="@string/workout_date"
         android:inputType="date"
-        android:maxLines="1" />
+        android:maxLines="1"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="97dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <EditText
         android:id="@+id/etWorkoutComment"
@@ -29,17 +30,23 @@
         android:inputType="textMultiLine"
         android:maxLines="5"
         android:layout_below="@+id/etWorkoutDate"
-        android:layout_marginTop="19dp"
-        android:layout_alignStart="@+id/etWorkoutDate" />
+        android:layout_alignStart="@+id/etWorkoutDate"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/etWorkoutDate"
+        android:layout_marginLeft="97dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <Button
         android:id="@+id/btnSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/save"
-        android:layout_marginTop="20dp"
         android:layout_below="@+id/etWorkoutComment"
-        android:layout_alignStart="@+id/etWorkoutDate" />
+        android:layout_alignStart="@+id/etWorkoutDate"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/etWorkoutComment"
+        android:layout_marginLeft="97dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
 
     <Button
@@ -47,8 +54,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_alignBaseline="@+id/btnSave"
         android:layout_alignBottom="@+id/btnSave"
-        android:layout_alignEnd="@+id/etWorkoutComment" />
-</android.widget.RelativeLayout>
+        android:layout_alignEnd="@+id/etWorkoutComment"
+        app:layout_constraintLeft_toRightOf="@+id/btnSave"
+        android:layout_marginLeft="41dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/etWorkoutComment" />
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="@dimen/float_image_width"
+        android:layout_height="@dimen/float_image_height"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintRight_toRightOf="parent" />
+</android.support.constraint.ConstraintLayout>
