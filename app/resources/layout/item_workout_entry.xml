@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <!--
+      Import Note: This screen was taken from a previous project I did for
+                   Advanced Mobile Application Development.
+                   They were taken from various research on material design .
+                   See: I did on From Google Responsive
+                   As it is exactly what I'm looking for now I am not goign to change it
+      -->
+
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/cv"
+    >
+
+    <!-- Used for the ripple effect on touch -->
+    <LinearLayout
+        android:id="@+id/mainHolder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?android:selectableItemBackground"
+        android:orientation="horizontal" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:padding="@dimen/card_padding_standard">
+        <TextView
+            android:id="@+id/tvLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label"
+            android:layout_alignBaseline="@+id/etValue"
+            android:layout_alignBottom="@+id/etValue"
+            android:layout_alignParentStart="true" />
+
+        <EditText
+            android:id="@+id/etValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="time"
+            android:text="00:00:00:000"
+            android:layout_marginStart="84dp"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/tvLabel" />
+
+
+
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
