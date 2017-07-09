@@ -20,7 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.EventListener;
 import java.util.HashMap;
 
-public class ExerciseEntry extends AppCompatActivity {
+public class ExerciseEntry extends BaseClass {
     private ArrayAdapter<String> stAdapter;
     Button btnSave;
     Button btnCancel;

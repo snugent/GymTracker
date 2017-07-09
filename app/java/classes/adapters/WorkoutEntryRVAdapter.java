@@ -27,22 +27,22 @@ import java.util.List;
 
 public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAdapter.ItemViewActivity>{
     private WorkoutEntryRVAdapter.OnItemClickListener mItemClickListener;
-    private HashMap<String, WorkoutEntry> workoutEntrys;
+    private HashMap<String, WorkoutEntry> workoutEntries;
     private List<WorkoutEntry> workoutEntryList;
     private List<String> keysList;
 
     private final String TAG = "WorkoutEntryRVAdapter";
     private DatabaseReference tblRecord;
 
-    public WorkoutEntryRVAdapter(HashMap<String, WorkoutEntry> workoutEntrys, DatabaseReference tblRecord){
-        this.workoutEntrys = workoutEntrys;
+    public WorkoutEntryRVAdapter(HashMap<String, WorkoutEntry> workoutEntries, DatabaseReference tblRecord){
+        this.workoutEntries = workoutEntries;
         this.tblRecord = tblRecord;
-        keysList = new ArrayList<>(workoutEntrys.keySet());
-        workoutEntryList = new ArrayList<>(workoutEntrys.values());
+        keysList = new ArrayList<>(workoutEntries.keySet());
+        workoutEntryList = new ArrayList<>(workoutEntries.values());
     }
 
     public interface OnItemClickListener {
-        void onItemClick(View view, String id);
+        void onItemClick(View view, String id, int lineNo);
     }
 
     public void setOnItemClickListener(final WorkoutEntryRVAdapter.OnItemClickListener mItemClickListener) {
@@ -50,7 +50,7 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
     }
     @Override
     public int getItemCount() {
-        return workoutEntrys.size();
+        return workoutEntries.size();
     }
 
     @Override
@@ -68,8 +68,9 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
     public void onBindViewHolder(WorkoutEntryRVAdapter.ItemViewActivity workoutEntryViewHolder, final int pos) {
         WorkoutEntry mWorkoutEntry;
         mWorkoutEntry= workoutEntryList.get(pos);
+        String stLineNo = Integer.toString(mWorkoutEntry.getEntryId());
 
-        workoutEntryViewHolder.tvHeading.setText(mWorkoutEntry.getEntryId());
+        workoutEntryViewHolder.tvHeading.setText(stLineNo);
         workoutEntryViewHolder.tvDetail.setText(mWorkoutEntry.getExerciseId());
         workoutEntryViewHolder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +85,7 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
         try{
             workoutEntryList.remove(index);
             keysList.remove(index);
-            workoutEntrys.remove(stKey);
+            workoutEntries.remove(stKey);
             notifyItemRemoved(index);
             tblRecord.getRef().child(stKey).removeValue();
         }
@@ -114,7 +115,8 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
         @Override
         public void onClick(View view) {
             if (mItemClickListener != null) {
-                mItemClickListener.onItemClick(view,keysList.get(getAdapterPosition()));
+                mItemClickListener.onItemClick(view,keysList.get(getAdapterPosition()),
+                                               workoutEntryList.get(getAdapterPosition()).getEntryId());
             }
         }
     }// End ItemViewAcitivty Class

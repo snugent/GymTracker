@@ -12,6 +12,7 @@ import android.view.View;
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.activities.BaseClass;
 import com.example.admin1.gymtracker.activities.ExerciseEntry;
+import com.example.admin1.gymtracker.activities.MenuClass;
 import com.example.admin1.gymtracker.adapters.ExerciseRVAdapter;
 import com.example.admin1.gymtracker.layout.SimpleDividerItemDecoration;
 import com.example.admin1.gymtracker.models.Exercise;
@@ -22,7 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 
-public class ExerciseBrowse extends BaseClass {
+public class ExerciseBrowse extends MenuClass {
     private RecyclerView rvList;
     private final String TAG = "ExerciseBrowse";
 

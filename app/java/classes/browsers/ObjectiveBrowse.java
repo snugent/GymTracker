@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.activities.BaseClass;
+import com.example.admin1.gymtracker.activities.MenuClass;
 import com.example.admin1.gymtracker.activities.ObjectiveEntry;
 import com.example.admin1.gymtracker.adapters.ObjectiveRVAdapter;
 import com.example.admin1.gymtracker.layout.SimpleDividerItemDecoration;
@@ -21,7 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
-public class ObjectiveBrowse extends BaseClass {
+public class ObjectiveBrowse extends MenuClass {
 
     private RecyclerView rvList;
     private final String TAG = "ObjectiveBrowse";

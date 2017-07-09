@@ -20,7 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.EventListener;
 import java.util.HashMap;
 
-public class ObjectiveEntry extends AppCompatActivity {
+public class ObjectiveEntry extends BaseClass {
 
     private ArrayAdapter<String> stAdapter;
     Button btnSave;

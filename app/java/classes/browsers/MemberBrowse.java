@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.activities.BaseClass;
 import com.example.admin1.gymtracker.activities.MemberEntry;
+import com.example.admin1.gymtracker.activities.MenuClass;
 import com.example.admin1.gymtracker.adapters.MemberRVAdapter;
 import com.example.admin1.gymtracker.layout.SimpleDividerItemDecoration;
 import com.example.admin1.gymtracker.models.Member;
@@ -22,7 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 
 
-public class MemberBrowse extends BaseClass {
+public class MemberBrowse extends MenuClass {
     private RecyclerView rvList;
     private final String TAG = "MemberBrowse";
 

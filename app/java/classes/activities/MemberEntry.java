@@ -18,7 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 
-public class MemberEntry extends AppCompatActivity {
+public class MemberEntry extends BaseClass {
     String stUid;
     boolean blIsAdmin;
 

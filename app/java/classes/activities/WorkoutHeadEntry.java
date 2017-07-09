@@ -2,54 +2,64 @@ package com.example.admin1.gymtracker.activities;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 
 import com.example.admin1.gymtracker.R;
+import com.example.admin1.gymtracker.adapters.WorkoutEntryRVAdapter;
+import com.example.admin1.gymtracker.layout.SimpleDividerItemDecoration;
 import com.example.admin1.gymtracker.models.Workout;
+import com.example.admin1.gymtracker.models.WorkoutEntry;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.EventListener;
 import java.util.HashMap;
+import java.util.Random;
 
-public class WorkoutEntry extends BaseClass {
+public class WorkoutHeadEntry extends BaseClass {
+    private RecyclerView rvList;
     Button btnSave;
     Button btnCancel;
     EditText etWorkoutDate;
     EditText etWorkoutComment;
 
     String stWorkoutId;
-    final String TAG = "WorkoutEntry";
+    String stNewWorkoutId;
+    final String TAG = "WorkoutHeadEntry";
 
     // Database queries
-    private DatabaseReference tableExRef;
+    private DatabaseReference tableWkHeadRef;
     private HashMap<String, Workout> workouts;
     private ValueEventListener eventListener;
-    private EventListener elWorkout;
+
+    //Variables for Workout Entry screen
+    private DatabaseReference tableEntryRef;
+    private HashMap<String, WorkoutEntry> lines;
+    private ValueEventListener elWorkoutEntry;
 
      @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_workout_entry);
+        setContentView(R.layout.activity_workout_head_entry);
+        initialiseDatabase();
         initialiseScreen();
+        initialiseAdapter();
+
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isValidRecord()) {
-                    saveRecord(stWorkoutId);
-                    finish();
-                }
+            if (isValidRecord()) {
+                saveRecord(stWorkoutId);
+                finish();
+            }
             }
         });
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -73,11 +83,22 @@ public class WorkoutEntry extends BaseClass {
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
         FirebaseDatabase dbRef;
-        // Array and array adapter for Workout Sex Dropdown
-        String stType[] = {getString(R.string.number),getString(R.string.time)};
         Bundle extras = getIntent().getExtras();
         stWorkoutId = extras.getString("workoutId");
-        int iPos = 0;
+
+        // If not an update generate a temporary workout Id to enable the createion
+        // of workout lines
+        if ( (stWorkoutId == null) || (stWorkoutId.equals(""))){
+            int iMaxValue = Integer.MAX_VALUE;
+            Random iRandom = new Random();
+            //
+            stNewWorkoutId = getCurrentUserId() + iRandom.nextInt(iMaxValue);
+        }
+        //Setup Recycle View
+        rvList=(RecyclerView)findViewById(R.id.rvList);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        rvList.setLayoutManager(llm);
+        rvList.setHasFixedSize(true);
 
         // Setup GUI Elements
         etWorkoutDate    = (EditText) findViewById(R.id.etWorkoutDate);
@@ -85,17 +106,28 @@ public class WorkoutEntry extends BaseClass {
         btnSave         = (Button) findViewById(R.id.btnSave);
         btnCancel       = (Button) findViewById(R.id.btnCancel);
         dbRef = FirebaseDatabase.getInstance();
-        tableExRef = dbRef.getReference().child("Workout");
+        tableWkHeadRef = dbRef.getReference().child("Workout");
+        tableEntryRef  = dbRef.getReference().child("WorkoutEntry");
 
         //Populate Data
         getCurrentRecord(stWorkoutId);
     }
 
+    //Connect to adapter for List Items
+    private void initialiseAdapter() {
+        WorkoutEntryRVAdapter adapter;
+        if (lines != null){
+            adapter = new WorkoutEntryRVAdapter(lines, tableEntryRef);
+            rvList.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext()));
+            adapter.setOnItemClickListener(onItemClickListener);
+            rvList.setAdapter(adapter);
+        }
+    }
+
     // If doing a modify task this method gets the Current Record and poulates the GUI fields
     private void getCurrentRecord(String ipstId){
-        int iPos;
         Workout currentWorkout;
-        Log.d(TAG, "getCurrentId " + ipstId + (ipstId == ""));
+        Log.d(TAG, "getCurrentId " + ipstId + (ipstId.equals("")));
         if (!ipstId.equalsIgnoreCase("")){
             if (workouts != null) {
                 currentWorkout = workouts.get(ipstId);
@@ -108,26 +140,25 @@ public class WorkoutEntry extends BaseClass {
 
     //Saves Record Details to the database
     private void saveRecord(String ipstWorkoutId){
-        boolean blFound = false;
         final Workout savingData ;
         DatabaseReference dbNewRef;
 
         savingData= new Workout(
-                getCurrentUserId(),
-                etWorkoutDate.getText().toString(),
-                etWorkoutComment.getText().toString()
+            getCurrentUserId(),
+            etWorkoutDate.getText().toString(),
+            etWorkoutComment.getText().toString()
         );
 
         // Save the Record
         if (ipstWorkoutId.equals("") || ipstWorkoutId == null){
             //New Record
-            dbNewRef = tableExRef.push();
+            dbNewRef = tableWkHeadRef.push();
             stWorkoutId = dbNewRef.getKey();
             dbNewRef.setValue(savingData);
         }
         else{
             //Existing Record
-            tableExRef.child(ipstWorkoutId).setValue(savingData);
+            tableWkHeadRef.child(ipstWorkoutId).setValue(savingData);
         }
 
     }// End Save Profile
@@ -142,13 +173,14 @@ public class WorkoutEntry extends BaseClass {
     protected void onResume(){
         super.onResume();
         createEventListener();
+        createLineEventListener();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-
         deleteEventListener();
+        deleteLineEventListener();
     }
 
     // Creates an event listener for when we change data
@@ -171,7 +203,7 @@ public class WorkoutEntry extends BaseClass {
 
                 }
             };
-            tableExRef.addValueEventListener(elWorkout);
+            tableWkHeadRef.addValueEventListener(elWorkout);
             eventListener = elWorkout;
         } // End if eventListener == null
 
@@ -180,7 +212,56 @@ public class WorkoutEntry extends BaseClass {
     // Detaches the event listener when activity goes into background
     private void deleteEventListener(){
         if(eventListener  != null){
-            tableExRef.removeEventListener(eventListener);
+            tableWkHeadRef.removeEventListener(eventListener);
+        }
+    }
+
+    WorkoutEntryRVAdapter.OnItemClickListener onItemClickListener = new WorkoutEntryRVAdapter.OnItemClickListener() {
+        @Override
+        public void onItemClick(View v, String id, int lineNo) {
+            //Go the to Workout Entry Screen pass in data to be modified.
+            Intent iWorkoutEntry = new Intent(getApplicationContext(), WorkoutLineEntry.class);
+            iWorkoutEntry.putExtra("workoutId", id);
+            iWorkoutEntry.putExtra("lineId", lineNo);
+            startActivity(iWorkoutEntry);
+        }
+    };
+
+    // Creates an event listener for when we change data
+    private void createLineEventListener(){
+        if(elWorkoutEntry == null) {
+            final ValueEventListener elLine = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    lines = new HashMap<>();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        WorkoutEntry mLine = child.getValue(WorkoutEntry.class);
+                        if ((!stWorkoutId.equals("")) && (mLine.getWorkoutId().equals(stWorkoutId))){
+                            lines.put(child.getKey(), mLine);
+                        }
+                        else if (child.getKey().equals(stNewWorkoutId)){
+                            lines.put(child.getKey(), mLine);
+                        }
+                    }
+                    initialiseAdapter();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            tableEntryRef.addValueEventListener(elLine);
+            elWorkoutEntry = elLine;
+        } // End if eventListener == null
+
+    }
+
+    // Detaches the event listener when activity goes into background
+    private void deleteLineEventListener(){
+        if(elWorkoutEntry  != null){
+            tableEntryRef.removeEventListener(elWorkoutEntry);
         }
     }
 }

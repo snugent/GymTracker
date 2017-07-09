@@ -8,9 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.example.admin1.gymtracker.R;
-import com.example.admin1.gymtracker.activities.BaseClass;
-import com.example.admin1.gymtracker.activities.WorkoutEntry;
-import com.example.admin1.gymtracker.activities.WorkoutEntry;
+import com.example.admin1.gymtracker.activities.MenuClass;
+import com.example.admin1.gymtracker.activities.WorkoutHeadEntry;
 import com.example.admin1.gymtracker.adapters.WorkoutRVAdapter;
 import com.example.admin1.gymtracker.layout.SimpleDividerItemDecoration;
 import com.example.admin1.gymtracker.models.Workout;
@@ -22,7 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
-public class WorkoutBrowse extends BaseClass {
+public class WorkoutBrowse extends MenuClass {
 
     private RecyclerView rvList;
     private final String TAG = "WorkoutBrowse";
@@ -51,7 +50,7 @@ public class WorkoutBrowse extends BaseClass {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent itWorkoutEntry = new Intent(getApplicationContext(), WorkoutEntry.class);
+                Intent itWorkoutEntry = new Intent(getApplicationContext(), WorkoutHeadEntry.class);
                 itWorkoutEntry.putExtra("workoutId", "");
                 startActivity(itWorkoutEntry);
             }
@@ -63,7 +62,6 @@ public class WorkoutBrowse extends BaseClass {
         super.onResume();
         setAuthStateListener();
         createEventListener();
-
     }
 
     @Override
@@ -71,7 +69,6 @@ public class WorkoutBrowse extends BaseClass {
         super.onPause();
         removeAuthStateListener();
         deleteEventListener();
-
     }
 
     // Sets up the initial values for the screen
@@ -137,7 +134,7 @@ public class WorkoutBrowse extends BaseClass {
         @Override
         public void onItemClick(View v, String id) {
             //Go the to Workout Entry Screen pass in data to be modified.
-            Intent iWorkoutEntry = new Intent(getApplicationContext(), WorkoutEntry.class);
+            Intent iWorkoutEntry = new Intent(getApplicationContext(), WorkoutHeadEntry.class);
             iWorkoutEntry.putExtra("workoutId", id);
             startActivity(iWorkoutEntry);
         }
