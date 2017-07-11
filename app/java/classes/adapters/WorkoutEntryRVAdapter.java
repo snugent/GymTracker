@@ -10,12 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.admin1.gymtracker.R;
-import com.example.admin1.gymtracker.models.WorkoutEntry;
+import com.example.admin1.gymtracker.models.WorkoutLine;
 import com.google.firebase.database.DatabaseReference;
-
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,18 +23,18 @@ import java.util.List;
 
 public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAdapter.ItemViewActivity>{
     private WorkoutEntryRVAdapter.OnItemClickListener mItemClickListener;
-    private HashMap<String, WorkoutEntry> workoutEntries;
-    private List<WorkoutEntry> workoutEntryList;
+    private HashMap<String, WorkoutLine> workoutLines;
+    private List<WorkoutLine> workoutLinesList;
     private List<String> keysList;
 
     private final String TAG = "WorkoutEntryRVAdapter";
     private DatabaseReference tblRecord;
 
-    public WorkoutEntryRVAdapter(HashMap<String, WorkoutEntry> workoutEntries, DatabaseReference tblRecord){
-        this.workoutEntries = workoutEntries;
+    public WorkoutEntryRVAdapter(HashMap<String, WorkoutLine> workoutLiness, DatabaseReference tblRecord){
+        this.workoutLines = workoutLiness;
         this.tblRecord = tblRecord;
-        keysList = new ArrayList<>(workoutEntries.keySet());
-        workoutEntryList = new ArrayList<>(workoutEntries.values());
+        keysList = new ArrayList<>(workoutLiness.keySet());
+        workoutLinesList = new ArrayList<>(workoutLiness.values());
     }
 
     public interface OnItemClickListener {
@@ -50,7 +46,7 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
     }
     @Override
     public int getItemCount() {
-        return workoutEntries.size();
+        return workoutLines.size();
     }
 
     @Override
@@ -66,8 +62,8 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
 
     @Override
     public void onBindViewHolder(WorkoutEntryRVAdapter.ItemViewActivity workoutEntryViewHolder, final int pos) {
-        WorkoutEntry mWorkoutEntry;
-        mWorkoutEntry= workoutEntryList.get(pos);
+        WorkoutLine mWorkoutEntry;
+        mWorkoutEntry= workoutLinesList.get(pos);
         String stLineNo = Integer.toString(mWorkoutEntry.getEntryId());
 
         workoutEntryViewHolder.tvHeading.setText(stLineNo);
@@ -83,9 +79,9 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
     private void deleteRow(int index ){
         String stKey = keysList.get(index);
         try{
-            workoutEntryList.remove(index);
+            workoutLinesList.remove(index);
             keysList.remove(index);
-            workoutEntries.remove(stKey);
+            workoutLines.remove(stKey);
             notifyItemRemoved(index);
             tblRecord.getRef().child(stKey).removeValue();
         }
@@ -116,7 +112,7 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
         public void onClick(View view) {
             if (mItemClickListener != null) {
                 mItemClickListener.onItemClick(view,keysList.get(getAdapterPosition()),
-                                               workoutEntryList.get(getAdapterPosition()).getEntryId());
+                                               workoutLinesList.get(getAdapterPosition()).getEntryId());
             }
         }
     }// End ItemViewAcitivty Class

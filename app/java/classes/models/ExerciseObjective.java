@@ -5,13 +5,15 @@ package com.example.admin1.gymtracker.models;
  */
 
 public class ExerciseObjective {
+    private String exerciseId;
     private String objectiveId;
 
     public ExerciseObjective(){
 
     }
 
-    public ExerciseObjective(String objectiveId) {
+    public ExerciseObjective(String exerciseId, String objectiveId) {
+        this.exerciseId  = exerciseId;
         this.objectiveId = objectiveId;
     }
 
@@ -21,5 +23,13 @@ public class ExerciseObjective {
 
     public void setObjectiveId(String objectiveId) {
         this.objectiveId = objectiveId;
+    }
+
+    public String getExerciseId() {
+        return exerciseId;
+    }
+
+    public void setExerciseId(String exerciseId) {
+        this.exerciseId = exerciseId;
     }
 }

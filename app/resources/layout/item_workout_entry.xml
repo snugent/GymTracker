@@ -28,26 +28,25 @@
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
         android:padding="@dimen/card_padding_standard">
+
         <TextView
             android:id="@+id/tvLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label"
             android:layout_alignBaseline="@+id/etValue"
             android:layout_alignBottom="@+id/etValue"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:text="@string/label" />
 
         <EditText
             android:id="@+id/etValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="time"
-            android:text="00:00:00:000"
-            android:layout_marginStart="84dp"
             android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/tvLabel" />
-
-
+            android:layout_marginLeft="@dimen/default_left_margin"
+            android:layout_toEndOf="@+id/tvLabel"
+            android:hint="@string/time_entry_hint"
+            android:inputType="time" />
 
 
     </RelativeLayout>

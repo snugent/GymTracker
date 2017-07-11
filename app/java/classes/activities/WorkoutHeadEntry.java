@@ -14,7 +14,7 @@ import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.adapters.WorkoutEntryRVAdapter;
 import com.example.admin1.gymtracker.layout.SimpleDividerItemDecoration;
 import com.example.admin1.gymtracker.models.Workout;
-import com.example.admin1.gymtracker.models.WorkoutEntry;
+import com.example.admin1.gymtracker.models.WorkoutLine;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,8 +41,8 @@ public class WorkoutHeadEntry extends BaseClass {
 
     //Variables for Workout Entry screen
     private DatabaseReference tableEntryRef;
-    private HashMap<String, WorkoutEntry> lines;
-    private ValueEventListener elWorkoutEntry;
+    private HashMap<String, WorkoutLine> lines;
+    private ValueEventListener elWorkoutLine;
 
      @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +107,7 @@ public class WorkoutHeadEntry extends BaseClass {
         btnCancel       = (Button) findViewById(R.id.btnCancel);
         dbRef = FirebaseDatabase.getInstance();
         tableWkHeadRef = dbRef.getReference().child("Workout");
-        tableEntryRef  = dbRef.getReference().child("WorkoutEntry");
+        tableEntryRef  = dbRef.getReference().child("WorkoutLine");
 
         //Populate Data
         getCurrentRecord(stWorkoutId);
@@ -220,23 +220,23 @@ public class WorkoutHeadEntry extends BaseClass {
         @Override
         public void onItemClick(View v, String id, int lineNo) {
             //Go the to Workout Entry Screen pass in data to be modified.
-            Intent iWorkoutEntry = new Intent(getApplicationContext(), WorkoutLineEntry.class);
-            iWorkoutEntry.putExtra("workoutId", id);
-            iWorkoutEntry.putExtra("lineId", lineNo);
-            startActivity(iWorkoutEntry);
+            Intent iWorkoutLine = new Intent(getApplicationContext(), WorkoutLineEntry.class);
+            iWorkoutLine.putExtra("workoutId", id);
+            iWorkoutLine.putExtra("lineId", lineNo);
+            startActivity(iWorkoutLine);
         }
     };
 
     // Creates an event listener for when we change data
     private void createLineEventListener(){
-        if(elWorkoutEntry == null) {
+        if(elWorkoutLine == null) {
             final ValueEventListener elLine = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                     lines = new HashMap<>();
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        WorkoutEntry mLine = child.getValue(WorkoutEntry.class);
+                        WorkoutLine mLine = child.getValue(WorkoutLine.class);
                         if ((!stWorkoutId.equals("")) && (mLine.getWorkoutId().equals(stWorkoutId))){
                             lines.put(child.getKey(), mLine);
                         }
@@ -253,15 +253,15 @@ public class WorkoutHeadEntry extends BaseClass {
                 }
             };
             tableEntryRef.addValueEventListener(elLine);
-            elWorkoutEntry = elLine;
+            elWorkoutLine = elLine;
         } // End if eventListener == null
 
     }
 
     // Detaches the event listener when activity goes into background
     private void deleteLineEventListener(){
-        if(elWorkoutEntry  != null){
-            tableEntryRef.removeEventListener(elWorkoutEntry);
+        if(elWorkoutLine  != null){
+            tableEntryRef.removeEventListener(elWorkoutLine);
         }
     }
 }

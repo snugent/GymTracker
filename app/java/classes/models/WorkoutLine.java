@@ -4,18 +4,18 @@ package com.example.admin1.gymtracker.models;
  * Created by admin1 on 24/06/2017.
  */
 
-public class WorkoutEntry {
+public class WorkoutLine {
     private String workoutId;
     private int    entryId;
     private String exerciseId;
     private String objectiveId;
     private double entryValue;
 
-    public WorkoutEntry(){
+    public WorkoutLine(){
 
     }
 
-    public WorkoutEntry(int entryId, String exerciseId, String objectiveId, double entryValue) {
+    public WorkoutLine(int entryId, String exerciseId, String objectiveId, double entryValue) {
         this.entryId = entryId;
         this.exerciseId = exerciseId;
         this.objectiveId = objectiveId;

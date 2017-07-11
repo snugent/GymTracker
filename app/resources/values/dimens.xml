@@ -61,4 +61,7 @@
     <dimen name="button_padding_standard">16dp</dimen>
     <dimen name="button_height">36dp</dimen>
     <dimen name="button_min_width">64dp</dimen>
+
+    <!-- Main Fill Width -->
+    <dimen name="default_left_margin">45dp</dimen>
 </resources>
