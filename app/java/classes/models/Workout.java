@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by admin1 on 24/06/2017.
@@ -14,6 +15,7 @@ public class Workout {
     private String memberId;
     private String workoutDate;
     private String comment;
+    private Map <String, WorkoutLine> line;
 
     private Workout(){
 

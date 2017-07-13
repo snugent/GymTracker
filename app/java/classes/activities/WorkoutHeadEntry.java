@@ -13,6 +13,8 @@ import android.widget.EditText;
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.adapters.WorkoutEntryRVAdapter;
 import com.example.admin1.gymtracker.layout.SimpleDividerItemDecoration;
+import com.example.admin1.gymtracker.models.Exercise;
+import com.example.admin1.gymtracker.models.Objective;
 import com.example.admin1.gymtracker.models.Workout;
 import com.example.admin1.gymtracker.models.WorkoutLine;
 import com.google.firebase.database.DataSnapshot;
@@ -35,14 +37,23 @@ public class WorkoutHeadEntry extends BaseClass {
     final String TAG = "WorkoutHeadEntry";
 
     // Database queries
+    FirebaseDatabase dbRef;
     private DatabaseReference tableWkHeadRef;
     private HashMap<String, Workout> workouts;
     private ValueEventListener eventListener;
 
     //Variables for Workout Entry screen
-    private DatabaseReference tableEntryRef;
+    private DatabaseReference tableLinesRef;
     private HashMap<String, WorkoutLine> lines;
     private ValueEventListener elWorkoutLine;
+
+    private DatabaseReference tableExRef;
+    private HashMap<String, Exercise> exercises;
+    private ValueEventListener elExercise;
+
+    private DatabaseReference tableObjRef;
+    private HashMap<String, Objective> objectives;
+    private ValueEventListener elObjective;
 
      @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +85,10 @@ public class WorkoutHeadEntry extends BaseClass {
          fab.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
+                 saveRecord(stWorkoutId);
                  Intent itExerciseEntry = new Intent(getApplicationContext(), WorkoutLineEntry.class);
+                 itExerciseEntry.putExtra("workoutId", stWorkoutId);
+                 itExerciseEntry.putExtra("lineId", "");
                  startActivity(itExerciseEntry);
              }
          });
@@ -82,11 +96,10 @@ public class WorkoutHeadEntry extends BaseClass {
 
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
-        FirebaseDatabase dbRef;
         Bundle extras = getIntent().getExtras();
         stWorkoutId = extras.getString("workoutId");
 
-        // If not an update generate a temporary workout Id to enable the createion
+        // If not an update generate a temporary workout Id to enable the creation
         // of workout lines
         if ( (stWorkoutId == null) || (stWorkoutId.equals(""))){
             int iMaxValue = Integer.MAX_VALUE;
@@ -107,7 +120,9 @@ public class WorkoutHeadEntry extends BaseClass {
         btnCancel       = (Button) findViewById(R.id.btnCancel);
         dbRef = FirebaseDatabase.getInstance();
         tableWkHeadRef = dbRef.getReference().child("Workout");
-        tableEntryRef  = dbRef.getReference().child("WorkoutLine");
+        if (stWorkoutId != null && !stWorkoutId.equals("")) {
+            tableLinesRef = tableWkHeadRef.child(stWorkoutId).child("WorkoutLine");
+        }
 
         //Populate Data
         getCurrentRecord(stWorkoutId);
@@ -116,8 +131,8 @@ public class WorkoutHeadEntry extends BaseClass {
     //Connect to adapter for List Items
     private void initialiseAdapter() {
         WorkoutEntryRVAdapter adapter;
-        if (lines != null){
-            adapter = new WorkoutEntryRVAdapter(lines, tableEntryRef);
+        if (lines != null && exercises != null && objectives != null){
+            adapter = new WorkoutEntryRVAdapter(lines, exercises, objectives, tableWkHeadRef, tableLinesRef, stWorkoutId );
             rvList.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext()));
             adapter.setOnItemClickListener(onItemClickListener);
             rvList.setAdapter(adapter);
@@ -172,15 +187,13 @@ public class WorkoutHeadEntry extends BaseClass {
     @Override
     protected void onResume(){
         super.onResume();
-        createEventListener();
-        createLineEventListener();
+        createEventListeners();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        deleteEventListener();
-        deleteLineEventListener();
+        deleteEventListeners();
     }
 
     // Creates an event listener for when we change data
@@ -218,15 +231,14 @@ public class WorkoutHeadEntry extends BaseClass {
 
     WorkoutEntryRVAdapter.OnItemClickListener onItemClickListener = new WorkoutEntryRVAdapter.OnItemClickListener() {
         @Override
-        public void onItemClick(View v, String id, int lineNo) {
+        public void onItemClick(View v, String workoutId, String lineId) {
             //Go the to Workout Entry Screen pass in data to be modified.
             Intent iWorkoutLine = new Intent(getApplicationContext(), WorkoutLineEntry.class);
-            iWorkoutLine.putExtra("workoutId", id);
-            iWorkoutLine.putExtra("lineId", lineNo);
+            iWorkoutLine.putExtra("workoutId", workoutId);
+            iWorkoutLine.putExtra("lineId", lineId);
             startActivity(iWorkoutLine);
         }
     };
-
     // Creates an event listener for when we change data
     private void createLineEventListener(){
         if(elWorkoutLine == null) {
@@ -237,12 +249,7 @@ public class WorkoutHeadEntry extends BaseClass {
                     lines = new HashMap<>();
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         WorkoutLine mLine = child.getValue(WorkoutLine.class);
-                        if ((!stWorkoutId.equals("")) && (mLine.getWorkoutId().equals(stWorkoutId))){
-                            lines.put(child.getKey(), mLine);
-                        }
-                        else if (child.getKey().equals(stNewWorkoutId)){
-                            lines.put(child.getKey(), mLine);
-                        }
+                        lines.put(child.getKey(), mLine);
                     }
                     initialiseAdapter();
                 }
@@ -252,7 +259,7 @@ public class WorkoutHeadEntry extends BaseClass {
 
                 }
             };
-            tableEntryRef.addValueEventListener(elLine);
+            tableLinesRef.addValueEventListener(elLine);
             elWorkoutLine = elLine;
         } // End if eventListener == null
 
@@ -261,7 +268,81 @@ public class WorkoutHeadEntry extends BaseClass {
     // Detaches the event listener when activity goes into background
     private void deleteLineEventListener(){
         if(elWorkoutLine  != null){
-            tableEntryRef.removeEventListener(elWorkoutLine);
+            tableLinesRef.removeEventListener(elWorkoutLine);
         }
+    }
+
+    private void createExerciseEventListener(){
+        tableExRef = dbRef.getReference().child("Exercise");
+        if(elExercise == null) {
+            final ValueEventListener mEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    exercises = new HashMap<>();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Exercise current = child.getValue(Exercise.class);
+                        exercises.put(child.getKey(), current);
+                    }
+                    initialiseAdapter();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            tableExRef.addValueEventListener(mEventListener);
+            elExercise = mEventListener;
+        } // End if eventListener == null
+
+    }
+    private void deleteExerciseEventListener(){
+        if(elExercise  != null){
+            tableExRef.removeEventListener(elExercise);
+        }
+    }
+    private void createObjectiveEventListener(){
+        tableObjRef = dbRef.getReference().child("Objective");
+        if(elObjective == null) {
+            final ValueEventListener mEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    objectives = new HashMap<>();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Objective current = child.getValue(Objective.class);
+                        objectives.put(child.getKey(), current);
+                    }
+                    initialiseAdapter();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            tableObjRef.addValueEventListener(mEventListener);
+            elExercise = mEventListener;
+        } // End if eventListener == null
+    }
+    private void deleteObjectiveEventListener(){
+        if(elObjective  != null){
+            tableExRef.removeEventListener(elObjective);
+        }
+    }
+
+    private void createEventListeners(){
+        createEventListener();
+        createLineEventListener();
+        createExerciseEventListener();
+        createObjectiveEventListener();
+    }
+
+    private void deleteEventListeners(){
+        deleteEventListener();
+        deleteLineEventListener();
+        deleteExerciseEventListener();
+        deleteObjectiveEventListener();
     }
 }

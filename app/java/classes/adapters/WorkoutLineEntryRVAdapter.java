@@ -1,7 +1,9 @@
 package com.example.admin1.gymtracker.adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.models.ExerciseObjective;
 import com.example.admin1.gymtracker.models.Objective;
+import com.example.admin1.gymtracker.models.Workout;
 import com.example.admin1.gymtracker.models.WorkoutLine;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -25,43 +28,39 @@ import java.util.List;
  */
 
 public class WorkoutLineEntryRVAdapter extends RecyclerView.Adapter<WorkoutLineEntryRVAdapter.ItemViewActivity>{
-    //ExerciseObjective variables
-    private HashMap<String, ExerciseObjective> exerciseObjectives;
-    private List<ExerciseObjective> exerciseObjectiveList;
-    private List<String> exerciseKeysList;
+    String workoutId;
 
     // Objecteives variables
     private HashMap<String, Objective> objectives;
     private List<Objective> objectiveList;
     private List<String> objectiveKeysList;
 
-    // Workout Entry (Line) variables
-    private HashMap<String, WorkoutLine> WorkoutLineHashMap;
-    private List<WorkoutLine> WorkoutLineList;
-    private List<String> WorkoutLineKeysList;
+    // Workout Line variables
+    private HashMap<String, WorkoutLine> workoutLineHashMap;
+    private List<WorkoutLine> workoutLineList;
+    private List<String> workoutLineKeysList;
 
     private final String TAG = "WorkoutLineEntryRVAdapter";
 
     private FirebaseDatabase dbRef = FirebaseDatabase.getInstance();
 
-    public WorkoutLineEntryRVAdapter(HashMap<String, ExerciseObjective> exerciseObjectives,
+    public WorkoutLineEntryRVAdapter(String workoutId, List<WorkoutLine> workoutLineList,
                                 HashMap<String, Objective> objectives){
+
+        this.workoutId = workoutId;
         // Set Exercise tables data
-        this.exerciseObjectives = exerciseObjectives;
-        exerciseKeysList = new ArrayList<>(exerciseObjectives.keySet());
-        exerciseObjectiveList = new ArrayList<>(exerciseObjectives.values());
+        this.workoutLineList = workoutLineList;
 
         //Set Objective table data
         this.objectives = objectives;
         objectiveKeysList = new ArrayList<>(objectives.keySet());
         objectiveList = new ArrayList<>(objectives.values());
-
     }
 
 
     @Override
     public int getItemCount() {
-        return exerciseObjectives.size();
+        return workoutLineList.size();
     }
 
     @Override
@@ -76,16 +75,15 @@ public class WorkoutLineEntryRVAdapter extends RecyclerView.Adapter<WorkoutLineE
     }
 
     @Override
-    public void onBindViewHolder(ItemViewActivity objectiveViewHolder, int pos) {
-        ExerciseObjective mExerciseObjective;
+    public void onBindViewHolder(final ItemViewActivity objectiveViewHolder, final int pos) {
+        WorkoutLine mWorkoutLine;
         Objective mObjective;
-        DatabaseReference objectiveRef = dbRef.getReference().child("Objective").child(exerciseKeysList.get(pos));
         String stObjectiveName = "";
         String stObjectiveType = "";
 
         //Get the Name of the objective
-        mExerciseObjective = exerciseObjectiveList.get(pos);
-        mObjective = objectives.get(mExerciseObjective.getObjectiveId());
+        mWorkoutLine = workoutLineList.get(pos);
+        mObjective = objectives.get(mWorkoutLine.getObjectiveId());
 
         if (mObjective != null){
             stObjectiveName = mObjective.getLabel();
@@ -104,13 +102,32 @@ public class WorkoutLineEntryRVAdapter extends RecyclerView.Adapter<WorkoutLineE
             objectiveViewHolder.etValue.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL );
         }
 
+        objectiveViewHolder.etValue.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                updateRow(pos, s.toString());
+            }
+        });
     }
 
-    private boolean saveData(){
-         return true;
+    private void updateRow(int pos, String newValue){
+        try {
+            workoutLineList.get(pos).setEntryValue(Double.parseDouble(newValue));
+        }
+        catch(Exception e){
+
+        }
     }
-
-
 
     class ItemViewActivity extends RecyclerView.ViewHolder {
         private LinearLayout placeHolder;

@@ -5,8 +5,6 @@ package com.example.admin1.gymtracker.models;
  */
 
 public class WorkoutLine {
-    private String workoutId;
-    private int    entryId;
     private String exerciseId;
     private String objectiveId;
     private double entryValue;
@@ -15,27 +13,18 @@ public class WorkoutLine {
 
     }
 
-    public WorkoutLine(int entryId, String exerciseId, String objectiveId, double entryValue) {
-        this.entryId = entryId;
+    public WorkoutLine(String exerciseId, String objectiveId, double entryValue) {
         this.exerciseId = exerciseId;
         this.objectiveId = objectiveId;
         this.entryValue = entryValue;
     }
 
-    public String getWorkoutId() {
-        return workoutId;
-    }
-
-    public void setWorkoutId(String workoutId) {
-        this.workoutId = workoutId;
-    }
-
-    public int getEntryId() {
-        return entryId;
-    }
-
     public String getExerciseId() {
         return exerciseId;
+    }
+
+    public void setExerciseId(String exerciseId){
+        this.exerciseId = exerciseId;
     }
 
     public String getObjectiveId() {
@@ -53,5 +42,4 @@ public class WorkoutLine {
     public void setEntryValue(double entryValue) {
         this.entryValue = entryValue;
     }
-
 }

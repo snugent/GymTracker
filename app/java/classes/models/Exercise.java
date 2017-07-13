@@ -7,6 +7,7 @@ package com.example.admin1.gymtracker.models;
 public class Exercise {
     private String name;
     private String type;
+    private ExerciseObjective exerciseObjective;
 
     public Exercise(){}
     public Exercise(String name, String type){

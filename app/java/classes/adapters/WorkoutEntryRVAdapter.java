@@ -10,8 +10,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.admin1.gymtracker.R;
+import com.example.admin1.gymtracker.models.Exercise;
+import com.example.admin1.gymtracker.models.Objective;
 import com.example.admin1.gymtracker.models.WorkoutLine;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,19 +29,31 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
     private HashMap<String, WorkoutLine> workoutLines;
     private List<WorkoutLine> workoutLinesList;
     private List<String> keysList;
+    private String stWorkoutId;
+
+    private HashMap<String, Exercise> exercises;
+    private HashMap<String, Objective> objectives;
 
     private final String TAG = "WorkoutEntryRVAdapter";
-    private DatabaseReference tblRecord;
+    private DatabaseReference tblHeadRef;
+    private DatabaseReference tblLineRef;
 
-    public WorkoutEntryRVAdapter(HashMap<String, WorkoutLine> workoutLiness, DatabaseReference tblRecord){
-        this.workoutLines = workoutLiness;
-        this.tblRecord = tblRecord;
-        keysList = new ArrayList<>(workoutLiness.keySet());
-        workoutLinesList = new ArrayList<>(workoutLiness.values());
+    public WorkoutEntryRVAdapter(HashMap<String, WorkoutLine> workoutLines,
+                                 HashMap<String, Exercise> exercises, HashMap<String, Objective> objectives,
+                                 DatabaseReference tblHeadRef, DatabaseReference tblLineRef,
+                                 String stWorkoutId){
+        this.workoutLines = workoutLines;
+        this.tblLineRef = tblLineRef;
+        this.tblHeadRef = tblHeadRef;
+        keysList = new ArrayList<>(workoutLines.keySet());
+        workoutLinesList = new ArrayList<>(workoutLines.values());
+        this.exercises = exercises;
+        this.objectives = objectives;
+        this.stWorkoutId = stWorkoutId;
     }
 
     public interface OnItemClickListener {
-        void onItemClick(View view, String id, int lineNo);
+        void onItemClick(View view, String workoutId, String lineId);
     }
 
     public void setOnItemClickListener(final WorkoutEntryRVAdapter.OnItemClickListener mItemClickListener) {
@@ -63,11 +78,16 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
     @Override
     public void onBindViewHolder(WorkoutEntryRVAdapter.ItemViewActivity workoutEntryViewHolder, final int pos) {
         WorkoutLine mWorkoutEntry;
-        mWorkoutEntry= workoutLinesList.get(pos);
-        String stLineNo = Integer.toString(mWorkoutEntry.getEntryId());
+        mWorkoutEntry           = workoutLinesList.get(pos);
+        String stLineNo         = Integer.toString(pos);
+        FirebaseDatabase dbRef  =  FirebaseDatabase.getInstance();
+        Exercise curentEx       = exercises.get(mWorkoutEntry.getExerciseId());
+        Objective curentObj     = objectives.get(mWorkoutEntry.getObjectiveId());
 
-        workoutEntryViewHolder.tvHeading.setText(stLineNo);
-        workoutEntryViewHolder.tvDetail.setText(mWorkoutEntry.getExerciseId());
+
+
+        workoutEntryViewHolder.tvHeading.setText(curentEx.getName());
+        workoutEntryViewHolder.tvDetail.setText(curentObj.getName());
         workoutEntryViewHolder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,7 +103,7 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
             keysList.remove(index);
             workoutLines.remove(stKey);
             notifyItemRemoved(index);
-            tblRecord.getRef().child(stKey).removeValue();
+            tblLineRef.getRef().child(stKey).removeValue();
         }
         catch (Exception e){
             Log.d(TAG, "Delete Exception");
@@ -111,8 +131,7 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
         @Override
         public void onClick(View view) {
             if (mItemClickListener != null) {
-                mItemClickListener.onItemClick(view,keysList.get(getAdapterPosition()),
-                                               workoutLinesList.get(getAdapterPosition()).getEntryId());
+                mItemClickListener.onItemClick(view, stWorkoutId, keysList.get(getAdapterPosition()));
             }
         }
     }// End ItemViewAcitivty Class
