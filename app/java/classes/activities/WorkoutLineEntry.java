@@ -35,7 +35,7 @@ public class WorkoutLineEntry extends BaseClass {
     final String TAG = "WorkoutLineEntry";
 
     String stWorkoutId;
-    String stLineId;
+    String stExerciseId;
 
     // Exercise Tables
     private HashMap<String, Exercise> exercises;
@@ -103,7 +103,7 @@ public class WorkoutLineEntry extends BaseClass {
     private  void initialiseScreen(){
         Bundle extras = getIntent().getExtras();
         stWorkoutId = extras.getString("workoutId") ;
-        stLineId    = extras.getString("lineId");
+        stExerciseId    = extras.getString("exerciseId");
 
         spnExercise = (Spinner) findViewById(R.id.spnExercise);
         btnSave     = (Button)  findViewById(R.id.btnSave);
@@ -133,7 +133,7 @@ public class WorkoutLineEntry extends BaseClass {
 
         tableRef = dbRef.getReference().child("Workout").child(stWorkoutId);
 
-        if (stLineId == null || stLineId.equals("")){
+        if (stExerciseId == null || stExerciseId.equals("")){
             for(WorkoutLine child: workoutLinesList){
                 tableRef.child("WorkoutLine").push().setValue(child);
             }
@@ -202,7 +202,7 @@ public class WorkoutLineEntry extends BaseClass {
         DatabaseReference tableRef;
         dbRef = FirebaseDatabase.getInstance();
 
-        if (stLineId == null || stLineId.equals("")){
+        if (this.stExerciseId == null || this.stExerciseId.equals("")){
             tableRef = dbRef.getReference().child("Exercise").child(stExerciseId).child("ExerciseObjective");
             tableRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -236,18 +236,22 @@ public class WorkoutLineEntry extends BaseClass {
         }
         //Load Existing Workout Lines
         else{
-            tableRef = dbRef.getReference().child("Workout").child(stWorkoutId).child("WorkoutLine").child(stLineId).getRef();
+            tableRef = dbRef.getReference().child("Workout").child(stWorkoutId).child("WorkoutLine").getRef();
             tableRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     workoutLines = new HashMap<>();
+                    workoutLineKeysList = new ArrayList<String>();
+                    workoutLinesList    = new ArrayList<WorkoutLine>();
                     int iCnt = 0;
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         WorkoutLine mWorkoutLine = child.getValue(WorkoutLine.class);
-                            workoutLines.put(child.getKey(),mWorkoutLine);
+                        if (mWorkoutLine.getExerciseId().equals(stExerciseId)) {
+                            workoutLines.put(child.getKey(), mWorkoutLine);
                             workoutLineKeysList.add(iCnt, child.getKey());
                             workoutLinesList.add(iCnt, mWorkoutLine);
                             iCnt = iCnt + 1;
+                        }
                     }
                     initialiseExerciseObjectivesAdapter();
                 }
@@ -268,6 +272,7 @@ public class WorkoutLineEntry extends BaseClass {
     private void initialiseExerciseAdapter() {
         String stExercises[];
         int iCnt;
+        int iStartPos = -1;
         if (exercises != null && exercises.size() > 0) {
             stExercises = new String[exercises.size()];
             exerciseKeysList = new ArrayList<>(exercises.keySet());
@@ -275,12 +280,19 @@ public class WorkoutLineEntry extends BaseClass {
             iCnt = 0;
             for (Exercise child: exerciseList) {
                 stExercises[iCnt] = child.getName();
+                if (stExerciseId != null && stExerciseId.equals(exerciseKeysList.get(iCnt))){
+                    iStartPos = iCnt;
+                }
                 iCnt++;
             }
 
             stExerciseAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, stExercises);
             stExerciseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spnExercise.setAdapter(stExerciseAdapter);
+        }
+        if(iStartPos >= 0){
+            spnExercise.setSelection(iStartPos);
+            spnExercise.setEnabled(false);
         }
     }
 

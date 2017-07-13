@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,6 +16,8 @@ import com.example.admin1.gymtracker.models.Objective;
 import com.example.admin1.gymtracker.models.WorkoutLine;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +36,8 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
 
     private HashMap<String, Exercise> exercises;
     private HashMap<String, Objective> objectives;
+    private HashMap<String, String> chosenExercises;
+    private List<String> chosenExercisesList;
 
     private final String TAG = "WorkoutEntryRVAdapter";
     private DatabaseReference tblHeadRef;
@@ -50,10 +55,20 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
         this.exercises = exercises;
         this.objectives = objectives;
         this.stWorkoutId = stWorkoutId;
+        chosenExercises = new HashMap<>();
+        chosenExercisesList = new ArrayList<>();
+
+        for (WorkoutLine item : workoutLinesList) {
+            if (chosenExercises == null || chosenExercises.get(item.getExerciseId()) == null){
+                chosenExercises.put(item.getExerciseId(),item.getExerciseId());
+                chosenExercisesList.add(item.getExerciseId());
+            }
+        }
+
     }
 
     public interface OnItemClickListener {
-        void onItemClick(View view, String workoutId, String lineId);
+        void onItemClick(View view, String workoutId, String exerciseId);
     }
 
     public void setOnItemClickListener(final WorkoutEntryRVAdapter.OnItemClickListener mItemClickListener) {
@@ -61,7 +76,7 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
     }
     @Override
     public int getItemCount() {
-        return workoutLines.size();
+        return chosenExercisesList.size();
     }
 
     @Override
@@ -77,17 +92,18 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
 
     @Override
     public void onBindViewHolder(WorkoutEntryRVAdapter.ItemViewActivity workoutEntryViewHolder, final int pos) {
-        WorkoutLine mWorkoutEntry;
-        mWorkoutEntry           = workoutLinesList.get(pos);
-        String stLineNo         = Integer.toString(pos);
+        //WorkoutLine mWorkoutEntry;
+        //mWorkoutEntry           = workoutLinesList.get(pos);
+        ;
+        //String stLineNo         = Integer.toString(pos);
         FirebaseDatabase dbRef  =  FirebaseDatabase.getInstance();
-        Exercise curentEx       = exercises.get(mWorkoutEntry.getExerciseId());
-        Objective curentObj     = objectives.get(mWorkoutEntry.getObjectiveId());
+        Exercise curentEx       = exercises.get(chosenExercisesList.get(pos));
+        //Objective curentObj     = objectives.get(mWorkoutEntry.getObjectiveId());
 
 
 
         workoutEntryViewHolder.tvHeading.setText(curentEx.getName());
-        workoutEntryViewHolder.tvDetail.setText(curentObj.getName());
+        workoutEntryViewHolder.tvDetail.setText("");
         workoutEntryViewHolder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,7 +147,7 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
         @Override
         public void onClick(View view) {
             if (mItemClickListener != null) {
-                mItemClickListener.onItemClick(view, stWorkoutId, keysList.get(getAdapterPosition()));
+                mItemClickListener.onItemClick(view, stWorkoutId, chosenExercisesList.get(getAdapterPosition()) );
             }
         }
     }// End ItemViewAcitivty Class

@@ -172,8 +172,9 @@ public class WorkoutHeadEntry extends BaseClass {
             dbNewRef.setValue(savingData);
         }
         else{
-            //Existing Record
-            tableWkHeadRef.child(ipstWorkoutId).setValue(savingData);
+            tableWkHeadRef.child(ipstWorkoutId).child("memberId").setValue(savingData.getMemberId());
+            tableWkHeadRef.child(ipstWorkoutId).child("workoutDate").setValue(savingData.getWorkoutDate());
+            tableWkHeadRef.child(ipstWorkoutId).child("comment").setValue(savingData.getComment());
         }
 
     }// End Save Profile
@@ -231,11 +232,11 @@ public class WorkoutHeadEntry extends BaseClass {
 
     WorkoutEntryRVAdapter.OnItemClickListener onItemClickListener = new WorkoutEntryRVAdapter.OnItemClickListener() {
         @Override
-        public void onItemClick(View v, String workoutId, String lineId) {
+        public void onItemClick(View v, String workoutId, String exerciseId) {
             //Go the to Workout Entry Screen pass in data to be modified.
             Intent iWorkoutLine = new Intent(getApplicationContext(), WorkoutLineEntry.class);
             iWorkoutLine.putExtra("workoutId", workoutId);
-            iWorkoutLine.putExtra("lineId", lineId);
+            iWorkoutLine.putExtra("exerciseId", exerciseId);
             startActivity(iWorkoutLine);
         }
     };
@@ -259,8 +260,12 @@ public class WorkoutHeadEntry extends BaseClass {
 
                 }
             };
-            tableLinesRef.addValueEventListener(elLine);
-            elWorkoutLine = elLine;
+            tableLinesRef = tableWkHeadRef.child(stWorkoutId).child("WorkoutLine");
+
+            if (tableLinesRef != null) {
+                tableLinesRef.addValueEventListener(elLine);
+                elWorkoutLine = elLine;
+            }
         } // End if eventListener == null
 
     }
