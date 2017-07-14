@@ -36,7 +36,7 @@ public class BaseClass extends AppCompatActivity {
     private static final int RP_SIGN_IN_ID = 1;
 
     //Firebase Database query fields
-    DatabaseReference tableRef;
+    private DatabaseReference tableRef;
     private ValueEventListener eventListener;
     private static final String TAG = "BaseClass";
     private HashMap<String, Member> members;

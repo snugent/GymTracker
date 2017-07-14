@@ -12,11 +12,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.admin1.gymtracker.R;
+import com.example.admin1.gymtracker.models.Exercise;
 import com.example.admin1.gymtracker.models.ExerciseObjective;
 import com.example.admin1.gymtracker.models.Objective;
-import com.example.admin1.gymtracker.models.Workout;
+
 import com.example.admin1.gymtracker.models.WorkoutLine;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
@@ -44,15 +44,18 @@ public class WorkoutLineEntryRVAdapter extends RecyclerView.Adapter<WorkoutLineE
 
     private FirebaseDatabase dbRef = FirebaseDatabase.getInstance();
 
-    public WorkoutLineEntryRVAdapter(String workoutId, List<WorkoutLine> workoutLineList,
+    public WorkoutLineEntryRVAdapter(String workoutId, HashMap<String, WorkoutLine> workoutLineHashMap,
                                 HashMap<String, Objective> objectives){
 
         this.workoutId = workoutId;
-        // Set Exercise tables data
-        this.workoutLineList = workoutLineList;
+        // Set Workoutlines tables data
+        this.workoutLineHashMap = workoutLineHashMap;
+        this.workoutLineList = new ArrayList<>(workoutLineHashMap.values());
+        this.workoutLineKeysList = new ArrayList<>((workoutLineHashMap.keySet()));
 
         //Set Objective table data
         this.objectives = objectives;
+
         objectiveKeysList = new ArrayList<>(objectives.keySet());
         objectiveList = new ArrayList<>(objectives.values());
     }
@@ -80,6 +83,7 @@ public class WorkoutLineEntryRVAdapter extends RecyclerView.Adapter<WorkoutLineE
         Objective mObjective;
         String stObjectiveName = "";
         String stObjectiveType = "";
+        String stEntryValue    = "";
 
         //Get the Name of the objective
         mWorkoutLine = workoutLineList.get(pos);
@@ -88,7 +92,15 @@ public class WorkoutLineEntryRVAdapter extends RecyclerView.Adapter<WorkoutLineE
         if (mObjective != null){
             stObjectiveName = mObjective.getLabel();
             stObjectiveType = mObjective.getViewType();
-        }
+            if (workoutLineHashMap != null ){
+                for (WorkoutLine current: workoutLineList) {
+                    if (current != null && current.getObjectiveId().equals(mWorkoutLine.getObjectiveId()) ){
+                        stEntryValue = "" + current.getEntryValue();
+                    }
+                } // for (WorkoutLine
+            }// if workoutLineHashMap != null
+
+        } // if mObjective != null
 
 
         // Set GUI elements
@@ -96,10 +108,12 @@ public class WorkoutLineEntryRVAdapter extends RecyclerView.Adapter<WorkoutLineE
         if (stObjectiveType.equalsIgnoreCase("Time") ){
             objectiveViewHolder.etValue.setHint(R.string.time_entry_hint);
             objectiveViewHolder.etValue.setInputType(InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_TIME);
+            objectiveViewHolder.etValue.setText(stEntryValue);
         }
         else{
             objectiveViewHolder.etValue.setHint(R.string.value_entry_hint);
             objectiveViewHolder.etValue.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL );
+            objectiveViewHolder.etValue.setText(stEntryValue);
         }
 
         objectiveViewHolder.etValue.addTextChangedListener(new TextWatcher() {
