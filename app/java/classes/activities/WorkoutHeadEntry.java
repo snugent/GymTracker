@@ -27,14 +27,15 @@ import java.util.Random;
 
 public class WorkoutHeadEntry extends BaseClass {
     private RecyclerView rvList;
-    Button btnSave;
-    Button btnCancel;
-    EditText etWorkoutDate;
-    EditText etWorkoutComment;
+    private Button btnSave;
+    private Button btnCancel;
+    private EditText etWorkoutDate;
+    private EditText etWorkoutComment;
 
     String stWorkoutId;
     String stNewWorkoutId;
     final String TAG = "WorkoutHeadEntry";
+    private static final int RP_CREATE_LINE = 10;
 
     // Database queries
     FirebaseDatabase dbRef;
@@ -89,9 +90,36 @@ public class WorkoutHeadEntry extends BaseClass {
                  Intent itExerciseEntry = new Intent(getApplicationContext(), WorkoutLineEntry.class);
                  itExerciseEntry.putExtra("workoutId", stWorkoutId);
                  itExerciseEntry.putExtra("lineId", "");
-                 startActivity(itExerciseEntry);
+                 startActivityForResult(itExerciseEntry,RP_CREATE_LINE);
              }
          });
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        createEventListeners();
+    }
+
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        createEventListeners();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        deleteEventListeners();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == RP_CREATE_LINE) {
+            stWorkoutId = data.getStringExtra("workoutId");
+        }
     }
 
     // Sets up the initial values for the screen
@@ -165,7 +193,7 @@ public class WorkoutHeadEntry extends BaseClass {
         );
 
         // Save the Record
-        if (ipstWorkoutId.equals("") || ipstWorkoutId == null){
+        if (ipstWorkoutId.equals("")){
             //New Record
             dbNewRef = tableWkHeadRef.push();
             stWorkoutId = dbNewRef.getKey();
@@ -183,18 +211,6 @@ public class WorkoutHeadEntry extends BaseClass {
     private boolean isValidRecord(){
         //To do Validate User Input
         return true;
-    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        createEventListeners();
-    }
-
-    @Override
-    protected void onPause(){
-        super.onPause();
-        deleteEventListeners();
     }
 
     // Creates an event listener for when we change data
@@ -237,7 +253,7 @@ public class WorkoutHeadEntry extends BaseClass {
             Intent iWorkoutLine = new Intent(getApplicationContext(), WorkoutLineEntry.class);
             iWorkoutLine.putExtra("workoutId", workoutId);
             iWorkoutLine.putExtra("exerciseId", exerciseId);
-            startActivity(iWorkoutLine);
+            startActivityForResult(iWorkoutLine,RP_CREATE_LINE);
         }
     };
     // Creates an event listener for when we change data
@@ -328,7 +344,7 @@ public class WorkoutHeadEntry extends BaseClass {
                 }
             };
             tableObjRef.addValueEventListener(mEventListener);
-            elExercise = mEventListener;
+            elObjective = mEventListener;
         } // End if eventListener == null
     }
     private void deleteObjectiveEventListener(){

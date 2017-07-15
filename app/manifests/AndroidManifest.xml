@@ -32,7 +32,8 @@
         <activity
             android:name=".browsers.ExerciseObjectiveBrowse"
             android:label="@string/title_activity_workout_setup_browse" />
-        <activity android:name=".activities.WorkoutLineEntry"></activity>
+        <activity android:name=".activities.WorkoutLineEntry" />
+        <activity android:name=".activities.ExerciseObjectiveEntry"></activity>
     </application>
 
 </manifest>

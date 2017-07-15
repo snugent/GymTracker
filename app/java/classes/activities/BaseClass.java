@@ -1,13 +1,18 @@
 package com.example.admin1.gymtracker.activities;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 import com.example.admin1.gymtracker.R;
+import com.example.admin1.gymtracker.adapters.ExerciseRVAdapter;
 import com.example.admin1.gymtracker.browsers.ExerciseBrowse;
 import com.example.admin1.gymtracker.browsers.MemberBrowse;
 import com.example.admin1.gymtracker.browsers.ObjectiveBrowse;
@@ -113,7 +118,7 @@ public class BaseClass extends AppCompatActivity {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RP_SIGN_IN_ID){
             if(resultCode == RESULT_OK){
@@ -215,5 +220,45 @@ public class BaseClass extends AppCompatActivity {
             tableRef.removeEventListener(eventListener);
         }
     }// End DeleteEventListener
+
+    protected boolean getConfirmation(String stConfirmMsg, Context context){
+        String stMessage;
+        final boolean blConfirm;
+
+        AlertDialog mAdConfirm;
+        AlertDialog.Builder mAdbConfirm;
+
+        mAdbConfirm = new AlertDialog.Builder(context);
+        if (stConfirmMsg.equals("")){
+            stMessage = getString(R.string.confirm_general);
+        }
+        else{
+            stMessage = stConfirmMsg;
+        }
+
+
+        mAdbConfirm.setMessage(stMessage)
+                   .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                       @Override
+                       public void onClick(DialogInterface dialog, int which) {
+                           blConfirm = true;
+                           dialog.cancel();
+                       }
+                   })
+                   .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                       @Override
+                       public void onClick(DialogInterface dialog, int which) {
+                           blConfirm = false;
+                           dialog.cancel();
+                       }
+                   })
+                   .setCancelable(false) ;
+
+
+        mAdConfirm = mAdbConfirm.create();
+        mAdConfirm.show();
+        return blConfirm;
+
+    }
 
 }

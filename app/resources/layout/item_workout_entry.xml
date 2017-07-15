@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <!--
-      Import Note: This screen was taken from a previous project I did for
-                   Advanced Mobile Application Development.
-                   They were taken from various research on material design .
-                   See: I did on From Google Responsive
-                   As it is exactly what I'm looking for now I am not goign to change it
-      -->
+<!--
+  Import Note: This screen was taken from a previous project I did for
+               Advanced Mobile Application Development.
+               The UI Elements were taken from various research
+               I did in the past on material design for this.
+               The screen was adapteed further for this proejct
+-->
 
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"

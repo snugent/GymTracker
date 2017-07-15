@@ -82,13 +82,13 @@ public class ExerciseObjectiveBrowse extends MenuClass {
 
     //Connect to adapter for List Items
     private void initialiseAdapter() {
-        ExerciseObjectiveRVAdapter adapter;
-        if (exerciseObjectives != null){
-            adapter = new ExerciseObjectiveRVAdapter(exerciseObjectives, tableRef);
-            rvList.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext()));
-            adapter.setOnItemClickListener(onItemClickListener);
-            rvList.setAdapter(adapter);
-        }
+  //      ExerciseObjectiveRVAdapter adapter;
+    //    if (exerciseObjectives != null){
+       //     adapter = new ExerciseObjectiveRVAdapter(exerciseObjectives, tableRef);
+   //         rvList.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext()));
+         //   adapter.setOnItemClickListener(onItemClickListener);
+  //          rvList.setAdapter(adapter);
+     //   }
     }
 
 
@@ -124,12 +124,12 @@ public class ExerciseObjectiveBrowse extends MenuClass {
         }
     }
 
-    ExerciseObjectiveRVAdapter.OnItemClickListener onItemClickListener = new ExerciseObjectiveRVAdapter.OnItemClickListener() {
-        @Override
-        public void onItemClick(View v, String id) {
-            // To do Exercise objective entry
-        }
-    };
+  //  ExerciseObjectiveRVAdapter.OnItemClickListener onItemClickListener = new ExerciseObjectiveRVAdapter.OnItemClickListener() {
+  //      @Override
+  //      public void onItemClick(View v, String id) {
+  //          // To do Exercise objective entry
+  //      }
+  //  };
 
 
 }

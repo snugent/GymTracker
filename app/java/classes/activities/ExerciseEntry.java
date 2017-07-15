@@ -1,5 +1,6 @@
 package com.example.admin1.gymtracker.activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,18 +25,18 @@ public class ExerciseEntry extends BaseClass {
     private ArrayAdapter<String> stAdapter;
     Button btnSave;
     Button btnCancel;
+    Button btnObjectives;
     EditText etExerciseName;
     Spinner spnType;
     String stExerciseId;
     final String TAG = "ExerciseEntry";
+    private static final int RP_CREATE_OBJECTIVE = 20;
 
     // Database queries
     private DatabaseReference tableExRef;
     private HashMap<String, Exercise> exercises;
     private ValueEventListener eventListener;
     private EventListener elExercise;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,39 @@ public class ExerciseEntry extends BaseClass {
                 finish();
             }
         });
+        btnObjectives.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isValidRecord()) {
+                    saveRecord(stExerciseId);
+                    Intent itExerciseEntry = new Intent(getApplicationContext(), ExerciseObjectiveEntry.class);
+                    itExerciseEntry.putExtra("exerciseId", stExerciseId);
+                    startActivityForResult(itExerciseEntry,RP_CREATE_OBJECTIVE);
+
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        createEventListener();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+
+        deleteEventListener();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == RP_CREATE_OBJECTIVE) {
+            stExerciseId = data.getStringExtra("exerciseId");
+        }
     }
 
     // Sets up the initial values for the screen
@@ -76,6 +110,7 @@ public class ExerciseEntry extends BaseClass {
         spnType        = (Spinner)  findViewById(R.id.spnType);
         btnSave = (Button) findViewById(R.id.btnSave);
         btnCancel = (Button) findViewById(R.id.btnCancel);
+        btnObjectives= (Button) findViewById(R.id.btnObjectives);
         spnType.setAdapter(stAdapter);
 
 
@@ -90,7 +125,6 @@ public class ExerciseEntry extends BaseClass {
     private void getCurrentRecord(String ipstId){
         int iPos;
         Exercise currentExercise;
-        Log.d(TAG, "getCurrentId " + ipstId + (ipstId == ""));
         if (!ipstId.equalsIgnoreCase("")){
             if (exercises != null) {
                 currentExercise = exercises.get(ipstId);
@@ -122,8 +156,9 @@ public class ExerciseEntry extends BaseClass {
             dbNewRef.setValue(savingData);
         }
         else{
-            //Existing Record
-            tableExRef.child(ipstExerciseId).setValue(savingData);
+            //Update Existing Record
+            tableExRef.child(ipstExerciseId).child("name").setValue(savingData.getName());
+            tableExRef.child(ipstExerciseId).child("type").setValue(savingData.getType());
         }
 
     }// End Save Profile
@@ -132,19 +167,6 @@ public class ExerciseEntry extends BaseClass {
     private boolean isValidRecord(){
         //To do Validate User Input
         return true;
-    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        createEventListener();
-    }
-
-    @Override
-    protected void onPause(){
-        super.onPause();
-
-        deleteEventListener();
     }
 
     // Creates an event listener for when we change data

@@ -35,4 +35,7 @@
     <string name="label">Label</string>
     <string name="time_entry_hint">00:00:00:000</string>
     <string name="value_entry_hint">Enter Value</string>
+    <string name="err_workout_line_1">Exercise already entered into workout</string>
+    <string name="btn_objectives">Objectives</string>
+    <string name="confirm_general">Are you sure?</string>
 </resources>

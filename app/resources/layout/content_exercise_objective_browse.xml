@@ -11,7 +11,7 @@
         android:id="@+id/rvList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item"
+        tools:listitem="@layout/item_ex_obj_entry"
         tools:layout_editor_absoluteY="8dp"
         tools:layout_editor_absoluteX="8dp" />
 </LinearLayout>

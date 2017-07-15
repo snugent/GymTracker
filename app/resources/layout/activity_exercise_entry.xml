@@ -50,4 +50,13 @@
         android:layout_toEndOf="@+id/btnSave"
         android:layout_marginStart="11dp" />
 
+    <Button
+        android:id="@+id/btnObjectives"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/btnCancel"
+        android:layout_marginStart="17dp"
+        android:layout_toEndOf="@+id/btnCancel"
+        android:text="@string/btn_objectives" />
+
 </android.widget.RelativeLayout>
