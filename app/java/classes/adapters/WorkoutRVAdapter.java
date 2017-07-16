@@ -1,5 +1,8 @@
 package com.example.admin1.gymtracker.adapters;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,15 +33,18 @@ public class WorkoutRVAdapter extends RecyclerView.Adapter<WorkoutRVAdapter.Item
     private HashMap<String, Workout> workouts;
     private List<Workout> workoutList;
     private List<String> keysList;
+    private Context mContext;
 
     private final String TAG = "WorkoutRVAdapter";
     private DatabaseReference tblRecord;
 
-    public WorkoutRVAdapter(HashMap<String, Workout> workouts, DatabaseReference tblRecord){
+    public WorkoutRVAdapter(HashMap<String, Workout> workouts, DatabaseReference tblRecord,
+                            Context mContext){
         this.workouts = workouts;
         this.tblRecord = tblRecord;
         keysList = new ArrayList<>(workouts.keySet());
         workoutList = new ArrayList<>(workouts.values());
+        this.mContext    = mContext;
     }
 
     public interface OnItemClickListener {
@@ -76,7 +82,7 @@ public class WorkoutRVAdapter extends RecyclerView.Adapter<WorkoutRVAdapter.Item
         workoutViewHolder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteRow(pos);
+                getDeleteConfirmation("", pos);
             }
         });
     }
@@ -93,7 +99,43 @@ public class WorkoutRVAdapter extends RecyclerView.Adapter<WorkoutRVAdapter.Item
         catch (Exception e){
             Log.d(TAG, "Delete Exception");
         }
+    }
 
+    //Get confirmation of delete
+    private void getDeleteConfirmation(String stConfirmMsg, final int iPos){
+        String stMessage;
+
+        AlertDialog mAdConfirm;
+        AlertDialog.Builder mAdbConfirm;
+
+        mAdbConfirm = new AlertDialog.Builder(mContext);
+        if (stConfirmMsg.equals("")){
+            stMessage = mContext.getResources().getString(R.string.confirm_general);
+        }
+        else{
+            stMessage = stConfirmMsg;
+        }
+
+
+        mAdbConfirm.setMessage(stMessage)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteRow(iPos);
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .setCancelable(false) ;
+
+
+        mAdConfirm = mAdbConfirm.create();
+        mAdConfirm.show();
     }
 
 

@@ -29,9 +29,6 @@
             android:name=".browsers.MemberBrowse"
             android:label="@string/title_activity_member_browse" />
         <activity android:name=".activities.WorkoutHeadEntry" />
-        <activity
-            android:name=".browsers.ExerciseObjectiveBrowse"
-            android:label="@string/title_activity_workout_setup_browse" />
         <activity android:name=".activities.WorkoutLineEntry" />
         <activity android:name=".activities.ExerciseObjectiveEntry"></activity>
     </application>

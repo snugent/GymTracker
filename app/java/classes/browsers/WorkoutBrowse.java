@@ -58,6 +58,13 @@ public class WorkoutBrowse extends MenuClass {
     }
 
     @Override
+    protected void onStart(){
+        super.onStart();
+        setAuthStateListener();
+        createEventListener();
+    }
+
+    @Override
     protected void onResume(){
         super.onResume();
         setAuthStateListener();
@@ -90,7 +97,7 @@ public class WorkoutBrowse extends MenuClass {
     private void initialiseAdapter() {
         WorkoutRVAdapter adapter;
         if (workouts != null){
-            adapter = new WorkoutRVAdapter(workouts, tableRef);
+            adapter = new WorkoutRVAdapter(workouts, tableRef, this);
             rvList.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext()));
             adapter.setOnItemClickListener(onItemClickListener);
             rvList.setAdapter(adapter);

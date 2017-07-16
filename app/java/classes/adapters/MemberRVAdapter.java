@@ -1,5 +1,8 @@
 package com.example.admin1.gymtracker.adapters;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +25,7 @@ import java.util.List;
  */
 
 public class MemberRVAdapter extends RecyclerView.Adapter<MemberRVAdapter.ItemViewActivity>{
+    private Context mContext;
     private OnItemClickListener mItemClickListener;
     private HashMap<String, Member> members;
     private List<Member> memberList;
@@ -30,9 +34,11 @@ public class MemberRVAdapter extends RecyclerView.Adapter<MemberRVAdapter.ItemVi
     private final String TAG = "MemberRVAdapter";
     private DatabaseReference tblRecord;
 
-    public MemberRVAdapter(HashMap<String, Member> members, DatabaseReference tblRecord){
+    public MemberRVAdapter(HashMap<String, Member> members, DatabaseReference tblRecord,
+                           Context mContext){
         this.members = members;
         this.tblRecord = tblRecord;
+        this.mContext    = mContext;
         keysList = new ArrayList<>(members.keySet());
         memberList = new ArrayList<>(members.values());
     }
@@ -70,7 +76,7 @@ public class MemberRVAdapter extends RecyclerView.Adapter<MemberRVAdapter.ItemVi
         memberViewHolder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteRow(pos);
+                getDeleteConfirmation("", pos);
             }
         });
     }
@@ -90,6 +96,42 @@ public class MemberRVAdapter extends RecyclerView.Adapter<MemberRVAdapter.ItemVi
 
     }
 
+    //Get confirmation of delete
+    private void getDeleteConfirmation(String stConfirmMsg, final int iPos){
+        String stMessage;
+
+        AlertDialog mAdConfirm;
+        AlertDialog.Builder mAdbConfirm;
+
+        mAdbConfirm = new AlertDialog.Builder(mContext);
+        if (stConfirmMsg.equals("")){
+            stMessage = mContext.getResources().getString(R.string.confirm_general);
+        }
+        else{
+            stMessage = stConfirmMsg;
+        }
+
+
+        mAdbConfirm.setMessage(stMessage)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteRow(iPos);
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .setCancelable(false) ;
+
+
+        mAdConfirm = mAdbConfirm.create();
+        mAdConfirm.show();
+    }
 
     class ItemViewActivity extends RecyclerView.ViewHolder implements View.OnClickListener{
         private LinearLayout placeHolder;

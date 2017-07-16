@@ -77,7 +77,7 @@ public class MemberBrowse extends MenuClass {
     private void initialiseAdapter() {
         MemberRVAdapter adapter;
         if (members != null){
-            adapter = new MemberRVAdapter(members, tableRef);
+            adapter = new MemberRVAdapter(members, tableRef, this);
             rvList.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext()));
             adapter.setOnItemClickListener(onItemClickListener);
             rvList.setAdapter(adapter);

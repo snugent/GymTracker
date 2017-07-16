@@ -28,7 +28,7 @@ public class ExerciseObjectiveEntry extends AppCompatActivity {
     private Button btnCancel;
     private String stExerciseId;
     private RecyclerView rvList;
-    private final String TAG = "ExerciseObjectiveBrowse";
+    private final String TAG = "ExerciseObjectiveEntry";
 
     private FirebaseDatabase dbRef;
     // Database queries - Exercise Objective

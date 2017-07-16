@@ -1,4 +1,7 @@
 package com.example.admin1.gymtracker.adapters;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +25,7 @@ import java.util.List;
  */
 
 public class ObjectiveRVAdapter extends RecyclerView.Adapter<ObjectiveRVAdapter.ItemViewActivity>{
+    private Context mContext;
     private OnItemClickListener mItemClickListener;
     private HashMap<String, Objective> objectives;
     private List<Objective> objectiveList;
@@ -30,9 +34,11 @@ public class ObjectiveRVAdapter extends RecyclerView.Adapter<ObjectiveRVAdapter.
     private final String TAG = "ObjectiveRVAdapter";
     private DatabaseReference tblRecord;
 
-    public ObjectiveRVAdapter(HashMap<String, Objective> objectives, DatabaseReference tblRecord){
+    public ObjectiveRVAdapter(HashMap<String, Objective> objectives, DatabaseReference tblRecord,
+                              Context mContext){
         this.objectives = objectives;
         this.tblRecord = tblRecord;
+        this.mContext    = mContext;
         keysList = new ArrayList<>(objectives.keySet());
         objectiveList = new ArrayList<>(objectives.values());
     }
@@ -70,7 +76,7 @@ public class ObjectiveRVAdapter extends RecyclerView.Adapter<ObjectiveRVAdapter.
         objectiveViewHolder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteRow(pos);
+             getDeleteConfirmation("", pos);
             }
         });
     }
@@ -85,9 +91,45 @@ public class ObjectiveRVAdapter extends RecyclerView.Adapter<ObjectiveRVAdapter.
             tblRecord.getRef().child(stKey).removeValue();
         }
         catch (Exception e){
-            Log.d(TAG, "Delete Exception");
+            Log.d(TAG, mContext.getString(R.string.delete_exception));
+        }
+    }
+
+    //Get confirmation of delete
+    private void getDeleteConfirmation(String stConfirmMsg, final int iPos){
+        String stMessage;
+
+        AlertDialog mAdConfirm;
+        AlertDialog.Builder mAdbConfirm;
+
+        mAdbConfirm = new AlertDialog.Builder(mContext);
+        if (stConfirmMsg.equals("")){
+            stMessage = mContext.getResources().getString(R.string.confirm_general);
+        }
+        else{
+            stMessage = stConfirmMsg;
         }
 
+
+        mAdbConfirm.setMessage(stMessage)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteRow(iPos);
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .setCancelable(false) ;
+
+
+        mAdConfirm = mAdbConfirm.create();
+        mAdConfirm.show();
     }
 
 

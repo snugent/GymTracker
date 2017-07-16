@@ -23,11 +23,6 @@
         android:title="@string/objective"
         app:showAsAction="never" />
     <item
-        android:id="@+id/workout_setup"
-        android:orderInCategory="140"
-        android:title="@string/workout_setup"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/edit_member"
         android:orderInCategory="150"
         android:title="@string/edit_member"

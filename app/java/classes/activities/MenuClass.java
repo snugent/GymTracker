@@ -6,7 +6,6 @@ import android.view.MenuItem;
 
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.browsers.ExerciseBrowse;
-import com.example.admin1.gymtracker.browsers.ExerciseObjectiveBrowse;
 import com.example.admin1.gymtracker.browsers.MemberBrowse;
 import com.example.admin1.gymtracker.browsers.ObjectiveBrowse;
 import com.example.admin1.gymtracker.browsers.WorkoutBrowse;
@@ -64,10 +63,6 @@ public class MenuClass extends BaseClass{
                 launchObjectiveActivity();
                 blResult = true;
                 break;
-            case R.id.workout_setup:
-                launchWorkoutSetupActivity();
-                blResult = true;
-                break;
             case R.id.edit_member:
                 launchMemberActivity();
                 blResult = true;
@@ -102,12 +97,6 @@ public class MenuClass extends BaseClass{
     // Calls the Objective Maintenance Screen
     private void launchObjectiveActivity() {
         Intent itBrowse = new Intent(getApplicationContext(), ObjectiveBrowse.class);
-        startActivity(itBrowse);
-    }
-
-    // Calls the User Profile Maintenance Screen
-    private void launchWorkoutSetupActivity(){
-        Intent itBrowse = new Intent(getApplicationContext(), ExerciseObjectiveBrowse.class);
         startActivity(itBrowse);
     }
 
