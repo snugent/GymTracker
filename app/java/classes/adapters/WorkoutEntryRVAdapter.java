@@ -1,23 +1,21 @@
 package com.example.admin1.gymtracker.adapters;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.models.Exercise;
-import com.example.admin1.gymtracker.models.Objective;
 import com.example.admin1.gymtracker.models.WorkoutLine;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,28 +31,28 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
     private List<WorkoutLine> workoutLinesList;
     private List<String> keysList;
     private String stWorkoutId;
+    private Context mContext;
 
     private HashMap<String, Exercise> exercises;
-    private HashMap<String, Objective> objectives;
     private HashMap<String, String> chosenExercises;
     private List<String> chosenExercisesList;
 
     private final String TAG = "WorkoutEntryRVAdapter";
-    private DatabaseReference tblHeadRef;
     private DatabaseReference tblLineRef;
 
     public WorkoutEntryRVAdapter(HashMap<String, WorkoutLine> workoutLines,
-                                 HashMap<String, Exercise> exercises, HashMap<String, Objective> objectives,
-                                 DatabaseReference tblHeadRef, DatabaseReference tblLineRef,
-                                 String stWorkoutId){
+                                 HashMap<String, Exercise> exercises,
+                                 DatabaseReference tblLineRef,
+                                 String stWorkoutId,
+                                 Context mContext){
         this.workoutLines = workoutLines;
         this.tblLineRef = tblLineRef;
-        this.tblHeadRef = tblHeadRef;
         keysList = new ArrayList<>(workoutLines.keySet());
         workoutLinesList = new ArrayList<>(workoutLines.values());
+
         this.exercises = exercises;
-        this.objectives = objectives;
         this.stWorkoutId = stWorkoutId;
+        this.mContext    = mContext;
         chosenExercises = new HashMap<>();
         chosenExercisesList = new ArrayList<>();
 
@@ -92,39 +90,76 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
 
     @Override
     public void onBindViewHolder(WorkoutEntryRVAdapter.ItemViewActivity workoutEntryViewHolder, final int pos) {
-        //WorkoutLine mWorkoutEntry;
-        //mWorkoutEntry           = workoutLinesList.get(pos);
-        ;
-        //String stLineNo         = Integer.toString(pos);
-        FirebaseDatabase dbRef  =  FirebaseDatabase.getInstance();
         Exercise curentEx       = exercises.get(chosenExercisesList.get(pos));
-        //Objective curentObj     = objectives.get(mWorkoutEntry.getObjectiveId());
-
-
 
         workoutEntryViewHolder.tvHeading.setText(curentEx.getName());
         workoutEntryViewHolder.tvDetail.setText("");
         workoutEntryViewHolder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteRow(pos);
+                getDeleteConfirmation("", pos);
             }
         });
     }
 
     private void deleteRow(int index ){
-        String stKey = keysList.get(index);
+        String stKey = chosenExercisesList.get(index);
+        int iCnt;
         try{
-            workoutLinesList.remove(index);
+            iCnt = 0;
+            for (WorkoutLine item : workoutLinesList) {
+                if (stKey.equals(item.getExerciseId())){
+                    tblLineRef.getRef().child(keysList.get(iCnt)).removeValue();
+                    workoutLines.remove(keysList.get(iCnt));
+                }
+                iCnt++;
+            }
+            keysList = new ArrayList<>(workoutLines.keySet());
+            workoutLinesList = new ArrayList<>(workoutLines.values());
             keysList.remove(index);
-            workoutLines.remove(stKey);
             notifyItemRemoved(index);
-            tblLineRef.getRef().child(stKey).removeValue();
         }
         catch (Exception e){
-            Log.d(TAG, "Delete Exception");
+            Log.d(TAG, mContext.getString(R.string.delete_exception));
         }
 
+    }
+
+    //Get confirmation of delete
+    private void getDeleteConfirmation(String stConfirmMsg, final int iPos){
+        String stMessage;
+
+        AlertDialog mAdConfirm;
+        AlertDialog.Builder mAdbConfirm;
+
+        mAdbConfirm = new AlertDialog.Builder(mContext);
+        if (stConfirmMsg.equals("")){
+            stMessage = mContext.getResources().getString(R.string.confirm_general);
+        }
+        else{
+            stMessage = stConfirmMsg;
+        }
+
+
+        mAdbConfirm.setMessage(stMessage)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteRow(iPos);
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .setCancelable(false) ;
+
+
+        mAdConfirm = mAdbConfirm.create();
+        mAdConfirm.show();
     }
 
 

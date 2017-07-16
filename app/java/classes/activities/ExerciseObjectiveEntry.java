@@ -22,7 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 
-public class ExerciseObjectiveEntry extends AppCompatActivity {
+public class ExerciseObjectiveEntry extends BaseClass {
     private TextView tvExerciseName;
     private Button btnSave;
     private Button btnCancel;
@@ -101,7 +101,7 @@ public class ExerciseObjectiveEntry extends AppCompatActivity {
         tvExerciseName  = (TextView) findViewById(R.id.tvExerciseName);
         btnSave         = (Button) findViewById(R.id.btnSave);
         btnCancel       = (Button) findViewById(R.id.btnCancel);
-        dbRef           = FirebaseDatabase.getInstance();
+        dbRef           = getmFirebaseDatabase();
         Bundle extras = getIntent().getExtras();
         stExerciseId = extras.getString("exerciseId") ;
 

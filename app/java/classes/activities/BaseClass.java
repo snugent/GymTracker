@@ -56,17 +56,24 @@ public class BaseClass extends AppCompatActivity {
     //Signs the user out of the system
     protected void signOut(){
         AuthUI.getInstance().signOut(this);
-        onSignedOutCleanUp();
     }
 
-
-
-
     protected void initialiseDatabase(){
-        mFirebaseDatabase  = FirebaseDatabase.getInstance();
-        mFirebaseAuth      = FirebaseAuth.getInstance();
+        Log.d(TAG,"initialiseDatabase: " + isAdminUser(getCurrentUserId()));
+        Log.d(TAG,"initialiseDatabase 2: " + mFirebaseDatabase);
+        if (mFirebaseDatabase == null){
+            mFirebaseDatabase  = FirebaseDatabase.getInstance();
+            mFirebaseAuth      = FirebaseAuth.getInstance();
+            mFirebaseDatabase.setPersistenceEnabled(true);
+        }
         tableRef = mFirebaseDatabase.getReference().child("Member");
         createAuthStateListener();
+        deleteBaseEventListener();
+        createBaseEventListener();
+    }
+
+    protected FirebaseDatabase getmFirebaseDatabase(){
+        return mFirebaseDatabase;
     }
 
     private void createAuthStateListener(){
@@ -77,7 +84,7 @@ public class BaseClass extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth){
                 FirebaseUser user = getUser();
                 if (user != null){
-                    onSignedInInitialise(user.getUid());
+                    onSignedInInitialise();
                 }
                 else{
                     onSignedOutCleanUp();
@@ -97,11 +104,14 @@ public class BaseClass extends AppCompatActivity {
 
     } //End setmAuthSateListener method
 
-    private void onSignedInInitialise(String uid){
-
+    private void onSignedInInitialise(){
+        mFirebaseAuth      = FirebaseAuth.getInstance();
+        createBaseEventListener();
     }
 
     private void onSignedOutCleanUp(){
+        mFirebaseAuth = null;
+        deleteBaseEventListener();
 
     }
 
@@ -120,11 +130,14 @@ public class BaseClass extends AppCompatActivity {
     } // onActivityResult Method
 
     protected void setAuthStateListener(){
+        if (mFirebaseAuth != null){
             mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+        }
+
     }
 
     protected void removeAuthStateListener(){
-        if (mAuthStateListener != null) {
+        if (mAuthStateListener != null && mFirebaseAuth != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
     }
@@ -141,15 +154,16 @@ public class BaseClass extends AppCompatActivity {
         return uId;
     }
 
+
     // Checks is the user is a Trainer
     protected boolean isAdminUser(String uid){
-        boolean isAdmin;
+        boolean isAdmin = false;
         Member currentMember ;
-
+        Log.d(TAG,"members not null: " + (members!= null));
         if (members!= null && hasProfile(uid)) {
             currentMember = members.get(uid);
             //If the user is an admin user and the current user is not deleted
-            if (currentMember.getIsAdmin() && isDeletedUser(uid)) {
+            if (currentMember.getIsAdmin() && !isDeletedUser(uid)) {
                 isAdmin = true;
             }
             else{
@@ -159,9 +173,10 @@ public class BaseClass extends AppCompatActivity {
         else {
             isAdmin = false;
         }
-        /***** Test code ******/
-        isAdmin = true;
-        /* ***** Test Code ***** */
+        /* test code */
+        // return true;
+        /* *** test code */
+        Log.d(TAG,"setisAdmin: " + isAdmin);
         return isAdmin;
     }
 
@@ -178,7 +193,7 @@ public class BaseClass extends AppCompatActivity {
     }
 
     // Creates an event listener for when we change data
-    private void createEventListener(){
+    private void createBaseEventListener(){
 
         if(eventListener == null) {
             ValueEventListener mEventListener = new ValueEventListener() {
@@ -189,6 +204,7 @@ public class BaseClass extends AppCompatActivity {
                         Member mMember = child.getValue(Member.class);
                         members.put(child.getKey(), mMember);
                     }
+                    isAdminUser(getCurrentUserId());
                 }
 
                 @Override
@@ -203,7 +219,7 @@ public class BaseClass extends AppCompatActivity {
 
 
     // Detaches the event listener when activity goes into background
-    private void deleteEventListener(){
+    private void deleteBaseEventListener(){
         if(eventListener  != null){
             tableRef.removeEventListener(eventListener);
         }

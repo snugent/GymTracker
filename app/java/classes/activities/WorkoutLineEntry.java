@@ -143,7 +143,7 @@ public class WorkoutLineEntry extends BaseClass {
 
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
-        dbRef = FirebaseDatabase.getInstance();
+        dbRef = getmFirebaseDatabase();
         Bundle extras = getIntent().getExtras();
         stWorkoutId = extras.getString("workoutId") ;
         stExerciseId    = extras.getString("exerciseId");
@@ -434,7 +434,7 @@ public class WorkoutLineEntry extends BaseClass {
 
     //Gets a list of Objectives
     private void createObjectiveEventListener(){
-        dbRef = FirebaseDatabase.getInstance();
+        dbRef = getmFirebaseDatabase();
         tblObjectiveRef = dbRef.getReference().child("Objective");
         elObjective = new ValueEventListener() {
             @Override

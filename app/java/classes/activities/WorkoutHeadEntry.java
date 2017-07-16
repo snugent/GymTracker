@@ -3,15 +3,19 @@ package com.example.admin1.gymtracker.activities;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.adapters.WorkoutEntryRVAdapter;
+import com.example.admin1.gymtracker.fragments.DatePicker;
 import com.example.admin1.gymtracker.layout.SimpleDividerItemDecoration;
 import com.example.admin1.gymtracker.models.Exercise;
 import com.example.admin1.gymtracker.models.Objective;
@@ -22,6 +26,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.w3c.dom.Text;
+
 import java.util.HashMap;
 import java.util.Random;
 
@@ -29,16 +39,17 @@ public class WorkoutHeadEntry extends BaseClass {
     private RecyclerView rvList;
     private Button btnSave;
     private Button btnCancel;
-    private EditText etWorkoutDate;
+    private TextView tvDate;
     private EditText etWorkoutComment;
+    private ImageView ivDate;
 
-    String stWorkoutId;
-    String stNewWorkoutId;
-    final String TAG = "WorkoutHeadEntry";
+    private String stWorkoutId;
+    private String stNewWorkoutId;
+    private final String TAG = "WorkoutHeadEntry";
     private static final int RP_CREATE_LINE = 10;
 
     // Database queries
-    FirebaseDatabase dbRef;
+    private FirebaseDatabase dbRef;
     private DatabaseReference tableWkHeadRef;
     private HashMap<String, Workout> workouts;
     private ValueEventListener eventListener;
@@ -46,6 +57,7 @@ public class WorkoutHeadEntry extends BaseClass {
     //Variables for Workout Entry screen
     private DatabaseReference tableLinesRef;
     private HashMap<String, WorkoutLine> lines;
+    private HashMap<String, WorkoutLine> allLines;
     private ValueEventListener elWorkoutLine;
 
     private DatabaseReference tableExRef;
@@ -93,6 +105,14 @@ public class WorkoutHeadEntry extends BaseClass {
                  startActivityForResult(itExerciseEntry,RP_CREATE_LINE);
              }
          });
+
+         ivDate.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 DialogFragment newFragment = new DatePicker("");
+                 newFragment.show(getSupportFragmentManager(), "datePicker");
+             }
+         });
     }
 
     @Override
@@ -126,6 +146,9 @@ public class WorkoutHeadEntry extends BaseClass {
     private  void initialiseScreen(){
         Bundle extras = getIntent().getExtras();
         stWorkoutId = extras.getString("workoutId");
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("dd/MM/yyyy");
+        DateTime dtDob = new DateTime();
+
 
         // If not an update generate a temporary workout Id to enable the creation
         // of workout lines
@@ -142,11 +165,14 @@ public class WorkoutHeadEntry extends BaseClass {
         rvList.setHasFixedSize(true);
 
         // Setup GUI Elements
-        etWorkoutDate    = (EditText) findViewById(R.id.etWorkoutDate);
+        tvDate = (TextView) findViewById(R.id.tvDate);
         etWorkoutComment = (EditText) findViewById(R.id.etWorkoutComment);
         btnSave         = (Button) findViewById(R.id.btnSave);
         btnCancel       = (Button) findViewById(R.id.btnCancel);
-        dbRef = FirebaseDatabase.getInstance();
+        ivDate          = (ImageView) findViewById(R.id.ivDate);
+        tvDate.setText(fmt.print(dtDob));
+
+        dbRef = getmFirebaseDatabase();
         tableWkHeadRef = dbRef.getReference().child("Workout");
         if (stWorkoutId != null && !stWorkoutId.equals("")) {
             tableLinesRef = tableWkHeadRef.child(stWorkoutId).child("WorkoutLine");
@@ -174,7 +200,7 @@ public class WorkoutHeadEntry extends BaseClass {
         if (!ipstId.equalsIgnoreCase("")){
             if (workouts != null) {
                 currentWorkout = workouts.get(ipstId);
-                etWorkoutDate.setText(currentWorkout.getWorkoutDate());
+                tvDate.setText(currentWorkout.getWorkoutDate());
                 etWorkoutComment.setText(currentWorkout.getComment());
             }// workouts != null
         }// if(ipstId != "" ....
@@ -188,7 +214,7 @@ public class WorkoutHeadEntry extends BaseClass {
 
         savingData= new Workout(
             getCurrentUserId(),
-            etWorkoutDate.getText().toString(),
+            tvDate.getText().toString(),
             etWorkoutComment.getText().toString()
         );
 

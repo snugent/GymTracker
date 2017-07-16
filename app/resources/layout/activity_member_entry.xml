@@ -9,40 +9,52 @@
     tools:layout_editor_absoluteX="0dp">
 
 
+    <ImageView
+        android:id="@+id/ivDate"
+        android:layout_width="@dimen/card_image_width"
+        android:layout_height="@dimen/card_image_height"
+        android:paddingTop="@dimen/card_padding_top"
+        android:src="@drawable/ic_date_range_24px"
+        tools:backgroundTint="@color/white"
+        android:layout_alignBottom="@+id/tvDate"
+        android:layout_toEndOf="@+id/tvDate" />
+
     <EditText
         android:id="@+id/etName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/name"
+        android:maxLines="1"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:maxLines="1" />
+        android:layout_marginTop="35dp" />
 
-    <EditText
-        android:id="@+id/etDob"
+    <TextView
+        android:id="@+id/tvDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/etName"
-        android:layout_below="@+id/etName"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="19dp"
         android:ems="10"
         android:hint="@string/date_of_birth"
-        android:inputType="date" />
+        android:textSize="@dimen/entry_font_size_height"
+        android:layout_below="@+id/etName"
+        android:layout_alignStart="@+id/etName"
+        android:layout_alignEnd="@+id/etName" />
 
     <Spinner
         android:id="@+id/spnSex"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="23dp"
-        android:layout_below="@+id/etDob"
+        android:layout_below="@+id/tvDate"
         android:layout_alignStart="@+id/etWeight" />
 
     <EditText
         android:id="@+id/etWeight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/etDob"
+        android:layout_alignStart="@+id/tvDate"
         android:layout_below="@+id/spnSex"
         android:layout_marginTop="13dp"
         android:ems="10"

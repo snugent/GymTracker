@@ -38,4 +38,8 @@
     <string name="err_workout_line_1">Exercise already entered into workout</string>
     <string name="btn_objectives">Objectives</string>
     <string name="confirm_general">Are you sure?</string>
+    <string name="delete_exception">Delete Exception</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

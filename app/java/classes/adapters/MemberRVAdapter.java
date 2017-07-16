@@ -84,16 +84,12 @@ public class MemberRVAdapter extends RecyclerView.Adapter<MemberRVAdapter.ItemVi
     private void deleteRow(int index ){
         String stKey = keysList.get(index);
         try{
-            memberList.remove(index);
-            keysList.remove(index);
-            members.remove(stKey);
-            notifyItemRemoved(index);
-            tblRecord.getRef().child(stKey).removeValue();
+            members.get(stKey).setIsDeleted(true);
+            tblRecord.child(stKey).setValue(members.get(stKey));
         }
         catch (Exception e){
-            Log.d(TAG, "Delete Exception");
+            Log.d(TAG, mContext.getString(R.string.delete_exception));
         }
-
     }
 
     //Get confirmation of delete

@@ -1,24 +1,19 @@
 package com.example.admin1.gymtracker.adapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.admin1.gymtracker.R;
-import com.example.admin1.gymtracker.models.Exercise;
 import com.example.admin1.gymtracker.models.ExerciseObjective;
 import com.example.admin1.gymtracker.models.Objective;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,7 +118,7 @@ public class ExerciseObjectiveRVAdapter extends RecyclerView.Adapter<ExerciseObj
         }
     }
 
-    protected void removeItemFromList(String ipExObjId){
+    private void removeItemFromList(String ipExObjId){
         for (int iCnt = 0; iCnt < objectiveKeysList.size();iCnt++){
             if (objectiveKeysList.get(iCnt).equals(ipExObjId)){
                 objectiveKeysList.remove(iCnt);

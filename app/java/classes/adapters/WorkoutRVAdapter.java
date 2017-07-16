@@ -97,7 +97,7 @@ public class WorkoutRVAdapter extends RecyclerView.Adapter<WorkoutRVAdapter.Item
             tblRecord.getRef().child(stKey).removeValue();
         }
         catch (Exception e){
-            Log.d(TAG, "Delete Exception");
+            Log.d(TAG, mContext.getString(R.string.delete_exception));
         }
     }
 

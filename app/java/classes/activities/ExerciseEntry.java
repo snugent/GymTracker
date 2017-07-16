@@ -23,13 +23,13 @@ import java.util.HashMap;
 
 public class ExerciseEntry extends BaseClass {
     private ArrayAdapter<String> stAdapter;
-    Button btnSave;
-    Button btnCancel;
-    Button btnObjectives;
-    EditText etExerciseName;
-    Spinner spnType;
-    String stExerciseId;
-    final String TAG = "ExerciseEntry";
+    private Button btnSave;
+    private Button btnCancel;
+    private Button btnObjectives;
+    private EditText etExerciseName;
+    private Spinner spnType;
+    private String stExerciseId;
+    private final String TAG = "ExerciseEntry";
     private static final int RP_CREATE_OBJECTIVE = 20;
 
     // Database queries

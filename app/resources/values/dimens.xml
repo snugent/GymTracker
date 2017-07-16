@@ -64,4 +64,5 @@
 
     <!-- Main Fill Width -->
     <dimen name="default_left_margin">45dp</dimen>
+    <dimen name="entry_font_size_height">20sp</dimen>
 </resources>

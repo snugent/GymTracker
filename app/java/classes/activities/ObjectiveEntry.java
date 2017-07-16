@@ -23,12 +23,12 @@ import java.util.HashMap;
 public class ObjectiveEntry extends BaseClass {
 
     private ArrayAdapter<String> stAdapter;
-    Button btnSave;
-    Button btnCancel;
-    EditText etObjectiveName;
-    EditText etLabel;
-    Spinner spnType;
-    String stObjectiveId;
+    private Button btnSave;
+    private Button btnCancel;
+    private EditText etObjectiveName;
+    private EditText etLabel;
+    private Spinner spnType;
+    private String stObjectiveId;
     final String TAG = "ObjectiveEntry";
 
     // Database queries

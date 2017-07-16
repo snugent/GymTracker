@@ -1,21 +1,25 @@
 package com.example.admin1.gymtracker.activities;
 
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.example.admin1.gymtracker.R;
+import com.example.admin1.gymtracker.fragments.DatePicker;
 import com.example.admin1.gymtracker.models.Member;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.HashMap;
 
 public class MemberEntry extends BaseClass {
@@ -25,7 +29,7 @@ public class MemberEntry extends BaseClass {
     private Button btnSave;
     private Button btnCancel;
     private EditText etName;
-    private EditText etDob;
+    private TextView tvDate;
     private Spinner  spnSex;
     private EditText etWeight;
     private EditText etHeight;
@@ -33,6 +37,7 @@ public class MemberEntry extends BaseClass {
     private CheckBox chkDeleted;
     private ArrayAdapter<String> stAdapter;
     private HashMap<String, Member> members;
+    private ImageView ivDate;
 
     //Firebase Database query fields
     private DatabaseReference tableRef;
@@ -68,6 +73,14 @@ public class MemberEntry extends BaseClass {
             }
         });
 
+        ivDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogFragment newFragment = new DatePicker("");
+                newFragment.show(getSupportFragmentManager(), "datePicker");
+            }
+        });
+
     } // End on Create Method.
 
     @Override
@@ -94,9 +107,10 @@ public class MemberEntry extends BaseClass {
 
         btnSave = (Button) findViewById(R.id.btnSave);
         btnCancel = (Button) findViewById(R.id.btnCancel);
+        ivDate    = (ImageView) findViewById(R.id.ivDate);
 
         etName     = (EditText) findViewById(R.id.etName);
-        etDob      = (EditText) findViewById(R.id.etDob);
+        tvDate      = (TextView) findViewById(R.id.tvDate);
         spnSex     = (Spinner)  findViewById(R.id.spnSex);
         etWeight   = (EditText) findViewById(R.id.etWeight);
         etHeight   = (EditText) findViewById(R.id.etHeight);
@@ -104,7 +118,7 @@ public class MemberEntry extends BaseClass {
         chkDeleted = (CheckBox) findViewById(R.id.chkDeleted);
         spnSex.setAdapter(stAdapter);
 
-        dbRef = FirebaseDatabase.getInstance();
+        dbRef = getmFirebaseDatabase();
         tableRef = dbRef.getReference().child("Member");
         createEventListener();
         getCurrentMember(stUid);
@@ -119,7 +133,7 @@ public class MemberEntry extends BaseClass {
             currentMember = members.get(ipstUid);
             if (currentMember != null) {
                 etName.setText(currentMember.getName());
-                etDob.setText(currentMember.getDob());
+                tvDate.setText(currentMember.getDob());
                 etWeight.setText(Double.toString(currentMember.getWeight()));
                 etHeight.setText(Double.toString(currentMember.getHeight()));
                 chkAdmin.setChecked(currentMember.getIsAdmin());
@@ -140,7 +154,7 @@ public class MemberEntry extends BaseClass {
         final Member savingData ;
 
         savingData= new Member( etName.getText().toString(),
-                                etDob.getText().toString(),
+                                tvDate.getText().toString(),
                                 spnSex.getSelectedItem().toString(),
                                 Double.parseDouble(etHeight.getText().toString()),
                                 Double.parseDouble(etWeight.getText().toString()),

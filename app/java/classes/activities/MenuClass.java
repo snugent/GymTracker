@@ -25,8 +25,6 @@ public class MenuClass extends BaseClass{
         item.setVisible(isAdmin);
         item = menu.findItem(R.id.objective);
         item.setVisible(isAdmin);
-        item = menu.findItem(R.id.workout_setup);
-        item.setVisible(isAdmin);
         item = menu.findItem(R.id.edit_member);
         item.setVisible(isAdmin);
         return true;
@@ -69,7 +67,6 @@ public class MenuClass extends BaseClass{
                 break;
             case R.id.sign_out:
                 signOut();
-                launchWorkoutActivity();
                 blResult = true;
                 break;
         }

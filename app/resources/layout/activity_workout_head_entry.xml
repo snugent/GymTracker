@@ -11,13 +11,50 @@
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:orientation="vertical"
+        android:weightSum="1"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.constraint.ConstraintLayout
+        <android.widget.RelativeLayout
             android:id="@+id/frameTop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="0.04"
             app:layout_constraintLeft_toLeftOf="parent">
+
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/workout_date"
+                android:textSize="@dimen/entry_font_size_height"
+                android:layout_alignTop="@+id/ivDate"
+                android:layout_toStartOf="@+id/ivDate" />
+
+            <EditText
+                android:id="@+id/etWorkoutComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/tvDate"
+                android:layout_below="@+id/tvDate"
+                android:layout_marginTop="@dimen/card_padding_standard"
+                android:ems="10"
+                android:hint="@string/comment"
+                android:inputType="textMultiLine"
+                android:maxLines="5"
+                android:paddingTop="@dimen/card_padding_standard" />
+
+            <ImageView
+                android:id="@+id/ivDate"
+                android:layout_width="@dimen/card_image_width"
+                android:layout_height="@dimen/card_image_height"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="@dimen/text_margin"
+                android:layout_marginTop="@dimen/card_padding_standard"
+                android:paddingTop="@dimen/card_padding_top"
+                android:src="@drawable/ic_date_range_24px"
+                tools:backgroundTint="@color/white" />
 
             <Button
                 android:id="@+id/btnCancel"
@@ -26,77 +63,29 @@
                 android:layout_alignBaseline="@+id/btnSave"
                 android:layout_alignBottom="@+id/btnSave"
                 android:layout_alignEnd="@+id/etWorkoutComment"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="41dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/cancel"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintLeft_toRightOf="@+id/btnSave"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etWorkoutComment" />
+                android:paddingTop="@dimen/card_padding_standard"
+                android:text="@string/cancel" />
 
             <Button
                 android:id="@+id/btnSave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/etWorkoutDate"
+                android:layout_alignStart="@+id/etWorkoutComment"
                 android:layout_below="@+id/etWorkoutComment"
-                android:layout_marginStart="97dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/save"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etWorkoutComment" />
+                android:layout_marginTop="@dimen/card_padding_standard"
+                android:paddingTop="@dimen/card_padding_standard"
+                android:text="@string/save" />
 
-            <EditText
-                android:id="@+id/etWorkoutComment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/etWorkoutDate"
-                android:layout_below="@+id/etWorkoutDate"
-                android:layout_marginStart="97dp"
-                android:layout_marginTop="16dp"
-                android:ems="10"
-                android:hint="@string/comment"
-                android:inputType="textMultiLine"
-                android:maxLines="5"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etWorkoutDate" />
-
-            <EditText
-                android:id="@+id/etWorkoutDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginStart="97dp"
-                android:layout_marginTop="16dp"
-                android:ems="10"
-                android:hint="@string/workout_date"
-                android:inputType="date"
-                android:maxLines="1"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </android.support.constraint.ConstraintLayout>
+        </android.widget.RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="400dp"
             tools:layout_editor_absoluteX="8dp"
             tools:layout_editor_absoluteY="8dp"
             tools:listitem="@layout/item" />
 
-        <android.support.v7.widget.LinearLayoutCompat
-            android:id="@+id/frameBottom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:layout_editor_absoluteX="8dp"
-            android:layout_weight="1"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-
-        </android.support.v7.widget.LinearLayoutCompat>
     </android.widget.LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -106,6 +95,5 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@android:drawable/ic_input_add" />
-
 
 </android.support.design.widget.CoordinatorLayout>

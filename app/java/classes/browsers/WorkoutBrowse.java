@@ -50,18 +50,11 @@ public class WorkoutBrowse extends MenuClass {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent itWorkoutEntry = new Intent(getApplicationContext(), WorkoutHeadEntry.class);
-                itWorkoutEntry.putExtra("workoutId", "");
-                startActivity(itWorkoutEntry);
+            Intent itWorkoutEntry = new Intent(getApplicationContext(), WorkoutHeadEntry.class);
+            itWorkoutEntry.putExtra("workoutId", "");
+            startActivity(itWorkoutEntry);
             }
         });
-    }
-
-    @Override
-    protected void onStart(){
-        super.onStart();
-        setAuthStateListener();
-        createEventListener();
     }
 
     @Override
@@ -80,15 +73,13 @@ public class WorkoutBrowse extends MenuClass {
 
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
-        FirebaseDatabase dbRef;
+        FirebaseDatabase dbRef = getmFirebaseDatabase();
 
         //Setup Recycle View
         rvList=(RecyclerView)findViewById(R.id.rvList);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rvList.setLayoutManager(llm);
         rvList.setHasFixedSize(true);
-
-        dbRef = FirebaseDatabase.getInstance();
         tableRef = dbRef.getReference().child("Workout");
     }
 
@@ -146,6 +137,5 @@ public class WorkoutBrowse extends MenuClass {
             startActivity(iWorkoutEntry);
         }
     };
-
 
 }
