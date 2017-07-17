@@ -37,9 +37,8 @@ public class ExerciseBrowse extends MenuClass {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise_browse);
         initialiseDatabase();
-
         initialiseScreen();
-        createEventListener();
+        createEventListeners();
         initialiseAdapter();
 
         // Floating Action Bar
@@ -57,14 +56,14 @@ public class ExerciseBrowse extends MenuClass {
     @Override
     protected void onResume(){
         super.onResume();
-        createEventListener();
+        createEventListeners();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
 
-        deleteEventListener();
+        deleteEventListeners();
     }
 
     // Sets up the initial values for the screen
@@ -93,6 +92,17 @@ public class ExerciseBrowse extends MenuClass {
         }
     }
 
+    // Creates all the event listeners for fetching data
+    private void createEventListeners(){
+        launchBaseEventListener();
+        createEventListener();
+    }
+
+    // Delete all the event listeners
+    private void deleteEventListeners(){
+        destroyBaseEventListener();
+        deleteEventListener();
+    }
 
     // Creates an event listener for when we change data
     private void createEventListener(){

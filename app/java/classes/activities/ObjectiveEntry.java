@@ -1,6 +1,5 @@
 package com.example.admin1.gymtracker.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -65,6 +64,7 @@ public class ObjectiveEntry extends BaseClass {
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
         FirebaseDatabase dbRef;
+        initialiseDatabase();
         // Array and array adapter for Objective Sex Dropdown
         String stType[] = {getString(R.string.number),getString(R.string.time)};
         Bundle extras = getIntent().getExtras();
@@ -82,7 +82,7 @@ public class ObjectiveEntry extends BaseClass {
         spnType.setAdapter(stAdapter);
 
 
-        dbRef = FirebaseDatabase.getInstance();
+        dbRef = getmFirebaseDatabase();
         tableExRef = dbRef.getReference().child("Objective");
 
         //Populate Data
@@ -143,13 +143,24 @@ public class ObjectiveEntry extends BaseClass {
     @Override
     protected void onResume(){
         super.onResume();
-        createEventListener();
+        createEventListeners();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
 
+        deleteEventListeners();
+    }
+    // Creates all the event listeners for fetching data
+    private void createEventListeners(){
+        launchBaseEventListener();
+        createEventListener();
+    }
+
+    // Delete all the event listeners
+    private void deleteEventListeners(){
+        destroyBaseEventListener();
         deleteEventListener();
     }
 

@@ -40,7 +40,7 @@ public class WorkoutBrowse extends MenuClass {
         //Sets up the database in Base class for later use
         initialiseDatabase();
         initialiseScreen();
-        createEventListener();
+        createEventListeners();
         initialiseAdapter();
 
 
@@ -61,14 +61,14 @@ public class WorkoutBrowse extends MenuClass {
     protected void onResume(){
         super.onResume();
         setAuthStateListener();
-        createEventListener();
+        createEventListeners();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
         removeAuthStateListener();
-        deleteEventListener();
+        deleteEventListeners();
     }
 
     // Sets up the initial values for the screen
@@ -93,6 +93,18 @@ public class WorkoutBrowse extends MenuClass {
             adapter.setOnItemClickListener(onItemClickListener);
             rvList.setAdapter(adapter);
         }
+    }
+
+    // Creates all the event listeners for fetching data
+    private void createEventListeners(){
+        launchBaseEventListener();
+        createEventListener();
+    }
+
+    // Delete all the event listeners
+    private void deleteEventListeners(){
+        destroyBaseEventListener();
+        deleteEventListener();
     }
 
 

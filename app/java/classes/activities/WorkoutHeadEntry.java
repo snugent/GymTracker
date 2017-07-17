@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class WorkoutHeadEntry extends BaseClass {
+    private FirebaseDatabase dbRef;
     private RecyclerView rvList;
     private Button btnSave;
     private Button btnCancel;
@@ -49,7 +50,6 @@ public class WorkoutHeadEntry extends BaseClass {
     private static final int RP_CREATE_LINE = 10;
 
     // Database queries
-    private FirebaseDatabase dbRef;
     private DatabaseReference tableWkHeadRef;
     private HashMap<String, Workout> workouts;
     private ValueEventListener eventListener;
@@ -72,7 +72,6 @@ public class WorkoutHeadEntry extends BaseClass {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout_head_entry);
-        initialiseDatabase();
         initialiseScreen();
         initialiseAdapter();
 
@@ -144,6 +143,7 @@ public class WorkoutHeadEntry extends BaseClass {
 
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
+        initialiseDatabase();
         Bundle extras = getIntent().getExtras();
         stWorkoutId = extras.getString("workoutId");
         DateTimeFormatter fmt = DateTimeFormat.forPattern("dd/MM/yyyy");
@@ -380,6 +380,7 @@ public class WorkoutHeadEntry extends BaseClass {
     }
 
     private void createEventListeners(){
+        launchBaseEventListener();
         createEventListener();
         createLineEventListener();
         createExerciseEventListener();
@@ -387,6 +388,7 @@ public class WorkoutHeadEntry extends BaseClass {
     }
 
     private void deleteEventListeners(){
+        destroyBaseEventListener();
         deleteEventListener();
         deleteLineEventListener();
         deleteExerciseEventListener();

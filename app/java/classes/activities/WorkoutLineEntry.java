@@ -144,6 +144,7 @@ public class WorkoutLineEntry extends BaseClass {
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
         dbRef = getmFirebaseDatabase();
+        initialiseDatabase();
         Bundle extras = getIntent().getExtras();
         stWorkoutId = extras.getString("workoutId") ;
         stExerciseId    = extras.getString("exerciseId");
@@ -260,6 +261,7 @@ public class WorkoutLineEntry extends BaseClass {
 
     private void createAllEventListeners(){
         int iSpnPos;
+        launchBaseEventListener();
         createAllLinesEventListener();
         createExerciseEventListener();
         createObjectiveEventListener();
@@ -271,6 +273,7 @@ public class WorkoutLineEntry extends BaseClass {
 
 
     private void deleteAllEventListeners(){
+        destroyBaseEventListener();
         deleteAllLinesEventListener();
         deleteExerciseEventListener();
         deleteObjectiveEventListener();

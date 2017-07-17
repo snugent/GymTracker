@@ -40,7 +40,7 @@ public class MemberBrowse extends MenuClass {
 
         initialiseDatabase();
         initialiseScreen();
-        createEventListener();
+        createEventListeners();
         initialiseAdapter();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -48,14 +48,14 @@ public class MemberBrowse extends MenuClass {
     @Override
     protected void onResume(){
         super.onResume();
-        createEventListener();
+        createEventListeners();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
 
-        deleteEventListener();
+        deleteEventListeners();
     }
 
     // Sets up the initial values for the screen
@@ -84,6 +84,17 @@ public class MemberBrowse extends MenuClass {
         }
     }
 
+    // Creates all the event listeners for fetching data
+    private void createEventListeners(){
+        launchBaseEventListener();
+        createEventListener();
+    }
+
+    // Delete all the event listeners
+    private void deleteEventListeners(){
+        destroyBaseEventListener();
+        deleteEventListener();
+    }
 
     // Creates an event listener for when we change data
     private void createEventListener(){

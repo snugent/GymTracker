@@ -1,7 +1,6 @@
 package com.example.admin1.gymtracker.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,7 +29,6 @@ public class ExerciseObjectiveEntry extends BaseClass {
     private RecyclerView rvList;
     private final String TAG = "ExerciseObjectiveEntry";
 
-    private FirebaseDatabase dbRef;
     // Database queries - Exercise Objective
     private DatabaseReference tblExObjRef;
     private HashMap<String, ExerciseObjective> exerciseObjectives;
@@ -98,6 +96,8 @@ public class ExerciseObjectiveEntry extends BaseClass {
 
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
+        FirebaseDatabase dbRef;
+        initialiseDatabase();
         tvExerciseName  = (TextView) findViewById(R.id.tvExerciseName);
         btnSave         = (Button) findViewById(R.id.btnSave);
         btnCancel       = (Button) findViewById(R.id.btnCancel);
@@ -140,12 +140,14 @@ public class ExerciseObjectiveEntry extends BaseClass {
 
     // Creates all the event listeners for fetching data
     private void createEventListeners(){
+        launchBaseEventListener();
         createExerciseEventListener();
         createObjectiveEventListener();
     }
 
     // Delete all the event listeners
     private void deleteEventListeners(){
+        destroyBaseEventListener();
         deleteExerciseEventListener();
         deleteObjectiveEventListener();
         deleteExObjEventListener();

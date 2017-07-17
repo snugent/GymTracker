@@ -23,7 +23,7 @@ import java.util.HashMap;
  */
 
 public class BaseClass extends AppCompatActivity {
-    private static FirebaseDatabase mFirebaseDatabase;
+    private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mFirebaseAuth ;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private static final int RP_SIGN_IN_ID = 1;
@@ -59,12 +59,9 @@ public class BaseClass extends AppCompatActivity {
     }
 
     protected void initialiseDatabase(){
-        Log.d(TAG,"initialiseDatabase: " + isAdminUser(getCurrentUserId()));
-        Log.d(TAG,"initialiseDatabase 2: " + mFirebaseDatabase);
         if (mFirebaseDatabase == null){
             mFirebaseDatabase  = FirebaseDatabase.getInstance();
             mFirebaseAuth      = FirebaseAuth.getInstance();
-            mFirebaseDatabase.setPersistenceEnabled(true);
         }
         tableRef = mFirebaseDatabase.getReference().child("Member");
         createAuthStateListener();
@@ -159,7 +156,7 @@ public class BaseClass extends AppCompatActivity {
     protected boolean isAdminUser(String uid){
         boolean isAdmin = false;
         Member currentMember ;
-        Log.d(TAG,"members not null: " + (members!= null));
+        Log.d(TAG,"is AdminUser - members not null: " + (members!= null));
         if (members!= null && hasProfile(uid)) {
             currentMember = members.get(uid);
             //If the user is an admin user and the current user is not deleted
@@ -167,8 +164,9 @@ public class BaseClass extends AppCompatActivity {
                 isAdmin = true;
             }
             else{
-                isAdmin = true;
+                isAdmin = false;
             }
+            Log.d(TAG,"isAdmin In check: " + (members!= null));
         }
         else {
             isAdmin = false;
@@ -176,7 +174,7 @@ public class BaseClass extends AppCompatActivity {
         /* test code */
         // return true;
         /* *** test code */
-        Log.d(TAG,"setisAdmin: " + isAdmin);
+        Log.d(TAG,"End isAdmin: " + isAdmin);
         return isAdmin;
     }
 
@@ -192,6 +190,8 @@ public class BaseClass extends AppCompatActivity {
         return isDeleted;
     }
 
+
+
     // Creates an event listener for when we change data
     private void createBaseEventListener(){
 
@@ -204,7 +204,6 @@ public class BaseClass extends AppCompatActivity {
                         Member mMember = child.getValue(Member.class);
                         members.put(child.getKey(), mMember);
                     }
-                    isAdminUser(getCurrentUserId());
                 }
 
                 @Override
@@ -224,4 +223,11 @@ public class BaseClass extends AppCompatActivity {
             tableRef.removeEventListener(eventListener);
         }
     }// End DeleteEventListener
+
+    protected void launchBaseEventListener(){
+        createBaseEventListener();
+    }
+    protected void destroyBaseEventListener(){
+        deleteBaseEventListener();
+    }
 }

@@ -38,7 +38,7 @@ public class ObjectiveBrowse extends MenuClass {
         setContentView(R.layout.activity_objective_browse);
         initialiseDatabase();
         initialiseScreen();
-        createEventListener();
+        createEventListeners();
         initialiseAdapter();
 
         // Floating Action Bar
@@ -56,14 +56,14 @@ public class ObjectiveBrowse extends MenuClass {
     @Override
     protected void onResume(){
         super.onResume();
-        createEventListener();
+        createEventListeners();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
 
-        deleteEventListener();
+        deleteEventListeners();
     }
 
     // Sets up the initial values for the screen
@@ -90,6 +90,18 @@ public class ObjectiveBrowse extends MenuClass {
             adapter.setOnItemClickListener(onItemClickListener);
             rvList.setAdapter(adapter);
         }
+    }
+
+    // Creates all the event listeners for fetching data
+    private void createEventListeners(){
+        launchBaseEventListener();
+        createEventListener();
+    }
+
+    // Delete all the event listeners
+    private void deleteEventListeners(){
+        destroyBaseEventListener();
+        deleteEventListener();
     }
 
 

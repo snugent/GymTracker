@@ -76,14 +76,13 @@ public class ExerciseEntry extends BaseClass {
     @Override
     protected void onResume(){
         super.onResume();
-        createEventListener();
+        createEventListeners();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-
-        deleteEventListener();
+        deleteEventListeners();
     }
 
     @Override
@@ -97,6 +96,7 @@ public class ExerciseEntry extends BaseClass {
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
         FirebaseDatabase dbRef;
+        initialiseDatabase();
         // Array and array adapter for Exercise Sex Dropdown
         String stType[] = {getString(R.string.strength), getString(R.string.cardio)};
         Bundle extras = getIntent().getExtras();
@@ -114,7 +114,7 @@ public class ExerciseEntry extends BaseClass {
         spnType.setAdapter(stAdapter);
 
 
-        dbRef = FirebaseDatabase.getInstance();
+        dbRef = getmFirebaseDatabase();
         tableExRef = dbRef.getReference().child("Exercise");
 
         //Populate Data
@@ -169,6 +169,18 @@ public class ExerciseEntry extends BaseClass {
         return true;
     }
 
+    //Launches all event Listeners
+    private void createEventListeners(){
+        launchBaseEventListener();
+        createEventListener();
+    }
+
+    // deletes all event listeners
+    private void deleteEventListeners(){
+        deleteEventListener();
+        destroyBaseEventListener();
+    }
+
     // Creates an event listener for when we change data
     private void createEventListener(){
         if(eventListener == null) {
@@ -201,5 +213,4 @@ public class ExerciseEntry extends BaseClass {
             tableExRef.removeEventListener(eventListener);
         }
     }
-
 }

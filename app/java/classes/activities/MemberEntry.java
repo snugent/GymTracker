@@ -86,19 +86,19 @@ public class MemberEntry extends BaseClass {
     @Override
     protected void onResume(){
         super.onResume();
-        createEventListener();
+        createEventListeners();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-
-        deleteEventListener();
+        deleteEventListeners();
     }
 
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
         FirebaseDatabase  dbRef;
+        initialiseDatabase();
         // Array and array adapter for Member Sex Dropdown
         String stSex[] = {getString(R.string.male), getString(R.string.female)};
         stAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, stSex);
@@ -123,6 +123,13 @@ public class MemberEntry extends BaseClass {
         createEventListener();
         getCurrentMember(stUid);
 
+    }
+
+    private void disableAdminFields() {
+        if (!isAdminUser(getCurrentUserId())){
+            chkAdmin.setVisibility(View.GONE);
+            chkDeleted.setVisibility(View.GONE);
+        }
     }
 
     // If doing a modify task this method gets the Current Record and poulates the GUI fields
@@ -172,6 +179,18 @@ public class MemberEntry extends BaseClass {
         return true;
     }
 
+    //Launches all event Listeners
+    private void createEventListeners(){
+        launchBaseEventListener();
+        createEventListener();
+    }
+
+    // deletes all event listeners
+    private void deleteEventListeners(){
+        destroyBaseEventListener();
+        deleteEventListener();
+    }
+
     // Creates an event listener for when we change data
     private void createEventListener(){
         if(eventListener == null) {
@@ -184,6 +203,7 @@ public class MemberEntry extends BaseClass {
                         members.put(child.getKey(), mMember);
                     }
                     getCurrentMember(stUid);
+                    disableAdminFields();
                 }
 
                 @Override
@@ -203,5 +223,4 @@ public class MemberEntry extends BaseClass {
             tableRef.removeEventListener(eventListener);
         }
     }
-
 }

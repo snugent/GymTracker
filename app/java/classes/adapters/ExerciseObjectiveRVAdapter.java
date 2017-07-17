@@ -36,8 +36,6 @@ public class ExerciseObjectiveRVAdapter extends RecyclerView.Adapter<ExerciseObj
     private final String TAG = "ExerciseObjRVAdapter";
     private DatabaseReference tblExObj;
 
-    private FirebaseDatabase dbRef = FirebaseDatabase.getInstance();
-
     public ExerciseObjectiveRVAdapter(HashMap<String, ExerciseObjective> exerciseObjectives,
                                       HashMap<String, Objective> objectives,
                                       DatabaseReference tblExObj){
