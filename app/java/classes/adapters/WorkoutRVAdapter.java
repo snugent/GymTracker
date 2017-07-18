@@ -14,7 +14,11 @@ import android.widget.TextView;
 
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.models.Workout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -79,14 +83,85 @@ public class WorkoutRVAdapter extends RecyclerView.Adapter<WorkoutRVAdapter.Item
         String stDayName = dtWorkout.dayOfWeek().getAsText();
         workoutViewHolder.tvHeading.setText(stDayName);
         workoutViewHolder.tvDetail.setText(mWorkout.getWorkoutDate());
+
+
         workoutViewHolder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getDeleteConfirmation("", pos);
             }
         });
+
+        workoutViewHolder.btnCopy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getCopyConfirmation(mContext.getString(R.string.confirm_copy_workout), pos);
+            }
+        });
     }
 
+    //Copy an existing workout
+    private void copyWorkout(int index ){
+        final String fromKey = keysList.get(index);
+
+
+        //Get the current workout id
+        Query qryCopy = tblRecord.getRef().child(fromKey);
+
+
+        qryCopy.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String toKey = null;
+                DatabaseReference dbRef;
+
+                if (dataSnapshot.exists()){
+                    dbRef = tblRecord.push();
+                    dbRef.setValue(dataSnapshot.getValue());
+                    toKey = dbRef.getKey();
+
+                }
+                if (toKey != null){
+                    copyWorkoutLines(fromKey, toKey);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "Data Write Error");
+
+            }
+        });
+    }
+
+    //Copy an existing workout
+    private void copyWorkoutLines(String fromKey, String toKey){
+
+
+        //Get the current workout id
+        final DatabaseReference oldRef = tblRecord.getRef().child(fromKey).child("WorkoutLine");
+        Query qryCopy = tblRecord.getRef().child(fromKey);
+
+
+        qryCopy.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    oldRef.child("WorkoutLine").push().setValue(dataSnapshot.getValue());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "Data Write Error");
+
+            }
+        });
+    }
+
+
+    // Delete chosen row
     private void deleteRow(int index ){
         String stKey = keysList.get(index);
         try{
@@ -138,12 +213,50 @@ public class WorkoutRVAdapter extends RecyclerView.Adapter<WorkoutRVAdapter.Item
         mAdConfirm.show();
     }
 
+    //Get confirmation of delete
+    private void getCopyConfirmation(String stConfirmMsg, final int iPos){
+        String stMessage;
+
+        AlertDialog mAdConfirm;
+        AlertDialog.Builder mAdbConfirm;
+
+        mAdbConfirm = new AlertDialog.Builder(mContext);
+        if (stConfirmMsg.equals("")){
+            stMessage = mContext.getResources().getString(R.string.confirm_general);
+        }
+        else{
+            stMessage = stConfirmMsg;
+        }
+
+
+        mAdbConfirm.setMessage(stMessage)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        copyWorkout(iPos);
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .setCancelable(false) ;
+
+
+        mAdConfirm = mAdbConfirm.create();
+        mAdConfirm.show();
+    }
+
 
     class ItemViewActivity extends RecyclerView.ViewHolder implements View.OnClickListener{
         private LinearLayout placeHolder;
         private TextView tvHeading;
         private TextView tvDetail;
         private ImageButton btnDelete;
+        private ImageButton btnCopy;
 
 
         ItemViewActivity(View v ){
@@ -153,6 +266,8 @@ public class WorkoutRVAdapter extends RecyclerView.Adapter<WorkoutRVAdapter.Item
             tvHeading = (TextView) v.findViewById(R.id.tvHeading);
             tvDetail  = (TextView) v.findViewById((R.id.tvDetail));
             btnDelete = (ImageButton) v.findViewById(R.id.btnDelete);
+            btnCopy   = (ImageButton) v.findViewById(R.id.btnCopy);
+            btnCopy.setVisibility(View.VISIBLE);
 
         }
         @Override

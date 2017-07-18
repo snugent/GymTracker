@@ -5,4 +5,8 @@
     tools:context="com.example.admin1.gymtracker.fragments.DatePicker">
 
 
+    <DatePicker
+        android:id="@+id/mDatePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </FrameLayout>

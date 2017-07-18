@@ -39,7 +39,5 @@
     <string name="btn_objectives">Objectives</string>
     <string name="confirm_general">Are you sure?</string>
     <string name="delete_exception">Delete Exception</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="confirm_copy_workout">Copy workout, are you sure</string>
 </resources>

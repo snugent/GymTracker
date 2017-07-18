@@ -1,6 +1,5 @@
 package com.example.admin1.gymtracker.activities;
 
-import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -12,7 +11,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.admin1.gymtracker.R;
-import com.example.admin1.gymtracker.fragments.DatePicker;
 import com.example.admin1.gymtracker.models.Member;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -70,14 +68,6 @@ public class MemberEntry extends BaseClass {
             @Override
             public void onClick(View v) {
                 finish();
-            }
-        });
-
-        ivDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DialogFragment newFragment = new DatePicker("");
-                newFragment.show(getSupportFragmentManager(), "datePicker");
             }
         });
 

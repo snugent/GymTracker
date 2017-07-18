@@ -146,7 +146,7 @@ public class WorkoutHeadEntry extends BaseClass {
         initialiseDatabase();
         Bundle extras = getIntent().getExtras();
         stWorkoutId = extras.getString("workoutId");
-        DateTimeFormatter fmt = DateTimeFormat.forPattern("dd/MM/yyyy");
+        DateTimeFormatter dtFmt = DateTimeFormat.forPattern("dd/MM/yyyy");
         DateTime dtDob = new DateTime();
 
 
@@ -170,7 +170,7 @@ public class WorkoutHeadEntry extends BaseClass {
         btnSave         = (Button) findViewById(R.id.btnSave);
         btnCancel       = (Button) findViewById(R.id.btnCancel);
         ivDate          = (ImageView) findViewById(R.id.ivDate);
-        tvDate.setText(fmt.print(dtDob));
+        tvDate.setText(dtFmt.print(dtDob));
 
         dbRef = getmFirebaseDatabase();
         tableWkHeadRef = dbRef.getReference().child("Workout");

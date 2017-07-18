@@ -36,8 +36,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginEnd="@dimen/card_padding_standard"
-            android:background="@color/cardview_dark_background"
-            />
+            android:background="@color/cardview_dark_background" />
 
         <TextView
             android:id="@+id/tvHeading"
@@ -56,11 +55,23 @@
             android:textSize="@dimen/card_font_secondary" />
 
         <ImageButton
-            android:id="@+id/btnDelete"
-            android:layout_alignParentEnd="true"
+            android:id="@+id/btnCopy"
             android:layout_width="@dimen/card_delete_button_width"
             android:layout_height="@dimen/card_delete_button_height"
-            app:srcCompat="@android:drawable/ic_delete" />
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@+id/btnDelete"
+            android:background="@color/white"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_copy_24dp" />
+
+        <ImageButton
+            android:id="@+id/btnDelete"
+            android:layout_width="@dimen/card_delete_button_width"
+            android:layout_height="@dimen/card_delete_button_height"
+            android:background="@color/white"
+            app:srcCompat="@drawable/ic_close_24dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true" />
 
 
     </RelativeLayout>

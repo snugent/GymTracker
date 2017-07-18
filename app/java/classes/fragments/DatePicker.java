@@ -17,9 +17,9 @@ https://developer.android.com/guide/topics/ui/controls/pickers.html
 
 public class DatePicker extends DialogFragment implements DatePickerDialog.OnDateSetListener {
     private String stExistingText;
+    private DatePicker mDatePicker;
     public DatePicker(String stExistingText){
         this.stExistingText = stExistingText;
-
     }
 
     @Override
@@ -28,9 +28,8 @@ public class DatePicker extends DialogFragment implements DatePickerDialog.OnDat
         int iYear  = c.get(Calendar.YEAR);
         int iMonth = c.get(Calendar.MONTH);
         int iDay   = c.get(Calendar.DAY_OF_MONTH);
-
         // Create a new instance of DatePickerDialog and return it
-        return new DatePickerDialog(getActivity(), this, iYear, iMonth, iDay);
+        return new DatePickerDialog(getActivity(), R.style.AppTheme, this, iYear, iMonth, iDay);
     }
 
 
