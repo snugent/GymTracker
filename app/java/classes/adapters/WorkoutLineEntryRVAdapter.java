@@ -94,13 +94,18 @@ public class WorkoutLineEntryRVAdapter extends RecyclerView.Adapter<WorkoutLineE
             stObjectiveType = mObjective.getViewType();
             if (workoutLineHashMap != null ){
                 for (WorkoutLine current: workoutLineList) {
-                    if (current != null && current.getObjectiveId().equals(mWorkoutLine.getObjectiveId()) ){
+                    if (current != null
+                        && current.getObjectiveId().equals(mWorkoutLine.getObjectiveId())
+                        && current.getEntryValue() >= 0){
                         stEntryValue = "" + current.getEntryValue();
                     }
                 } // for (WorkoutLine
             }// if workoutLineHashMap != null
 
         } // if mObjective != null
+        else{
+            stEntryValue = null;
+        }
 
 
         // Set GUI elements

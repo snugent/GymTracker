@@ -96,6 +96,9 @@ public class ExerciseEntry extends BaseClass {
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
         FirebaseDatabase dbRef;
+        //Adds Titlebar
+        getSupportActionBar().setTitle(R.string.title_exercises_entry);
+
         initialiseDatabase();
         // Array and array adapter for Exercise Sex Dropdown
         String stType[] = {getString(R.string.strength), getString(R.string.cardio)};
@@ -165,8 +168,12 @@ public class ExerciseEntry extends BaseClass {
 
     // This method will validate the user data entered.
     private boolean isValidRecord(){
-        //To do Validate User Input
-        return true;
+        boolean blValid = true;
+        if (etExerciseName.getText().toString().equals("") || etExerciseName.getText().toString() == null){
+            etExerciseName.setError(getString(R.string.error_not_blank));
+            blValid = false;
+        }
+        return blValid;
     }
 
     //Launches all event Listeners

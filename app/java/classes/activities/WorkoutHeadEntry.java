@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -142,13 +143,15 @@ public class WorkoutHeadEntry extends BaseClass {
     }
 
     // Sets up the initial values for the screen
-    private  void initialiseScreen(){
+    private  void  initialiseScreen(){
         initialiseDatabase();
+        //Adds Titlebar
+        getSupportActionBar().setTitle(R.string.title_workout_entry);
+
         Bundle extras = getIntent().getExtras();
         stWorkoutId = extras.getString("workoutId");
         DateTimeFormatter dtFmt = DateTimeFormat.forPattern("dd/MM/yyyy");
         DateTime dtDob = new DateTime();
-
 
         // If not an update generate a temporary workout Id to enable the creation
         // of workout lines
@@ -171,6 +174,8 @@ public class WorkoutHeadEntry extends BaseClass {
         btnCancel       = (Button) findViewById(R.id.btnCancel);
         ivDate          = (ImageView) findViewById(R.id.ivDate);
         tvDate.setText(dtFmt.print(dtDob));
+        // Don't display keyboard unless user selects a edit text
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         dbRef = getmFirebaseDatabase();
         tableWkHeadRef = dbRef.getReference().child("Workout");
@@ -235,8 +240,10 @@ public class WorkoutHeadEntry extends BaseClass {
 
     // This method will validate the user data entered.
     private boolean isValidRecord(){
+        boolean blValidRecord = true;
+
         //To do Validate User Input
-        return true;
+        return blValidRecord;
     }
 
     // Creates an event listener for when we change data

@@ -43,7 +43,6 @@ public class ExerciseBrowse extends MenuClass {
 
         // Floating Action Bar
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,6 +68,9 @@ public class ExerciseBrowse extends MenuClass {
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
         FirebaseDatabase dbRef;
+
+        //Adds Titlebar
+        getSupportActionBar().setTitle(R.string.title_exercises);
 
         //Setup Recycle View
         rvList=(RecyclerView)findViewById(R.id.rvList);

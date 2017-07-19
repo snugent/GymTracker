@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.models.Objective;
@@ -64,6 +65,8 @@ public class ObjectiveEntry extends BaseClass {
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
         FirebaseDatabase dbRef;
+        //Adds Titlebar
+        getSupportActionBar().setTitle(R.string.title_objective_entry);
         initialiseDatabase();
         // Array and array adapter for Objective Sex Dropdown
         String stType[] = {getString(R.string.number),getString(R.string.time)};
@@ -136,8 +139,16 @@ public class ObjectiveEntry extends BaseClass {
 
     // This method will validate the user data entered.
     private boolean isValidRecord(){
-        //To do Validate User Input
-        return true;
+        boolean blValid = true;
+        if (etObjectiveName.getText().toString().equals("") || etObjectiveName.getText().toString() == null){
+            etObjectiveName.setError(getString(R.string.error_not_blank));
+            blValid = false;
+        }
+        if(etLabel.getText().toString().equals("") || etLabel.getText().toString() == null){
+            etLabel.setError(getString(R.string.error_not_blank));
+            blValid = false;
+        }
+        return blValid;
     }
 
     @Override

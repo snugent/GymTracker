@@ -40,4 +40,18 @@
     <string name="confirm_general">Are you sure?</string>
     <string name="delete_exception">Delete Exception</string>
     <string name="confirm_copy_workout">Copy workout, are you sure</string>
+    <string name="title_objectives">Objectives</string>
+    <string name="title_objective_entry">Objective Entry</string>
+    <string name="title_workout_setup">Workout Setup</string>
+    <string name="title_exercises">Exercises</string>
+    <string name="title_exercises_entry">Exercise Entry</string>
+    <string name="title_members">Members</string>
+    <string name="title_members_entry">Profile</string>
+    <string name="title_workout_browse">Workouts</string>
+    <string name="title_workout_entry">Workout Entry</string>
+    <string name="title_workout_line_entry">Workout Line Entry</string>
+    <string name="error_not_blank">Must have a value</string>
+    <string name="error_height_check">Height must be between 0.5 and 3 metres</string>
+    <string name="error_weight_check">Weight must be between 0 and 600 Kg</string>
+    <string name="error_dob_check">Age must be between 16 and 80</string>
 </resources>

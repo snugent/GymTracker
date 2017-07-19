@@ -1,6 +1,8 @@
 package com.example.admin1.gymtracker.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -59,9 +61,19 @@ public class BaseClass extends AppCompatActivity {
     }
 
     protected void initialiseDatabase(){
+        SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor edPref = mPref.edit();
+
         if (mFirebaseDatabase == null){
             mFirebaseDatabase  = FirebaseDatabase.getInstance();
             mFirebaseAuth      = FirebaseAuth.getInstance();
+        }
+        if (!mPref.getBoolean("PersistentEnabled",false)) {
+            mFirebaseDatabase.setPersistenceEnabled(true);
+            edPref = mPref.edit();
+            edPref.putBoolean("PersistentEnabled", true);
+            edPref.apply();
+
         }
         tableRef = mFirebaseDatabase.getReference().child("Member");
         createAuthStateListener();
@@ -102,11 +114,17 @@ public class BaseClass extends AppCompatActivity {
     } //End setmAuthSateListener method
 
     private void onSignedInInitialise(){
+
         mFirebaseAuth      = FirebaseAuth.getInstance();
         createBaseEventListener();
     }
 
     private void onSignedOutCleanUp(){
+        // Removed Shared Preferences, no longer needed.
+        SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(this);
+        mPref.edit().remove("PersistentEnabled").commit();
+
+
         mFirebaseAuth = null;
         deleteBaseEventListener();
 

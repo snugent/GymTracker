@@ -40,7 +40,8 @@
         android:textSize="@dimen/entry_font_size_height"
         android:layout_below="@+id/etName"
         android:layout_alignStart="@+id/etName"
-        android:layout_alignEnd="@+id/etName" />
+        android:layout_alignEnd="@+id/etName"
+        android:inputType="text"/>
 
     <Spinner
         android:id="@+id/spnSex"

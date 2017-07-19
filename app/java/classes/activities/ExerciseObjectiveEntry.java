@@ -104,6 +104,8 @@ public class ExerciseObjectiveEntry extends BaseClass {
         dbRef           = getmFirebaseDatabase();
         Bundle extras = getIntent().getExtras();
         stExerciseId = extras.getString("exerciseId") ;
+        //Adds Titlebar
+        getSupportActionBar().setTitle(R.string.title_workout_setup);
 
         //Setup Recycle View
         rvList=(RecyclerView)findViewById(R.id.rvList);

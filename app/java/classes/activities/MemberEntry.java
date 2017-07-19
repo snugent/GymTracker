@@ -1,6 +1,7 @@
 package com.example.admin1.gymtracker.activities;
 
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -11,12 +12,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.admin1.gymtracker.R;
+import com.example.admin1.gymtracker.fragments.DatePicker;
 import com.example.admin1.gymtracker.models.Member;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.HashMap;
 
@@ -88,6 +95,9 @@ public class MemberEntry extends BaseClass {
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
         FirebaseDatabase  dbRef;
+        //Adds Titlebar
+        getSupportActionBar().setTitle(R.string.title_members_entry);
+
         initialiseDatabase();
         // Array and array adapter for Member Sex Dropdown
         String stSex[] = {getString(R.string.male), getString(R.string.female)};
@@ -112,6 +122,14 @@ public class MemberEntry extends BaseClass {
         tableRef = dbRef.getReference().child("Member");
         createEventListener();
         getCurrentMember(stUid);
+
+        ivDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogFragment newFragment = new DatePicker("");
+                newFragment.show(getSupportFragmentManager(), "datePicker");
+            }
+        });
 
     }
 
@@ -165,8 +183,61 @@ public class MemberEntry extends BaseClass {
 
     // This method will validate the user data entered.
     private boolean isValidRecord(){
-        //To do Validate User Input
-        return true;
+        boolean blValid = true;
+        DateTimeFormatter dtFmt = DateTimeFormat.forPattern("dd/MM/yyyy");
+        DateTime dtToday;
+        DateTime dtDob;
+        Period pDiff ;
+        int iAge = 0;
+
+
+
+        if (etName.getText().toString().equals("") || etName.getText().toString() == null){
+            etName.setError(getString(R.string.error_not_blank));
+            blValid = false;
+        }
+        if(tvDate.getText().toString().equals("") || tvDate.getText().toString() == null){
+            tvDate.setError(getString(R.string.error_not_blank));
+            blValid = false;
+        }
+        // Sanity check on age 16 - 80
+        else {
+            dtToday = new DateTime();
+            dtDob   = new DateTime(dtFmt.parseDateTime(tvDate.getText().toString()));
+            pDiff = new Period(dtToday,dtDob);
+            iAge = pDiff.getYears();
+            if(iAge < 16 || iAge > 80){
+                tvDate.setError(getString(R.string.error_dob_check));
+                blValid = false;
+            }
+        }
+        if(etWeight.getText().toString().equals("") || etWeight.getText().toString() == null){
+            etWeight.setError(getString(R.string.error_not_blank));
+            blValid = false;
+        }
+        // Sanity check on Weight 0 - 600 KG
+        else if (Double.parseDouble(etWeight.getText().toString()) <= 0 ||
+                Double.parseDouble(etWeight.getText().toString()) > 600){
+            etWeight.setError(getString(R.string.error_weight_check));
+            blValid = false;
+        }
+
+        if (etHeight.getText().toString().equals("") || etHeight.getText().toString() == null){
+            etHeight.setError(getString(R.string.error_not_blank));
+            blValid = false;
+        }
+        // Sanity Check on Height 0.5 - 3 metres in height
+        else if (Double.parseDouble(etHeight.getText().toString()) < 0.5 ||
+                    Double.parseDouble(etHeight.getText().toString()) > 3){
+                etHeight.setError(getString(R.string.error_height_check));
+                blValid = false;
+         }
+
+
+
+
+
+        return blValid;
     }
 
     //Launches all event Listeners

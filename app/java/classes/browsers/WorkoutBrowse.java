@@ -1,5 +1,6 @@
 package com.example.admin1.gymtracker.browsers;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -127,7 +128,6 @@ public class WorkoutBrowse extends MenuClass {
 
         // Floating Action Bar
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -154,12 +154,14 @@ public class WorkoutBrowse extends MenuClass {
 
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
+        //Adds Titlebar
+        getSupportActionBar().setTitle(R.string.title_workout_browse);
         tvDate = (TextView) findViewById(R.id.tvDate);
         ivForward = (ImageView) findViewById(R.id.ivForward);
         ivBack = (ImageView) findViewById(R.id.ivBack);
         ivDate = (ImageView) findViewById(R.id.ivDate);
-        //Set Initial value for Date
 
+        //Set Initial value for Date
         dtFilterDateStart = new DateTime();
         dtFilterDateEnd = new DateTime();
         dtFilterDateStart = getWeekStart(dtFilterDateStart);

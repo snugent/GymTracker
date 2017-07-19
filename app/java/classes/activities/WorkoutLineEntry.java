@@ -143,8 +143,12 @@ public class WorkoutLineEntry extends BaseClass {
 
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
-        dbRef = getmFirebaseDatabase();
         initialiseDatabase();
+        dbRef = getmFirebaseDatabase();
+        //Adds Titlebar
+        getSupportActionBar().setTitle(R.string.title_workout_line_entry);
+
+
         Bundle extras = getIntent().getExtras();
         stWorkoutId = extras.getString("workoutId") ;
         stExerciseId    = extras.getString("exerciseId");
@@ -176,6 +180,14 @@ public class WorkoutLineEntry extends BaseClass {
                 if (alreadyExists(currentRecord.getExerciseId())){
                     blValid = false;
                     Toast.makeText(this, getString(R.string.err_workout_line_1), Toast.LENGTH_LONG).show();
+                    iCnt = workoutLinesList.size();
+
+                }
+                else if(currentRecord.getEntryValue() == -1){
+                    workoutLines.remove(workoutLineKeysList.get(iCnt));
+                    workoutLinesList.remove(iCnt);
+                    workoutLineKeysList.remove(iCnt);
+
 
                 }
                 else{
@@ -183,6 +195,8 @@ public class WorkoutLineEntry extends BaseClass {
                 }
             } //for
         }// if stExercise Id = null ...
+
+
         return blValid;
     } // isValidRecord method
 
@@ -372,7 +386,7 @@ public class WorkoutLineEntry extends BaseClass {
                         WorkoutLine mWorkoutLine = new WorkoutLine();
                         mWorkoutLine.setExerciseId(ipstExerciseId);
                         mWorkoutLine.setObjectiveId(mExerciseObjective.getObjectiveId());
-                        mWorkoutLine.setEntryValue(0);
+                        mWorkoutLine.setEntryValue(-1);
 
                         workoutLineKeysList.add(iCnt, ("" + iCnt));
                         workoutLinesList.add(iCnt, mWorkoutLine);

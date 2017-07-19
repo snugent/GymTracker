@@ -42,8 +42,6 @@ public class MemberBrowse extends MenuClass {
         initialiseScreen();
         createEventListeners();
         initialiseAdapter();
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
     @Override
     protected void onResume(){
@@ -61,6 +59,9 @@ public class MemberBrowse extends MenuClass {
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
         FirebaseDatabase dbRef;
+
+        //Adds Titlebar
+        getSupportActionBar().setTitle(R.string.title_members);
 
         //Setup Recycle View
         rvList=(RecyclerView)findViewById(R.id.rvList);
