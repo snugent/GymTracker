@@ -202,11 +202,18 @@ public class WorkoutLineEntry extends BaseClass {
 
     //Saves Record Details to the database
     private void saveData(){
+        DatabaseReference dbIdxRef;
+
         // If new
         if (stExerciseId == null || stExerciseId.equals("")){
             for(int iCnt =0; iCnt < workoutLinesList.size(); iCnt++) {
                 WorkoutLine currentRecord = workoutLinesList.get(iCnt);
-                tblWorkoutHead.child("WorkoutLine").push().setValue(currentRecord);
+                dbIdxRef =  tblWorkoutHead.child("WorkoutLine").push();
+                dbIdxRef.setValue(currentRecord);
+                //Create Index Table of Exercise + Workout to prevent deletion of exercises linked to workouts
+                dbRef.getReference().child("IdxExWrk").child(currentRecord.getExerciseId()).child(stWorkoutId).setValue("");
+                //Create Index Table of Objective + Workout to prevent deletion of objectiveslinked to workouts
+                dbRef.getReference().child("IdxObjWrk").child(currentRecord.getObjectiveId()).child(stWorkoutId).setValue("");
             }
         }
         //If update

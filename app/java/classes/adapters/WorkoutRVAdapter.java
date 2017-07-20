@@ -17,6 +17,7 @@ import com.example.admin1.gymtracker.models.Workout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -37,6 +38,9 @@ public class WorkoutRVAdapter extends RecyclerView.Adapter<WorkoutRVAdapter.Item
     private HashMap<String, Workout> workouts;
     private List<Workout> workoutList;
     private List<String> keysList;
+    private HashMap<String, Workout> lines;
+    private List<Workout> linesList;
+    private List<String> linesKeysList;
     private Context mContext;
 
     private final String TAG = "WorkoutRVAdapter";
@@ -44,11 +48,18 @@ public class WorkoutRVAdapter extends RecyclerView.Adapter<WorkoutRVAdapter.Item
 
     public WorkoutRVAdapter(HashMap<String, Workout> workouts, DatabaseReference tblRecord,
                             Context mContext){
+        int iCnt = 0;
         this.workouts = workouts;
         this.tblRecord = tblRecord;
         keysList = new ArrayList<>(workouts.keySet());
         workoutList = new ArrayList<>(workouts.values());
         this.mContext    = mContext;
+
+        //TO DO populate lines list here
+        for (iCnt = 0; iCnt < workoutList.size(); iCnt++){
+            tblRecord.getRef().child(keysList.get(iCnt)).child("WorkoutLine").getKey();
+            tblRecord.getRef().child(keysList.get(iCnt)).child("WorkoutLine").getClass();
+        }
     }
 
     public interface OnItemClickListener {
