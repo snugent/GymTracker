@@ -45,14 +45,11 @@ public class BaseClass extends AppCompatActivity {
     protected boolean hasProfile(String uid){
         boolean hasProfile;
         Member currentMember ;
+        SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor edPref = mPref.edit();
 
-        if (members!= null) {
-            currentMember = members.get(uid);
-            hasProfile = (currentMember != null);
-        }
-        else {
-            hasProfile = false;
-        }
+        hasProfile = mPref.getBoolean("hasProfile", false);
+
         return hasProfile;
     }
 
@@ -74,7 +71,16 @@ public class BaseClass extends AppCompatActivity {
             mFirebaseAuth      = FirebaseAuth.getInstance();
         }
         if (!mPref.getBoolean("PersistentEnabled",false)) {
-            mFirebaseDatabase.setPersistenceEnabled(true);
+            // This sometimes gets called a second time if the user log out and logs back in
+            //without closeing the app
+            //Try catch the error.
+            try {
+                mFirebaseDatabase.setPersistenceEnabled(true);
+            }
+            catch(Exception e){
+                Log.d(TAG, e.getMessage());
+            }
+
             edPref = mPref.edit();
             edPref.putBoolean("PersistentEnabled", true);
             edPref.apply();
@@ -127,9 +133,8 @@ public class BaseClass extends AppCompatActivity {
     private void onSignedOutCleanUp(){
         // Removed Shared Preferences, no longer needed.
         SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(this);
-        mPref.edit().remove("PersistentEnabled").commit();
-
-
+        mPref.edit().remove("PersistentEnabled").apply();
+        mPref.edit().remove("hasProfile").apply();
         mFirebaseAuth = null;
         deleteBaseEventListener();
 
@@ -177,27 +182,24 @@ public class BaseClass extends AppCompatActivity {
 
     // Checks is the user is a Trainer
     protected boolean isAdminUser(String uid){
-        boolean isAdmin = false;
+        boolean isAdmin;
         Member currentMember ;
         Log.d(TAG,"is AdminUser - members not null: " + (members!= null));
         if (members!= null && hasProfile(uid)) {
             currentMember = members.get(uid);
-            //If the user is an admin user and the current user is not deleted
-            if (currentMember.getIsAdmin() && !isDeletedUser(uid)) {
-                isAdmin = true;
+            if (currentMember == null){
+                isAdmin = false;
+
             }
             else{
-                isAdmin = false;
+                //If the user is an admin user and the current user is not deleted
+                isAdmin = (currentMember.getIsAdmin() && !isDeletedUser(uid));
             }
-            Log.d(TAG,"isAdmin In check: " + (members!= null));
         }
         else {
             isAdmin = false;
         }
-        /* test code */
-        // return true;
-        /* *** test code */
-        Log.d(TAG,"End isAdmin: " + isAdmin);
+
         return isAdmin;
     }
 
@@ -217,7 +219,6 @@ public class BaseClass extends AppCompatActivity {
 
     // Creates an event listener for when we change data
     private void createBaseEventListener(){
-
         if(eventListener == null) {
             ValueEventListener mEventListener = new ValueEventListener() {
                 @Override
@@ -227,6 +228,13 @@ public class BaseClass extends AppCompatActivity {
                         Member mMember = child.getValue(Member.class);
                         members.put(child.getKey(), mMember);
                     }
+                    if (members != null && members.get(getCurrentUserId()) != null){
+                        setHasProfile(true);
+                    }
+                    else{
+                        setHasProfile(false);
+                    }
+
                 }
 
                 @Override
@@ -276,6 +284,16 @@ public class BaseClass extends AppCompatActivity {
         mFragment.show(frmError, "dialog");
 
 
+    }
+
+    // Set if the user has a profile setup or not
+    private void setHasProfile(boolean hasProfile){
+        SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor edPref = mPref.edit();
+
+        edPref = mPref.edit();
+        edPref.putBoolean("hasProfile", hasProfile);
+        edPref.apply();
     }
 
 }

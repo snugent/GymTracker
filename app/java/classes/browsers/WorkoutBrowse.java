@@ -1,5 +1,6 @@
 package com.example.admin1.gymtracker.browsers;
 
+
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,11 +16,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin1.gymtracker.R;
+import com.example.admin1.gymtracker.activities.MemberEntry;
 import com.example.admin1.gymtracker.activities.MenuClass;
 import com.example.admin1.gymtracker.activities.WorkoutHeadEntry;
 import com.example.admin1.gymtracker.adapters.WorkoutRVAdapter;
 import com.example.admin1.gymtracker.fragments.DatePicker;
 import com.example.admin1.gymtracker.layout.SimpleDividerItemDecoration;
+
 import com.example.admin1.gymtracker.models.Workout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -111,7 +114,8 @@ public class WorkoutBrowse extends MenuClass {
         tvDate.addTextChangedListener(new TextWatcher() {
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start,
@@ -131,9 +135,9 @@ public class WorkoutBrowse extends MenuClass {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            Intent itWorkoutEntry = new Intent(getApplicationContext(), WorkoutHeadEntry.class);
-            itWorkoutEntry.putExtra("workoutId", "");
-            startActivity(itWorkoutEntry);
+                Intent itWorkoutEntry = new Intent(getApplicationContext(), WorkoutHeadEntry.class);
+                itWorkoutEntry.putExtra("workoutId", "");
+                startActivity(itWorkoutEntry);
             }
         });
     }
@@ -141,8 +145,15 @@ public class WorkoutBrowse extends MenuClass {
     @Override
     protected void onResume(){
         super.onResume();
-        setAuthStateListener();
-        createEventListeners();
+        if (!hasProfile(getCurrentUserId())) {
+            Intent itMember = new Intent(getApplicationContext(), MemberEntry.class);
+            itMember.putExtra("memberId", getCurrentUserId());
+            startActivity(itMember);
+        }
+        else{
+                setAuthStateListener();
+                createEventListeners();
+        }
     }
 
     @Override

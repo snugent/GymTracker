@@ -56,7 +56,7 @@ public class MemberEntry extends BaseClass {
         // Get Initial Variables.
         Bundle extras = getIntent().getExtras();
         stUid = extras.getString("memberId");
-        blIsAdmin = extras.getBoolean("isAdmin");
+        blIsAdmin = isAdminUser(stUid);
 
         // Set up Initial Screen objects
         initialiseScreen();
@@ -116,6 +116,9 @@ public class MemberEntry extends BaseClass {
         etHeight   = (EditText) findViewById(R.id.etHeight);
         chkAdmin   = (CheckBox) findViewById(R.id.chkAdmin);
         chkDeleted = (CheckBox) findViewById(R.id.chkDeleted);
+        if (!hasProfile(stUid)){
+            btnCancel.setVisibility(View.GONE);
+        }
         spnSex.setAdapter(stAdapter);
 
         dbRef = getmFirebaseDatabase();
