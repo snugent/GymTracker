@@ -16,6 +16,7 @@ import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.models.Exercise;
 import com.example.admin1.gymtracker.models.WorkoutLine;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import java.util.List;
  */
 
 public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAdapter.ItemViewActivity>{
+    private FirebaseDatabase mFirebaseDatabase;
     private WorkoutEntryRVAdapter.OnItemClickListener mItemClickListener;
     private HashMap<String, WorkoutLine> workoutLines;
     private List<WorkoutLine> workoutLinesList;
@@ -44,7 +46,8 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
                                  HashMap<String, Exercise> exercises,
                                  DatabaseReference tblLineRef,
                                  String stWorkoutId,
-                                 Context mContext){
+                                 Context mContext,
+                                 FirebaseDatabase mFirebaseDatabase){
         this.workoutLines = workoutLines;
         this.tblLineRef = tblLineRef;
         keysList = new ArrayList<>(workoutLines.keySet());
@@ -55,6 +58,7 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
         this.mContext    = mContext;
         chosenExercises = new HashMap<>();
         chosenExercisesList = new ArrayList<>();
+        this.mFirebaseDatabase = mFirebaseDatabase;
 
         for (WorkoutLine item : workoutLinesList) {
             if (chosenExercises == null || chosenExercises.get(item.getExerciseId()) == null){
@@ -104,11 +108,28 @@ public class WorkoutEntryRVAdapter extends RecyclerView.Adapter<WorkoutEntryRVAd
 
     private void deleteRow(int index ){
         String stKey = chosenExercisesList.get(index);
+        DatabaseReference tblIdxExWrk;
+        DatabaseReference tblIdxObjWrk;
+
         int iCnt;
         try{
             iCnt = 0;
             for (WorkoutLine item : workoutLinesList) {
                 if (stKey.equals(item.getExerciseId())){
+                    // Remove workout Id Item from Exercise Workout Index Table
+                    tblIdxExWrk =  mFirebaseDatabase.getReference().child("IdxExWrk").child(item.getExerciseId());
+
+                    if (tblIdxExWrk != null){
+                        tblIdxExWrk.getRef().child(stWorkoutId).removeValue();
+                    }
+
+                    // Remove workout Id Item from Objective Workout Index Table
+                    tblIdxObjWrk = mFirebaseDatabase.getReference().child("IdxObjWrk").child(item.getObjectiveId());
+
+                    if (tblIdxObjWrk != null){
+                        tblIdxObjWrk.getRef().child(stWorkoutId).removeValue();
+                    }
+
                     tblLineRef.getRef().child(keysList.get(iCnt)).removeValue();
                     workoutLines.remove(keysList.get(iCnt));
                 }

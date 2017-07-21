@@ -1,4 +1,6 @@
 package com.example.admin1.gymtracker.adapters;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
@@ -12,8 +14,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.admin1.gymtracker.R;
+import com.example.admin1.gymtracker.fragments.MessageDialog;
 import com.example.admin1.gymtracker.models.Objective;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +29,8 @@ import java.util.List;
  */
 
 public class ObjectiveRVAdapter extends RecyclerView.Adapter<ObjectiveRVAdapter.ItemViewActivity>{
+    private FirebaseDatabase mFirbaseDatabase;
+    private FragmentManager fmError;
     private Context mContext;
     private OnItemClickListener mItemClickListener;
     private HashMap<String, Objective> objectives;
@@ -35,10 +41,13 @@ public class ObjectiveRVAdapter extends RecyclerView.Adapter<ObjectiveRVAdapter.
     private DatabaseReference tblRecord;
 
     public ObjectiveRVAdapter(HashMap<String, Objective> objectives, DatabaseReference tblRecord,
-                              Context mContext){
+                              Context mContext, FirebaseDatabase mFirbaseDatabase,
+                              FragmentManager fmError){
         this.objectives = objectives;
         this.tblRecord = tblRecord;
         this.mContext    = mContext;
+        this.mFirbaseDatabase = mFirbaseDatabase;
+        this.fmError          = fmError;
         keysList = new ArrayList<>(objectives.keySet());
         objectiveList = new ArrayList<>(objectives.values());
     }
@@ -82,13 +91,26 @@ public class ObjectiveRVAdapter extends RecyclerView.Adapter<ObjectiveRVAdapter.
     }
 
     private void deleteRow(int index ){
+
         String stKey = keysList.get(index);
         try{
-            objectiveList.remove(index);
-            keysList.remove(index);
-            objectives.remove(stKey);
-            notifyItemRemoved(index);
-            tblRecord.getRef().child(stKey).removeValue();
+            // Check if objective that are used in workouts
+            if (mFirbaseDatabase.getReference().child("IdxObjWrk").child(stKey) == null) {
+                objectiveList.remove(index);
+                keysList.remove(index);
+                objectives.remove(stKey);
+                notifyItemRemoved(index);
+                tblRecord.getRef().child(stKey).removeValue();
+            }
+            // Dont delete objectives that are used in workouts
+            else{
+                DialogFragment mFragment = MessageDialog.newInstance(R.string.error_title_bar,
+                        R.drawable.ic_error_24dp,
+                        mContext.getString(R.string.error_objective_delete1));
+
+
+                mFragment.show(fmError, "dialog");
+            }
         }
         catch (Exception e){
             Log.d(TAG, mContext.getString(R.string.delete_exception));

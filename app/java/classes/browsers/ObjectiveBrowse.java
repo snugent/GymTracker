@@ -84,7 +84,7 @@ public class ObjectiveBrowse extends MenuClass {
     private void initialiseAdapter() {
         ObjectiveRVAdapter adapter;
         if (objectives != null){
-            adapter = new ObjectiveRVAdapter(objectives, tableRef, this);
+            adapter = new ObjectiveRVAdapter(objectives, tableRef, this, getmFirebaseDatabase(), getFragmentManager());
             rvList.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext()));
             adapter.setOnItemClickListener(onItemClickListener);
             rvList.setAdapter(adapter);

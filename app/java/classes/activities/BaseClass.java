@@ -1,5 +1,8 @@
 package com.example.admin1.gymtracker.activities;
 
+import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -7,6 +10,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.example.admin1.gymtracker.R;
+import com.example.admin1.gymtracker.fragments.MessageDialog;
 import com.example.admin1.gymtracker.models.Member;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
@@ -248,4 +253,29 @@ public class BaseClass extends AppCompatActivity {
     protected void destroyBaseEventListener(){
         deleteBaseEventListener();
     }
+
+    //Shows an error message Dialog
+    protected void showErrorMessageDialog(String message){
+        FragmentManager frmError = getFragmentManager();
+        DialogFragment mFragment = MessageDialog.newInstance(R.string.error_title_bar,
+                R.drawable.ic_error_24dp,
+                message);
+
+        mFragment.show(frmError, "dialog");
+
+
+    }
+
+    //Shows an warning message Dialog
+    protected void showWarningMessageDialog(String message){
+        FragmentManager frmError = getFragmentManager();
+        DialogFragment mFragment = MessageDialog.newInstance(R.string.warning_title_bar,
+                R.drawable.ic_warning_24dp,
+                message);
+
+        mFragment.show(frmError, "dialog");
+
+
+    }
+
 }

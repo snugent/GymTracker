@@ -191,7 +191,8 @@ public class WorkoutHeadEntry extends BaseClass {
     private void initialiseAdapter() {
         WorkoutEntryRVAdapter adapter;
         if (lines != null && exercises != null && objectives != null){
-            adapter = new WorkoutEntryRVAdapter(lines, exercises, tableLinesRef, stWorkoutId, this );
+            adapter = new WorkoutEntryRVAdapter(lines, exercises, tableLinesRef, stWorkoutId, this,
+                                                getmFirebaseDatabase());
             rvList.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext()));
             adapter.setOnItemClickListener(onItemClickListener);
             rvList.setAdapter(adapter);

@@ -87,7 +87,7 @@ public class ExerciseBrowse extends MenuClass {
     private void initialiseAdapter() {
         ExerciseRVAdapter adapter;
         if (exercises != null){
-            adapter = new ExerciseRVAdapter(exercises, tableRef, this);
+            adapter = new ExerciseRVAdapter(exercises, tableRef, this, getmFirebaseDatabase(), getFragmentManager());
             rvList.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext()));
             adapter.setOnItemClickListener(onItemClickListener);
             rvList.setAdapter(adapter);

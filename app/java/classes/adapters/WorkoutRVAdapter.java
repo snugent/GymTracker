@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.models.Workout;
+import com.example.admin1.gymtracker.models.WorkoutLine;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,32 +35,27 @@ import java.util.List;
  */
 
 public class WorkoutRVAdapter extends RecyclerView.Adapter<WorkoutRVAdapter.ItemViewActivity>{
+    private FirebaseDatabase mFirebaseDatabase;
     private WorkoutRVAdapter.OnItemClickListener mItemClickListener;
     private HashMap<String, Workout> workouts;
     private List<Workout> workoutList;
     private List<String> keysList;
-    private HashMap<String, Workout> lines;
-    private List<Workout> linesList;
-    private List<String> linesKeysList;
     private Context mContext;
+    private HashMap<String, WorkoutLine> workoutLines;
+    private List<WorkoutLine> workoutLineList;
+    private List<String> keysLineList;
 
     private final String TAG = "WorkoutRVAdapter";
     private DatabaseReference tblRecord;
 
     public WorkoutRVAdapter(HashMap<String, Workout> workouts, DatabaseReference tblRecord,
-                            Context mContext){
-        int iCnt = 0;
+                            Context mContext, FirebaseDatabase mFirebaseDatabase){
         this.workouts = workouts;
         this.tblRecord = tblRecord;
         keysList = new ArrayList<>(workouts.keySet());
         workoutList = new ArrayList<>(workouts.values());
         this.mContext    = mContext;
-
-        //TO DO populate lines list here
-        for (iCnt = 0; iCnt < workoutList.size(); iCnt++){
-            tblRecord.getRef().child(keysList.get(iCnt)).child("WorkoutLine").getKey();
-            tblRecord.getRef().child(keysList.get(iCnt)).child("WorkoutLine").getClass();
-        }
+        this.mFirebaseDatabase = mFirebaseDatabase;
     }
 
     public interface OnItemClickListener {
@@ -175,12 +171,29 @@ public class WorkoutRVAdapter extends RecyclerView.Adapter<WorkoutRVAdapter.Item
     // Delete chosen row
     private void deleteRow(int index ){
         String stKey = keysList.get(index);
+        DatabaseReference tblIdxExWrk;
+        DatabaseReference tblIdxObjWrk;
+
         try{
+            // Remove workout Id Item from Exercise Workout Index Table
+            tblIdxExWrk =  mFirebaseDatabase.getReference().child("IdxExWrk");
+            if (tblIdxExWrk != null){
+                deleteIdxExWork(stKey, tblIdxExWrk);
+            }
+
+            // Remove workout Id Item from Objective Workout Index Table
+            tblIdxObjWrk = mFirebaseDatabase.getReference().child("IdxObjWrk");
+
+            if (tblIdxObjWrk != null){
+                deleteIdxObjWrk(stKey, tblIdxObjWrk);
+            }
+
             workoutList.remove(index);
             keysList.remove(index);
             workouts.remove(stKey);
             notifyItemRemoved(index);
             tblRecord.getRef().child(stKey).removeValue();
+
         }
         catch (Exception e){
             Log.d(TAG, mContext.getString(R.string.delete_exception));
@@ -259,6 +272,59 @@ public class WorkoutRVAdapter extends RecyclerView.Adapter<WorkoutRVAdapter.Item
 
         mAdConfirm = mAdbConfirm.create();
         mAdConfirm.show();
+    }
+
+    private void deleteIdxExWork(final String ipStKey, final DatabaseReference tblIdxExWrk){
+        //Get the current workout id
+        Query qryLines = tblRecord.getRef().child(ipStKey).child("WorkoutLine");
+
+
+        qryLines.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String deleteKey;
+                for (DataSnapshot currentItem : dataSnapshot.getChildren()){
+                    WorkoutLine currentLIne = currentItem.getValue(WorkoutLine.class);
+                    deleteKey = currentLIne.getExerciseId();
+
+                    if (deleteKey != null){
+                        tblIdxExWrk.child(deleteKey).child(ipStKey).removeValue();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "IdxExWrk Delete Error");
+
+            }
+        });
+    }
+
+    private void deleteIdxObjWrk(final String ipStKey, final DatabaseReference tblIdxObjWrk){
+        //Get the current workout id
+        Query qryLines = tblRecord.getRef().child(ipStKey).child("WorkoutLine");
+
+        qryLines.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String deleteKey;
+                for (DataSnapshot currentItem : dataSnapshot.getChildren()){
+                    WorkoutLine currentLIne = currentItem.getValue(WorkoutLine.class);
+                    deleteKey = currentLIne.getObjectiveId();
+
+                    if (deleteKey != null){
+                        tblIdxObjWrk.child(deleteKey).child(ipStKey).removeValue();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "IdxObjWrk Delete Error");
+
+            }
+        });
     }
 
 

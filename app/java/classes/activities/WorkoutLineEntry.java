@@ -9,7 +9,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.adapters.WorkoutLineEntryRVAdapter;
@@ -179,7 +178,7 @@ public class WorkoutLineEntry extends BaseClass {
                 WorkoutLine currentRecord = workoutLinesList.get(iCnt);
                 if (alreadyExists(currentRecord.getExerciseId())){
                     blValid = false;
-                    Toast.makeText(this, getString(R.string.err_workout_line_1), Toast.LENGTH_LONG).show();
+                    showErrorMessageDialog(getString(R.string.err_workout_line_1));
                     iCnt = workoutLinesList.size();
 
                 }

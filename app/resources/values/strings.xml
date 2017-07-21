@@ -9,6 +9,7 @@
     <string name="deleted">Deleted</string>
     <string name="profile">Profile</string>
     <string name="save">Save</string>
+    <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="title_activity_exercise_browse">Exercises</string>
     <string name="exercise_name">Exercise Name</string>
@@ -50,8 +51,15 @@
     <string name="title_workout_browse">Workouts</string>
     <string name="title_workout_entry">Workout Entry</string>
     <string name="title_workout_line_entry">Workout Line Entry</string>
+    <string name="error_title_bar">Error</string>
+    <string name="warning_title_bar">Warning</string>
     <string name="error_not_blank">Must have a value</string>
     <string name="error_height_check">Height must be between 0.5 and 3 metres</string>
     <string name="error_weight_check">Weight must be between 0 and 600 Kg</string>
     <string name="error_dob_check">Age must be between 16 and 80</string>
+    <string name="error_exercise_delete1">Cant delete exercise, it is used by workouts</string>
+    <string name="error_objective_delete1">Cant delete objective, it is used by workouts</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

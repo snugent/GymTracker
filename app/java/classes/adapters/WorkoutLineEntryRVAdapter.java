@@ -28,7 +28,7 @@ import java.util.List;
  */
 
 public class WorkoutLineEntryRVAdapter extends RecyclerView.Adapter<WorkoutLineEntryRVAdapter.ItemViewActivity>{
-    String workoutId;
+    private String workoutId;
 
     // Objecteives variables
     private HashMap<String, Objective> objectives;

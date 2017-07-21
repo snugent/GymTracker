@@ -1,5 +1,7 @@
 package com.example.admin1.gymtracker.adapters;
 
+import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
@@ -13,8 +15,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.admin1.gymtracker.R;
+import com.example.admin1.gymtracker.fragments.MessageDialog;
 import com.example.admin1.gymtracker.models.Exercise;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +30,8 @@ import java.util.List;
  */
 
 public class ExerciseRVAdapter extends RecyclerView.Adapter<ExerciseRVAdapter.ItemViewActivity>{
+    private FirebaseDatabase mFirbaseDatabase;
+    private FragmentManager fmError;
     private Context mContext;
     private OnItemClickListener mItemClickListener;
     private HashMap<String, Exercise> exercises;
@@ -36,10 +42,13 @@ public class ExerciseRVAdapter extends RecyclerView.Adapter<ExerciseRVAdapter.It
     private DatabaseReference tblRecord;
 
     public ExerciseRVAdapter(HashMap<String, Exercise> exercises, DatabaseReference tblRecord,
-                             Context mContext){
+                             Context mContext, FirebaseDatabase mFirbaseDatabase,
+                             FragmentManager fmError){
         this.exercises = exercises;
         this.tblRecord = tblRecord;
         this.mContext    = mContext;
+        this.mFirbaseDatabase = mFirbaseDatabase;
+        this.fmError          = fmError;
         keysList = new ArrayList<>(exercises.keySet());
         exerciseList = new ArrayList<>(exercises.values());
     }
@@ -84,12 +93,25 @@ public class ExerciseRVAdapter extends RecyclerView.Adapter<ExerciseRVAdapter.It
 
     private void deleteRow(int index ){
         String stKey = keysList.get(index);
+
         try{
-            exerciseList.remove(index);
-            keysList.remove(index);
-            exercises.remove(stKey);
-            notifyItemRemoved(index);
-            tblRecord.getRef().child(stKey).removeValue();
+            // Check if exercises that are used in workouts
+            if (mFirbaseDatabase.getReference().child("IdxExWrk").child(stKey) == null){
+                exerciseList.remove(index);
+                keysList.remove(index);
+                exercises.remove(stKey);
+                notifyItemRemoved(index);
+                tblRecord.getRef().child(stKey).removeValue();
+            }
+            // Dont delete exercises that are used in workouts
+            else{
+                DialogFragment mFragment = MessageDialog.newInstance(R.string.error_title_bar,
+                        R.drawable.ic_error_24dp,
+                        mContext.getString(R.string.error_exercise_delete1));
+
+
+                mFragment.show(fmError, "dialog");
+            }
         }
         catch (Exception e){
             Log.d(TAG, mContext.getString(R.string.delete_exception));

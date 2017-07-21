@@ -183,7 +183,7 @@ public class WorkoutBrowse extends MenuClass {
     private void initialiseAdapter() {
         WorkoutRVAdapter adapter;
         if (workouts != null){
-            adapter = new WorkoutRVAdapter(chosenWorkouts, tableRef, this);
+            adapter = new WorkoutRVAdapter(chosenWorkouts, tableRef, this, getmFirebaseDatabase());
             rvList.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext()));
             adapter.setOnItemClickListener(onItemClickListener);
             rvList.setAdapter(adapter);
