@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import com.example.admin1.gymtracker.R;
+import com.example.admin1.gymtracker.adapters.ExerciseObjectiveRVAdapter;
 import com.example.admin1.gymtracker.adapters.WorkoutLineEntryRVAdapter;
 import com.example.admin1.gymtracker.layout.SimpleDividerItemDecoration;
 import com.example.admin1.gymtracker.models.Exercise;
@@ -29,6 +30,7 @@ import java.util.List;
 
 public class WorkoutLineEntry extends BaseClass {
     private RecyclerView rvList;
+    private WorkoutLineEntryRVAdapter exObjAdapter;
     private Button btnSave;
     private Button btnCancel;
     private Spinner spnExercise;
@@ -178,6 +180,8 @@ public class WorkoutLineEntry extends BaseClass {
                 WorkoutLine currentRecord = workoutLinesList.get(iCnt);
                 if (alreadyExists(currentRecord.getExerciseId())){
                     blValid = false;
+
+                    exObjAdapter.setErrorMsg(getString(R.string.error_not_blank), iCnt, rvList.findViewHolderForAdapterPosition(iCnt));
                     showErrorMessageDialog(getString(R.string.err_workout_line_1));
                     iCnt = workoutLinesList.size();
 
@@ -186,6 +190,7 @@ public class WorkoutLineEntry extends BaseClass {
                     workoutLines.remove(workoutLineKeysList.get(iCnt));
                     workoutLinesList.remove(iCnt);
                     workoutLineKeysList.remove(iCnt);
+                    blValid = true;
 
 
                 }
@@ -194,7 +199,21 @@ public class WorkoutLineEntry extends BaseClass {
                 }
             } //for
         }// if stExercise Id = null ...
-
+        // If update validate data
+        else{
+            for(int iCnt =0; iCnt < workoutLinesList.size(); iCnt++){
+                WorkoutLine currentRecord = workoutLinesList.get(iCnt);
+                if(currentRecord.getEntryValue() == -1){
+                    blValid = false;
+                    exObjAdapter.setErrorMsg(getString(R.string.error_not_blank), iCnt, rvList.findViewHolderForAdapterPosition(iCnt));
+                    showErrorMessageDialog(getString(R.string.error_not_blank));
+                    iCnt = workoutLinesList.size();
+                }
+                else{
+                    blValid = true;
+                }
+            } //for
+        }// if stExercise Id = null ...
 
         return blValid;
     } // isValidRecord method
@@ -257,11 +276,10 @@ public class WorkoutLineEntry extends BaseClass {
 
     //Connect to adapter for recycle view
     private void initialiseExerciseObjectivesAdapter() {
-        WorkoutLineEntryRVAdapter adapter;
         if (objectives != null && workoutLinesList != null){
-            adapter = new WorkoutLineEntryRVAdapter(stWorkoutId,  workoutLines, objectives);
+            exObjAdapter = new WorkoutLineEntryRVAdapter(stWorkoutId,  workoutLines, objectives);
             rvList.addItemDecoration(new SimpleDividerItemDecoration(getApplicationContext()));
-            rvList.setAdapter(adapter);
+            rvList.setAdapter(exObjAdapter);
         }
     }
 

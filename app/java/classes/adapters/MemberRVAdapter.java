@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -133,7 +133,7 @@ public class MemberRVAdapter extends RecyclerView.Adapter<MemberRVAdapter.ItemVi
         private LinearLayout placeHolder;
         private TextView tvHeading;
         private TextView tvDetail;
-        private ImageButton btnDelete;
+        private ImageView btnDelete;
 
 
         ItemViewActivity(View v ){
@@ -142,7 +142,7 @@ public class MemberRVAdapter extends RecyclerView.Adapter<MemberRVAdapter.ItemVi
             placeHolder.setOnClickListener(this);
             tvHeading = (TextView) v.findViewById(R.id.tvHeading);
             tvDetail  = (TextView) v.findViewById((R.id.tvDetail));
-            btnDelete = (ImageButton) v.findViewById(R.id.btnDelete);
+            btnDelete = (ImageView) v.findViewById(R.id.btnDelete);
 
         }
         @Override

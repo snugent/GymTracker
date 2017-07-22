@@ -4,15 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_centerVertical="true"
     android:orientation="vertical"
-    tools:context="com.example.admin1.gymtracker.activities.ExerciseObjectiveEntry">
+    tools:context="com.example.admin1.gymtracker.browsers.ExerciseBrowse"
+    android:background="@color/container_background_color">
 
     <RelativeLayout
         android:id="@+id/frameTop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:padding="@dimen/card_padding_standard">
+        android:padding="@dimen/card_padding_standard"
+        android:background="@color/container_background_color">
 
         <TextView
             android:id="@+id/tvLabel"
@@ -20,7 +23,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:text="@string/exercise" />
+            android:text="@string/exercise"
+            android:layout_marginLeft="30dp"
+            />
 
         <TextView
             android:id="@+id/tvExerciseName"
@@ -31,44 +36,52 @@
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/tvLabel"
             android:layout_marginStart="35dp" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/frameBottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0">
 
         <Button
             android:id="@+id/btnSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:text="@string/save" />
+            android:text="@string/save"
+            android:layout_alignBaseline="@+id/btnCancel"
+            android:layout_alignBottom="@+id/btnCancel"
+            android:layout_alignStart="@id/tvLabel" />
 
         <Button
             android:id="@+id/btnCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_toEndOf="@+id/btnSave"
-            android:text="@string/cancel" />
+            android:text="@string/cancel"
+            android:layout_marginTop="12dp"
+            android:layout_below="@+id/tvExerciseName"
+            android:layout_alignStart="@+id/tvExerciseName" />
     </RelativeLayout>
 
-    <LinearLayout
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include layout="@layout/top_divider"
+            android:id="@+id/include"/>
+    </android.support.v7.widget.LinearLayoutCompat>
+
+    <android.support.v7.widget.LinearLayoutCompat
         android:id="@+id/frameMiddle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+        android:background="@color/container_background_color">
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            tools:listitem="@layout/item_ex_obj_entry"
             tools:layout_editor_absoluteY="8dp"
-            tools:layout_editor_absoluteX="8dp" />
-    </LinearLayout>
-
+            tools:layout_editor_absoluteX="8dp"
+            tools:listitem="@layout/item_ex_obj_entry"/>
+    </android.support.v7.widget.LinearLayoutCompat>
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include layout="@layout/top_divider"
+            android:id="@+id/include"/>
+    </android.support.v7.widget.LinearLayoutCompat>
 </android.widget.LinearLayout>

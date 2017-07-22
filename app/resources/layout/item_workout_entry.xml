@@ -57,7 +57,8 @@
             android:hint="@string/hours_entry_hint"
             android:inputType="number"
             android:imeOptions="actionNext"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:maxLength="2"/>
 
         <TextView
             android:id="@+id/tvHours"
@@ -77,7 +78,8 @@
             android:hint="@string/mins_entry_hint"
             android:inputType="number"
             android:imeOptions="actionNext"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:maxLength="2"/>
 
         <TextView
             android:id="@+id/tvMins"
@@ -97,7 +99,8 @@
             android:hint="@string/sec_entry_hint"
             android:inputType="number"
             android:imeOptions="actionNext"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:maxLength="2"/>
 
         <TextView
             android:id="@+id/tvSecs"
@@ -117,7 +120,8 @@
             android:hint="@string/mili_entry_hint"
             android:inputType="number"
             android:imeOptions="actionNext"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:maxLength="3"/>
 
     </LinearLayout>
 

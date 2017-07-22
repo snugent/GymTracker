@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.admin1.gymtracker.browsers.ObjectiveBrowse">
+    tools:context="com.example.admin1.gymtracker.browsers.ObjectiveBrowse"
+    android:background="@color/container_background_color">
 
     <include layout="@layout/content_objective_browse"
         android:id="@+id/include"/>

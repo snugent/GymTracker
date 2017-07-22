@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.admin1.gymtracker.browsers.WorkoutBrowse">
+    tools:context="com.example.admin1.gymtracker.browsers.WorkoutBrowse"
+    android:background="@color/container_background_color">
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -14,8 +15,7 @@
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@android:drawable/ic_input_add" />
 
-    <include
-        android:id="@+id/include"
+    <include android:id="@+id/include"
         layout="@layout/content_workout_browse"
         android:layout_height="match_parent"
         android:layout_width="match_parent"/>

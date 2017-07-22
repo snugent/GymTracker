@@ -1,5 +1,6 @@
 package com.example.admin1.gymtracker.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
@@ -26,7 +27,7 @@ import java.util.List;
  * Created by admin1 on 10/07/2017.
  */
 
-public class WorkoutLineEntryRVAdapter extends RecyclerView.Adapter<WorkoutLineEntryRVAdapter.ItemViewActivity>{
+public class WorkoutLineEntryRVAdapter extends RecyclerView.Adapter<WorkoutLineEntryRVAdapter.ItemViewActivity> {
     private String workoutId;
 
     // Objecteives variables
@@ -43,6 +44,13 @@ public class WorkoutLineEntryRVAdapter extends RecyclerView.Adapter<WorkoutLineE
 
     private FirebaseDatabase dbRef = FirebaseDatabase.getInstance();
 
+    // variables for time fields
+    private static final int HOURS_MILI = 3600000;
+    private static final int MINS_MILI =    60000;
+    private static final int SECS_MILI =     1000;
+
+
+    /* methods*/
     public WorkoutLineEntryRVAdapter(String workoutId, HashMap<String, WorkoutLine> workoutLineHashMap,
                                 HashMap<String, Objective> objectives){
 
@@ -77,23 +85,21 @@ public class WorkoutLineEntryRVAdapter extends RecyclerView.Adapter<WorkoutLineE
     }
 
     @Override
-    public void onBindViewHolder(final ItemViewActivity objectiveViewHolder, final int pos) {
+    public void onBindViewHolder(final ItemViewActivity mView, final int pos) {
+        // Database variables
         WorkoutLine mWorkoutLine;
         Objective mObjective;
         String stObjectiveName = "";
         String stObjectiveType = "";
         String stEntryValue    = "";
         Double dblEntryVal = null;
+
+        // variables for time fields
         int    iEntryVal;
         int    iHours;
         int    iMins;
         int    iSecs;
         int    iMilis;
-        final int HOURS_MILI = 360000;
-        final int MINS_MILI = 6000;
-        final int SECS_MILI = 100;
-
-
 
         //Get the Name of the objective
         mWorkoutLine = workoutLineList.get(pos);
@@ -120,65 +126,139 @@ public class WorkoutLineEntryRVAdapter extends RecyclerView.Adapter<WorkoutLineE
 
 
         // Set GUI elements
-        objectiveViewHolder.tvLabel.setText(stObjectiveName);
+        mView.tvLabel.setText(stObjectiveName);
         if (stObjectiveType.equalsIgnoreCase("Time") ){
             //Disable default
-            objectiveViewHolder.etValue.setVisibility(View.GONE);
+            mView.etValue.setVisibility(View.GONE);
             // Enable time entry element
-            objectiveViewHolder.etHours.setVisibility(View.VISIBLE);
-            objectiveViewHolder.tvHours.setVisibility(View.VISIBLE);
-            objectiveViewHolder.etMins.setVisibility(View.VISIBLE);
-            objectiveViewHolder.tvMins.setVisibility(View.VISIBLE);
-            objectiveViewHolder.etSecs.setVisibility(View.VISIBLE);
-            objectiveViewHolder.tvSecs.setVisibility(View.VISIBLE);
-            objectiveViewHolder.etMili.setVisibility(View.VISIBLE);
+            mView.etHours.setVisibility(View.VISIBLE);
+            mView.tvHours.setVisibility(View.VISIBLE);
+            mView.etMins.setVisibility(View.VISIBLE);
+            mView.tvMins.setVisibility(View.VISIBLE);
+            mView.etSecs.setVisibility(View.VISIBLE);
+            mView.tvSecs.setVisibility(View.VISIBLE);
+            mView.etMili.setVisibility(View.VISIBLE);
 
 
             // Set fields to be numbers
-            objectiveViewHolder.etHours.setInputType(InputType.TYPE_CLASS_NUMBER);
-            objectiveViewHolder.etMins.setInputType(InputType.TYPE_CLASS_NUMBER);
-            objectiveViewHolder.etSecs.setInputType(InputType.TYPE_CLASS_NUMBER);
-            objectiveViewHolder.etMili.setInputType(InputType.TYPE_CLASS_NUMBER);
+            mView.etHours.setInputType(InputType.TYPE_CLASS_NUMBER);
+            mView.etMins.setInputType(InputType.TYPE_CLASS_NUMBER);
+            mView.etSecs.setInputType(InputType.TYPE_CLASS_NUMBER);
+            mView.etMili.setInputType(InputType.TYPE_CLASS_NUMBER);
 
             if (dblEntryVal != null){
                 iEntryVal = dblEntryVal.intValue();
                 iHours = iEntryVal / HOURS_MILI;
                 iMins = (iEntryVal - (iHours * HOURS_MILI)) / MINS_MILI;
-                iSecs = (iEntryVal - (iHours * HOURS_MILI) - (iMins * MINS_MILI)) / 100;
+                iSecs = (iEntryVal - (iHours * HOURS_MILI) - (iMins * MINS_MILI)) / SECS_MILI;
                 iMilis = (iEntryVal - (iHours * HOURS_MILI) - (iMins * MINS_MILI) - (iSecs * SECS_MILI));
 
-
+                // Show the valus inthe fields
                 stEntryValue = "" + String.format("%02d", iHours);
-                objectiveViewHolder.etHours.setText(stEntryValue);
+                mView.etHours.setText(stEntryValue);
                 stEntryValue = "" + String.format("%02d", iMins);
-                objectiveViewHolder.etMins.setText(stEntryValue);
+                mView.etMins.setText(stEntryValue);
                 stEntryValue = "" + String.format("%02d", iSecs);
-                objectiveViewHolder.etSecs.setText(stEntryValue);
-                stEntryValue = "" + String.format("%02d", iMilis);
-                objectiveViewHolder.etMili.setText(stEntryValue);
+                mView.etSecs.setText(stEntryValue);
+                stEntryValue = "" + String.format("%03d", iMilis);
+                mView.etMili.setText(stEntryValue);
             }
 
-
-            // objectiveViewHolder.etValue.setText(stEntryValue);
+            //watch for changes to the fields
+            mView.etHours.addTextChangedListener(getTextChanged(mView, pos));
+            mView.etMins.addTextChangedListener(getTextChanged(mView, pos));
+            mView.etSecs.addTextChangedListener(getTextChanged(mView, pos));
+            mView.etMili.addTextChangedListener(getTextChanged(mView, pos));
         }
         else{
             //Disable default
-            objectiveViewHolder.etValue.setVisibility(View.VISIBLE);
+            mView.etValue.setVisibility(View.VISIBLE);
             // Enable time entry element
-            objectiveViewHolder.etHours.setVisibility(View.GONE);
-            objectiveViewHolder.tvHours.setVisibility(View.GONE);
-            objectiveViewHolder.etMins.setVisibility(View.GONE);
-            objectiveViewHolder.tvMins.setVisibility(View.GONE);
-            objectiveViewHolder.etSecs.setVisibility(View.GONE);
-            objectiveViewHolder.tvSecs.setVisibility(View.GONE);
-            objectiveViewHolder.etMili.setVisibility(View.GONE);
+            mView.etHours.setVisibility(View.GONE);
+            mView.tvHours.setVisibility(View.GONE);
+            mView.etMins.setVisibility(View.GONE);
+            mView.tvMins.setVisibility(View.GONE);
+            mView.etSecs.setVisibility(View.GONE);
+            mView.tvSecs.setVisibility(View.GONE);
+            mView.etMili.setVisibility(View.GONE);
 
-            objectiveViewHolder.etValue.setHint(R.string.value_entry_hint);
-            objectiveViewHolder.etValue.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL );
-            objectiveViewHolder.etValue.setText(stEntryValue);
+            mView.etValue.setHint(R.string.value_entry_hint);
+            mView.etValue.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL );
+            mView.etValue.setText(stEntryValue);
+
+            // Watch for changes to the field
+            mView.etValue.addTextChangedListener(getTextChanged(mView, pos));
         }
 
-        objectiveViewHolder.etValue.addTextChangedListener(new TextWatcher() {
+    }
+
+    private void updateRow(int pos, String newValue, ItemViewActivity v){
+        WorkoutLine currentLine = workoutLineHashMap.get(workoutLineKeysList.get(pos));
+        Objective   currentObjecitve = objectives.get(currentLine.getObjectiveId());
+        // variables for time fields
+        double dblEntryVal = -1;
+        int    iHours;
+        int    iMins;
+        int    iSecs;
+        int    iMilis;
+
+        if (currentObjecitve.getViewType().equalsIgnoreCase("Time")){
+            if (!v.etHours.getText().toString().equals("") ){
+                iHours = Integer.parseInt(v.etHours.getText().toString());
+                dblEntryVal = (iHours * HOURS_MILI);
+            }
+            else {
+                iHours = 0;
+                dblEntryVal = (iHours * HOURS_MILI);
+            }
+            if (!v.etMins.getText().toString().equals("")){
+                iMins = Integer.parseInt(v.etMins.getText().toString());
+                dblEntryVal = dblEntryVal + (iMins * MINS_MILI);
+            }
+            else{
+                iMins = 0;
+                dblEntryVal = dblEntryVal + (iMins * MINS_MILI);
+
+            }
+
+            if (!v.etSecs.getText().toString().equals("")){
+                iSecs = Integer.parseInt(v.etSecs.getText().toString());
+                dblEntryVal = dblEntryVal + (iSecs * SECS_MILI);
+            }
+            else{
+                iSecs = 0;
+                dblEntryVal = dblEntryVal + (iSecs * SECS_MILI);
+            }
+
+            if (!v.etMili.getText().toString().equals("")){
+                iMilis = Integer.parseInt(v.etMili.getText().toString());
+                dblEntryVal = dblEntryVal + iMilis;
+            }
+            else{
+                iMilis = 0;
+                dblEntryVal = dblEntryVal + iMilis;
+            }
+
+            //if No time entered set dblentry value to -1 (equals null)
+            if (dblEntryVal == 0){
+                dblEntryVal = -1;
+            }
+
+
+            workoutLineList.get(pos).setEntryValue(dblEntryVal);
+        }
+        else{
+            if (!v.etValue.getText().toString().equals("")){
+                dblEntryVal = Double.parseDouble(v.etValue.getText().toString());
+            }
+            workoutLineList.get(pos).setEntryValue(dblEntryVal);
+
+        }//else
+    }// update row
+
+    // If the user updates a field add the changes to the hashmap for saving
+    private TextWatcher getTextChanged(final ItemViewActivity mView, final int pos){
+        TextWatcher tw =     new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -191,21 +271,22 @@ public class WorkoutLineEntryRVAdapter extends RecyclerView.Adapter<WorkoutLineE
 
             @Override
             public void afterTextChanged(Editable s) {
-                updateRow(pos, s.toString());
+                updateRow(pos, s.toString(), mView);
             }
-        });
+        };
+        return tw;
+    } // getTextChagned
+
+    public void setErrorMsg(String stMessage, int pos, RecyclerView.ViewHolder vh){
+        WorkoutLineEntryRVAdapter.ItemViewActivity v = (ItemViewActivity) vh;
+
+
+        if (objectiveList != null){
+            v.setErrorMsg(stMessage, objectiveList.get(pos).getViewType());
+        }
     }
 
-    private void updateRow(int pos, String newValue){
-        try {
-            workoutLineList.get(pos).setEntryValue(Double.parseDouble(newValue));
-        }
-        catch(Exception e){
-
-        }
-    }
-
-    class ItemViewActivity extends RecyclerView.ViewHolder {
+    class ItemViewActivity extends RecyclerView.ViewHolder{
         private LinearLayout placeHolder;
         private TextView tvLabel;
         private EditText etValue;
@@ -230,7 +311,17 @@ public class WorkoutLineEntryRVAdapter extends RecyclerView.Adapter<WorkoutLineE
             tvSecs = (TextView) v.findViewById(R.id.tvSecs);
             etMili = (EditText) v.findViewById(R.id.etMili);
         }
-    }// End ItemViewAcitivty Class
+        public void setErrorMsg(String stMessage, String stType){
+
+            if (stType.equals("Time")){
+                etHours.setError(stMessage);
+            }
+            else{
+                etValue.setError(stMessage);
+            }
+        }
+    }// End ItemViewActivity Class
+
 
 
 

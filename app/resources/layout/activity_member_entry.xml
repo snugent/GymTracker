@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context="com.example.admin1.gymtracker.activities.MemberEntry"
     tools:layout_editor_absoluteY="81dp"
-    tools:layout_editor_absoluteX="0dp">
+    tools:layout_editor_absoluteX="0dp"
+    android:background="@color/container_background_color">
 
 
     <ImageView

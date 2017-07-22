@@ -8,14 +8,15 @@
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.admin1.gymtracker.browsers.ObjectiveBrowse"
-    tools:showIn="@layout/activity_workout_browse">
+    tools:showIn="@layout/activity_workout_browse"
+    android:background="@color/container_background_color">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="@color/white">
+        android:background="@color/container_background_color">
 
         <ImageView
             android:id="@+id/ivBack"
@@ -59,6 +60,13 @@
             android:layout_marginTop="12dp" />
 
     </RelativeLayout>
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include layout="@layout/top_divider"
+            android:id="@+id/include"/>
+    </android.support.v7.widget.LinearLayoutCompat>
 
     <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"

@@ -34,10 +34,10 @@
     <string name="comment">Comment</string>
     <string name="title_activity_workout_setup_browse">WorkoutSetupBrowse</string>
     <string name="label">Label</string>
-    <string name="hours_entry_hint">00</string>
-    <string name="mins_entry_hint">00</string>
-    <string name="sec_entry_hint">00</string>
-    <string name="mili_entry_hint">000</string>
+    <string name="hours_entry_hint">HH</string>
+    <string name="mins_entry_hint">MM</string>
+    <string name="sec_entry_hint">SS</string>
+    <string name="mili_entry_hint">MIL</string>
     <string name="value_entry_hint">Enter Value</string>
     <string name="err_workout_line_1">Exercise already entered into workout</string>
     <string name="btn_objectives">Objectives</string>

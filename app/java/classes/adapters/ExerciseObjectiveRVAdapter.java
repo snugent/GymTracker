@@ -137,5 +137,7 @@ public class ExerciseObjectiveRVAdapter extends RecyclerView.Adapter<ExerciseObj
             tvObjective = (TextView) v.findViewById((R.id.tvObjective));
             chkChosen   = (CheckBox) v.findViewById(R.id.chkChosen);
          }
+
+
     }// End ItemViewAcitivty Class
 }// End ExerciseObjectiveRVAdapter class
