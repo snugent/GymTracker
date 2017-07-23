@@ -48,6 +48,7 @@ public class MenuClass extends BaseClass{
             case R.id.workout_entry:
                 launchWorkoutActivity();
                 blResult = true;
+                finish();
                 break;
             case R.id.profile:
                 launchProfileActivity();
@@ -56,10 +57,12 @@ public class MenuClass extends BaseClass{
             case R.id.exercise:
                 launchExerciseActivity();
                 blResult = true;
+                finish();
                 break;
             case R.id.objective:
                 launchObjectiveActivity();
                 blResult = true;
+                finish();
                 break;
             case R.id.edit_member:
                 launchMemberActivity();
@@ -68,6 +71,7 @@ public class MenuClass extends BaseClass{
             case R.id.sign_out:
                 signOut();
                 blResult = true;
+                finish();
                 break;
         }
         return blResult;

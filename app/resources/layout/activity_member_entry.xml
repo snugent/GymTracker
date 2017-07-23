@@ -10,6 +10,32 @@
     android:background="@color/container_background_color">
 
 
+    <EditText
+        android:id="@+id/etName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="13dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text=""
+        android:maxLines="1"
+        android:hint="@string/name"
+        />
+
+    <EditText
+        android:id="@+id/etDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etName"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="13dp"
+        android:ems="10"
+        android:inputType="date"
+        android:text=""
+        android:maxLines="1"
+        android:hint="@string/date_of_birth" />
+
     <ImageView
         android:id="@+id/ivDate"
         android:layout_width="@dimen/card_image_width"
@@ -17,98 +43,74 @@
         android:paddingTop="@dimen/card_padding_top"
         android:src="@drawable/ic_date_range_24px"
         tools:backgroundTint="@color/white"
-        android:layout_alignBottom="@+id/tvDate"
-        android:layout_toEndOf="@+id/tvDate" />
+        android:layout_alignBottom="@+id/etDate"
+        android:layout_toEndOf="@+id/etDate" />
 
-    <EditText
-        android:id="@+id/etName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/name"
-        android:maxLines="1"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="35dp" />
+        <Spinner
+            android:id="@+id/spnSex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23dp"
+            android:layout_below="@+id/etDate"
+            android:layout_alignStart="@+id/etWeight" />
 
-    <TextView
-        android:id="@+id/tvDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="19dp"
-        android:ems="10"
-        android:hint="@string/date_of_birth"
-        android:textSize="@dimen/entry_font_size_height"
-        android:layout_below="@+id/etName"
-        android:layout_alignStart="@+id/etName"
-        android:layout_alignEnd="@+id/etName"
-        android:inputType="text"/>
+        <EditText
+            android:id="@+id/etWeight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/etDate"
+            android:layout_below="@+id/spnSex"
+            android:layout_marginTop="13dp"
+            android:ems="10"
+            android:hint="@string/weight"
+            android:inputType="numberDecimal" />
 
-    <Spinner
-        android:id="@+id/spnSex"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="23dp"
-        android:layout_below="@+id/tvDate"
-        android:layout_alignStart="@+id/etWeight" />
+        <EditText
+            android:id="@+id/etHeight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/etWeight"
+            android:layout_below="@+id/etWeight"
+            android:layout_marginTop="14dp"
+            android:ems="10"
+            android:hint="@string/height"
+            android:inputType="numberDecimal" />
 
-    <EditText
-        android:id="@+id/etWeight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/tvDate"
-        android:layout_below="@+id/spnSex"
-        android:layout_marginTop="13dp"
-        android:ems="10"
-        android:hint="@string/weight"
-        android:inputType="numberDecimal" />
+        <CheckBox
+            android:id="@+id/chkAdmin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/etHeight"
+            android:layout_below="@+id/etHeight"
+            android:layout_marginTop="14dp"
+            android:text="@string/admin_user" />
 
-    <EditText
-        android:id="@+id/etHeight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/etWeight"
-        android:layout_below="@+id/etWeight"
-        android:layout_marginTop="14dp"
-        android:ems="10"
-        android:hint="@string/height"
-        android:inputType="numberDecimal" />
+        <CheckBox
+            android:id="@+id/chkDeleted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/deleted"
+            android:layout_below="@+id/chkAdmin"
+            android:layout_alignStart="@+id/chkAdmin" />
 
-    <CheckBox
-        android:id="@+id/chkAdmin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/etHeight"
-        android:layout_below="@+id/etHeight"
-        android:layout_marginTop="14dp"
-        android:text="@string/admin_user" />
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="@string/save"
+            android:layout_below="@+id/chkDeleted"
+            android:layout_alignStart="@+id/etHeight" />
 
-    <CheckBox
-        android:id="@+id/chkDeleted"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:text="@string/deleted"
-        android:layout_below="@+id/chkAdmin"
-        android:layout_alignStart="@+id/chkAdmin" />
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:layout_alignBaseline="@+id/btnSave"
+            android:layout_alignBottom="@+id/btnSave"
+            android:layout_toEndOf="@+id/btnSave"
+            android:layout_marginStart="11dp" />
 
-    <Button
-        android:id="@+id/btnSave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:text="@string/save"
-        android:layout_below="@+id/chkDeleted"
-        android:layout_alignEnd="@+id/chkDeleted" />
-
-    <Button
-        android:id="@+id/btnCancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/cancel"
-        android:layout_alignBaseline="@+id/btnSave"
-        android:layout_alignBottom="@+id/btnSave"
-        android:layout_toEndOf="@+id/btnSave"
-        android:layout_marginStart="11dp" />
-
-</android.widget.RelativeLayout>
+    </android.widget.RelativeLayout>

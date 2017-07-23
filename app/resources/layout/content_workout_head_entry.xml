@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerVertical="true"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.admin1.gymtracker.activities.WorkoutHeadEntry"
+    tools:showIn="@layout/activity_workout_head_entry"
+    android:background="@color/container_background_color"
+    android:weightSum="1">
+
+
+
+    <RelativeLayout
+        android:id="@+id/frameTop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/etDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="13dp"
+            android:ems="10"
+            android:hint="@string/workout_date"
+            android:inputType="none"
+            android:maxLines="1"
+            android:text="" />
+
+        <EditText
+            android:id="@+id/etWorkoutComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/etDate"
+            android:layout_below="@+id/etDate"
+            android:layout_marginTop="13dp"
+            android:ems="10"
+            android:hint="@string/comment"
+            android:inputType="textMultiLine"
+            android:maxLines="5"
+            android:paddingTop="@dimen/card_padding_standard" />
+
+        <ImageView
+            android:id="@+id/ivDate"
+            android:layout_width="@dimen/card_image_width"
+            android:layout_height="@dimen/card_image_height"
+            android:layout_alignBottom="@+id/etDate"
+            android:layout_toEndOf="@+id/etDate"
+            android:paddingTop="@dimen/card_padding_top"
+            android:src="@drawable/ic_date_range_24px"
+            tools:backgroundTint="@color/white" />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/etWorkoutComment"
+            android:layout_below="@+id/etWorkoutComment"
+            android:layout_marginTop="@dimen/card_padding_top"
+            android:paddingTop="@dimen/card_padding_standard"
+            android:text="@string/save" />
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/etWorkoutComment"
+            android:layout_alignTop="@+id/btnSave"
+            android:paddingTop="@dimen/card_padding_top"
+            android:text="@string/cancel" />
+
+        <TextView
+            android:id="@+id/tvHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnSave"
+            android:layout_alignStart="@id/btnSave"
+            android:text="@string/add_details_hint" />
+
+    </RelativeLayout>
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include layout="@layout/top_divider"
+            android:id="@+id/include"/>
+    </android.support.v7.widget.LinearLayoutCompat>
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:id="@id/frameMiddle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="8dp"
+            tools:listitem="@layout/item" />
+    </android.support.v7.widget.LinearLayoutCompat>
+
+
+
+
+</android.widget.LinearLayout>

@@ -1,7 +1,6 @@
 package com.example.admin1.gymtracker.browsers;
 
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,10 +35,11 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class WorkoutBrowse extends MenuClass {
+public class WorkoutBrowse extends MenuClass implements DatePicker.setDateText {
 
     private RecyclerView rvList;
     private final String TAG = "WorkoutBrowse";
@@ -97,19 +96,12 @@ public class WorkoutBrowse extends MenuClass {
         ivDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment newFragment = new DatePicker("");
+                DialogFragment newFragment = new DatePicker();
                 newFragment.show(getSupportFragmentManager(), "datePicker");
 
             }
         });
 
-        ivDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DialogFragment newFragment = new DatePicker("");
-                newFragment.show(getSupportFragmentManager(), "datePicker");
-            }
-        });
 
         tvDate.addTextChangedListener(new TextWatcher() {
 
@@ -124,9 +116,16 @@ public class WorkoutBrowse extends MenuClass {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                dtFilterDateStart = dtFmt.parseDateTime((String) s);
-                dtFilterDateStart = getWeekStart(dtFilterDateStart);
-                dtFilterDateStart = getWeekStart(dtFilterDateStart);
+                String stDate =  s.toString();
+                String stRemove =  getString(R.string.week_commencing) + ": ";
+                stDate = stDate.replace(stRemove, "");
+                if (!dtFilterDateStart.toString(dtFmt).equals(stDate) ){
+                    dtFilterDateStart = dtFmt.parseDateTime(stDate);
+                    dtFilterDateStart = getWeekStart(dtFilterDateStart);
+                    dtFilterDateEnd   = dtFilterDateStart.plus(DAYS_IN_WEEK);
+                    tvDate.setText(stRemove + dtFilterDateStart.toString(dtFmt));
+
+                }
             }
         });
 
@@ -142,7 +141,10 @@ public class WorkoutBrowse extends MenuClass {
         });
     }
 
-
+    //Sets date text sent from date picker
+    public void setDateText(String stMessage){
+        tvDate.setText(getString(R.string.week_commencing) + ": " + stMessage);
+    }
 
     @Override
     protected void onResume(){
@@ -162,7 +164,6 @@ public class WorkoutBrowse extends MenuClass {
         super.onActivityResult(requestCode, resultCode, data);
         // Reload the current screen if successful login.
         if (resultCode == RESULT_OK && requestCode == RP_SIGN_IN_ID) {
-
         }
     }
 
@@ -192,7 +193,7 @@ public class WorkoutBrowse extends MenuClass {
     private  void initialiseScreen(){
         //Adds Titlebar
         getSupportActionBar().setTitle(R.string.title_workout_browse);
-        tvDate = (TextView) findViewById(R.id.tvDate);
+        tvDate = (TextView) findViewById(R.id.etDate);
         ivForward = (ImageView) findViewById(R.id.ivForward);
         ivBack = (ImageView) findViewById(R.id.ivBack);
         ivDate = (ImageView) findViewById(R.id.ivDate);

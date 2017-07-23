@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -36,19 +37,23 @@ import org.w3c.dom.Text;
 import java.util.HashMap;
 import java.util.Random;
 
-public class WorkoutHeadEntry extends BaseClass {
+public class WorkoutHeadEntry extends BaseClass implements DatePicker.setDateText{
     private FirebaseDatabase dbRef;
     private RecyclerView rvList;
     private Button btnSave;
     private Button btnCancel;
-    private TextView tvDate;
+    private EditText etDate;
     private EditText etWorkoutComment;
     private ImageView ivDate;
+    private TextView  tvHint;
 
     private String stWorkoutId;
     private String stNewWorkoutId;
     private final String TAG = "WorkoutHeadEntry";
     private static final int RP_CREATE_LINE = 10;
+    private static final String DATE_TIME_FORMAT = "dd/MM/yyyy";
+    private static final DateTimeFormatter dtFmt = DateTimeFormat.forPattern(DATE_TIME_FORMAT);
+
 
     // Database queries
     private DatabaseReference tableWkHeadRef;
@@ -75,7 +80,6 @@ public class WorkoutHeadEntry extends BaseClass {
         setContentView(R.layout.activity_workout_head_entry);
         initialiseScreen();
         initialiseAdapter();
-
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,8 +113,20 @@ public class WorkoutHeadEntry extends BaseClass {
          ivDate.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View view) {
-                 DialogFragment newFragment = new DatePicker("");
-                 newFragment.show(getSupportFragmentManager(), "datePicker");
+                 DialogFragment newFragment = new DatePicker();
+                 DateTime dtExisting;
+                 if (etDate.getText().toString().equals("")){
+                     newFragment.show(getSupportFragmentManager(), "datePicker");
+                 }
+                 else{
+                     dtExisting = new DateTime(dtFmt.parseDateTime(etDate.getText().toString()));
+                     Bundle data = new Bundle();
+                     data.putString("existingDate",etDate.getText().toString() );
+                     newFragment.setArguments(data);
+                     newFragment.show(getSupportFragmentManager(), "datePicker");
+                 }
+
+
              }
          });
     }
@@ -150,7 +166,6 @@ public class WorkoutHeadEntry extends BaseClass {
 
         Bundle extras = getIntent().getExtras();
         stWorkoutId = extras.getString("workoutId");
-        DateTimeFormatter dtFmt = DateTimeFormat.forPattern("dd/MM/yyyy");
         DateTime dtDob = new DateTime();
 
         // If not an update generate a temporary workout Id to enable the creation
@@ -168,12 +183,15 @@ public class WorkoutHeadEntry extends BaseClass {
         rvList.setHasFixedSize(true);
 
         // Setup GUI Elements
-        tvDate = (TextView) findViewById(R.id.tvDate);
+        etDate = (EditText) findViewById(R.id.etDate);
+        etDate.setKeyListener(null);
         etWorkoutComment = (EditText) findViewById(R.id.etWorkoutComment);
         btnSave         = (Button) findViewById(R.id.btnSave);
         btnCancel       = (Button) findViewById(R.id.btnCancel);
         ivDate          = (ImageView) findViewById(R.id.ivDate);
-        tvDate.setText(dtFmt.print(dtDob));
+        tvHint          = (TextView) findViewById(R.id.tvHint);
+        etDate.setText(dtFmt.print(dtDob));
+
         // Don't display keyboard unless user selects a edit text
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -206,7 +224,7 @@ public class WorkoutHeadEntry extends BaseClass {
         if (!ipstId.equalsIgnoreCase("")){
             if (workouts != null) {
                 currentWorkout = workouts.get(ipstId);
-                tvDate.setText(currentWorkout.getWorkoutDate());
+                etDate.setText(currentWorkout.getWorkoutDate());
                 etWorkoutComment.setText(currentWorkout.getComment());
             }// workouts != null
         }// if(ipstId != "" ....
@@ -220,7 +238,7 @@ public class WorkoutHeadEntry extends BaseClass {
 
         savingData= new Workout(
             getCurrentUserId(),
-            tvDate.getText().toString(),
+            etDate.getText().toString(),
             etWorkoutComment.getText().toString()
         );
 
@@ -245,6 +263,11 @@ public class WorkoutHeadEntry extends BaseClass {
 
         //To do Validate User Input
         return blValidRecord;
+    }
+
+    //Sets date text sent from date picker
+    public void setDateText(String stMessage){
+        etDate.setText(stMessage);
     }
 
     // Creates an event listener for when we change data
@@ -301,6 +324,12 @@ public class WorkoutHeadEntry extends BaseClass {
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         WorkoutLine mLine = child.getValue(WorkoutLine.class);
                         lines.put(child.getKey(), mLine);
+                    }
+                    if (lines.size() > 0){
+                        tvHint.setVisibility(View.GONE);
+                    }
+                    else{
+                        tvHint.setVisibility(View.VISIBLE);
                     }
                     initialiseAdapter();
                 }

@@ -2,7 +2,6 @@ package com.example.admin1.gymtracker.activities;
 
 import android.app.DialogFragment;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -29,7 +28,7 @@ import java.util.HashMap;
  * Created by admin1 on 02/07/2017.
  */
 
-public class BaseClass extends AppCompatActivity {
+public class BaseClass extends AppCompatActivity  {
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mFirebaseAuth ;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -40,6 +39,7 @@ public class BaseClass extends AppCompatActivity {
     private ValueEventListener eventListener;
     private static final String TAG = "BaseClass";
     private HashMap<String, Member> members;
+    private boolean blConfirm = false;
 
     // Checks if the user has a profile
     protected boolean hasProfile(String uid){
@@ -135,7 +135,6 @@ public class BaseClass extends AppCompatActivity {
         SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(this);
         mPref.edit().remove("PersistentEnabled").apply();
         mPref.edit().remove("hasProfile").apply();
-        mFirebaseAuth = null;
         deleteBaseEventListener();
 
     }
@@ -263,7 +262,7 @@ public class BaseClass extends AppCompatActivity {
     }
 
     //Shows an error message Dialog
-    protected void showErrorMessageDialog(String message){
+    public void showErrorMessageDialog(String message){
         FragmentManager frmError = getFragmentManager();
         DialogFragment mFragment = MessageDialog.newInstance(R.string.error_title_bar,
                 R.drawable.ic_error_24dp,
@@ -275,7 +274,7 @@ public class BaseClass extends AppCompatActivity {
     }
 
     //Shows an warning message Dialog
-    protected void showWarningMessageDialog(String message){
+    public void showWarningMessageDialog(String message){
         FragmentManager frmError = getFragmentManager();
         DialogFragment mFragment = MessageDialog.newInstance(R.string.warning_title_bar,
                 R.drawable.ic_warning_24dp,

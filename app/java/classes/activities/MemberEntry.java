@@ -1,5 +1,6 @@
 package com.example.admin1.gymtracker.activities;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
@@ -27,14 +28,14 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.util.HashMap;
 
-public class MemberEntry extends BaseClass {
+public class MemberEntry extends BaseClass implements DatePicker.setDateText{
     String stUid;
     boolean blIsAdmin;
 
     private Button btnSave;
     private Button btnCancel;
     private EditText etName;
-    private TextView tvDate;
+    private EditText etDate;
     private Spinner  spnSex;
     private EditText etWeight;
     private EditText etHeight;
@@ -110,7 +111,8 @@ public class MemberEntry extends BaseClass {
         ivDate    = (ImageView) findViewById(R.id.ivDate);
 
         etName     = (EditText) findViewById(R.id.etName);
-        tvDate      = (TextView) findViewById(R.id.tvDate);
+        etDate     = (EditText) findViewById(R.id.etDate);
+        etDate.setKeyListener(null);
         spnSex     = (Spinner)  findViewById(R.id.spnSex);
         etWeight   = (EditText) findViewById(R.id.etWeight);
         etHeight   = (EditText) findViewById(R.id.etHeight);
@@ -129,7 +131,7 @@ public class MemberEntry extends BaseClass {
         ivDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogFragment newFragment = new DatePicker("");
+                DialogFragment newFragment = new DatePicker();
                 newFragment.show(getSupportFragmentManager(), "datePicker");
             }
         });
@@ -151,7 +153,7 @@ public class MemberEntry extends BaseClass {
             currentMember = members.get(ipstUid);
             if (currentMember != null) {
                 etName.setText(currentMember.getName());
-                tvDate.setText(currentMember.getDob());
+                etDate.setText(currentMember.getDob());
                 etWeight.setText(Double.toString(currentMember.getWeight()));
                 etHeight.setText(Double.toString(currentMember.getHeight()));
                 chkAdmin.setChecked(currentMember.getIsAdmin());
@@ -172,7 +174,7 @@ public class MemberEntry extends BaseClass {
         final Member savingData ;
 
         savingData= new Member( etName.getText().toString(),
-                                tvDate.getText().toString(),
+                                etDate.getText().toString(),
                                 spnSex.getSelectedItem().toString(),
                                 Double.parseDouble(etHeight.getText().toString()),
                                 Double.parseDouble(etWeight.getText().toString()),
@@ -199,18 +201,20 @@ public class MemberEntry extends BaseClass {
             etName.setError(getString(R.string.error_not_blank));
             blValid = false;
         }
-        if(tvDate.getText().toString().equals("") || tvDate.getText().toString() == null){
-            tvDate.setError(getString(R.string.error_not_blank));
+        if(etDate.getText().toString().equals("") || etDate.getText().toString() == null){
+            etDate.setError(getString(R.string.error_not_blank));
             blValid = false;
         }
         // Sanity check on age 16 - 80
         else {
             dtToday = new DateTime();
-            dtDob   = new DateTime(dtFmt.parseDateTime(tvDate.getText().toString()));
-            pDiff = new Period(dtToday,dtDob);
+            dtDob   = new DateTime(dtFmt.parseDateTime(etDate.getText().toString()));
+            //Period is a joda library that gets the differences between two date time
+            // Period (start, end)
+            pDiff = new Period(dtDob,dtToday);
             iAge = pDiff.getYears();
             if(iAge < 16 || iAge > 80){
-                tvDate.setError(getString(R.string.error_dob_check));
+                etDate.setError(getString(R.string.error_dob_check));
                 blValid = false;
             }
         }
@@ -237,10 +241,12 @@ public class MemberEntry extends BaseClass {
          }
 
 
-
-
-
         return blValid;
+    }
+
+    //Sets date text sent from date picker
+    public void setDateText(String stMessage){
+        etDate.setText(stMessage);
     }
 
     //Launches all event Listeners

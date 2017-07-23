@@ -174,8 +174,19 @@ public class WorkoutLineEntry extends BaseClass {
     // This method will validate the user data entered.
     private boolean isValidRecord(){
         Boolean blValid = true;
+        //Dont save if no exercises setup
+        if (exerciseList == null || exerciseList.size() < 1){
+            blValid = false;
+            showErrorMessageDialog(getString(R.string.error_workout_line_save1));
+        }
+        //Dont save if no objectives setup
+        else if(objectives == null || objectives.size() < 1){
+            blValid = false;
+            showErrorMessageDialog(getString(R.string.error_workout_line_save2));
+        }
         // If new line check if the data was entered before
-        if (stExerciseId == null || stExerciseId.equals("")){
+        else if (stExerciseId == null || stExerciseId.equals("")){
+            // Check if this exercise ws entered before
             for(int iCnt =0; iCnt < workoutLinesList.size(); iCnt++){
                 WorkoutLine currentRecord = workoutLinesList.get(iCnt);
                 if (alreadyExists(currentRecord.getExerciseId())){
@@ -191,13 +202,29 @@ public class WorkoutLineEntry extends BaseClass {
                     workoutLinesList.remove(iCnt);
                     workoutLineKeysList.remove(iCnt);
                     blValid = true;
-
-
                 }
                 else{
                     blValid = true;
                 }
             } //for
+
+            if (blValid ) {
+                // While it is valid to leave some objectives blank they should not all be blank
+                // Raise an error if no values entered
+                blValid = false;
+                for (int iCnt = 0; iCnt < workoutLinesList.size(); iCnt++) {
+                    WorkoutLine currentRecord = workoutLinesList.get(iCnt);
+                    if (currentRecord.getEntryValue() > -1) {
+                        blValid = true;
+                        iCnt = workoutLineKeysList.size();
+                    }
+                } //for
+
+                if (!blValid){
+                    showErrorMessageDialog(getString(R.string.error_workout_line_save3));
+                }
+            }
+
         }// if stExercise Id = null ...
         // If update validate data
         else{

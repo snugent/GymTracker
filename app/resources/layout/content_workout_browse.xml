@@ -50,7 +50,7 @@
             tools:backgroundTint="@color/white" />
 
         <TextView
-            android:id="@+id/tvDate"
+            android:id="@+id/etDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/week_commencing"
