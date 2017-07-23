@@ -142,18 +142,13 @@ public class WorkoutBrowse extends MenuClass {
         });
     }
 
+
+
     @Override
     protected void onResume(){
         super.onResume();
-        if (!hasProfile(getCurrentUserId())) {
-            Intent itMember = new Intent(getApplicationContext(), MemberEntry.class);
-            itMember.putExtra("memberId", getCurrentUserId());
-            startActivity(itMember);
-        }
-        else{
-                setAuthStateListener();
-                createEventListeners();
-        }
+        setAuthStateListener();
+        createEventListeners();
     }
 
     @Override
@@ -161,6 +156,36 @@ public class WorkoutBrowse extends MenuClass {
         super.onPause();
         removeAuthStateListener();
         deleteEventListeners();
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Reload the current screen if successful login.
+        if (resultCode == RESULT_OK && requestCode == RP_SIGN_IN_ID) {
+
+        }
+    }
+
+    private void login(){
+        // No Account
+        if (getCurrentUserId().equals("")){
+            setAuthStateListener();
+            createEventListeners();
+
+        }
+        // Has an account but no Profile Setup (first login)
+        else if (!hasProfile(getCurrentUserId())) {
+            Intent itMember = new Intent(getApplicationContext(), MemberEntry.class);
+            itMember.putExtra("memberId", getCurrentUserId());
+            startActivity(itMember);
+        }
+        // Otherwise log in Log in
+        else if(hasProfile(getCurrentUserId())){
+            setAuthStateListener();
+            createEventListeners();
+        }
+
+
     }
 
     // Sets up the initial values for the screen

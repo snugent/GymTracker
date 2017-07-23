@@ -33,7 +33,7 @@ public class BaseClass extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mFirebaseAuth ;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private static final int RP_SIGN_IN_ID = 1;
+    protected static final int RP_SIGN_IN_ID = 1;
 
     //Firebase Database query fields
     private DatabaseReference tableRef;
