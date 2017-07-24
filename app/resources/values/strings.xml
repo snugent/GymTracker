@@ -61,11 +61,12 @@
     <string name="error_height_check">Height must be between 0.5 and 3 metres</string>
     <string name="error_weight_check">Weight must be between 0 and 600 Kg</string>
     <string name="error_dob_check">Age must be between 16 and 80</string>
-    <string name="error_exercise_delete1">Cant delete exercise, it is used by workouts</string>
-    <string name="error_objective_delete1">Cant delete objective, it is used by workouts</string>
-    <string name="error_workout_line_save1">Cant save, no exercises are setup</string>
-    <string name="error_workout_line_save2">Cant save, no objectives are setup</string>
-    <string name="error_workout_line_save3">Cant save, no values entered</string>
+    <string name="error_exercise_delete1">Can\'t delete exercise, it is used by workouts</string>
+    <string name="error_objective_delete1">Can\'t delete objective, it is used by workouts</string>
+    <string name="error_objective_delete2">Can\'t delete objective, it is linked to exercises</string>
+    <string name="error_workout_line_save1">Can\'t save, no exercises are setup</string>
+    <string name="error_workout_line_save2">Can\'t save, no objectives are setup</string>
+    <string name="error_workout_line_save3">Can\'t save, no values entered</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

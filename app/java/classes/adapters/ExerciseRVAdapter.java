@@ -17,8 +17,12 @@ import android.widget.TextView;
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.fragments.MessageDialog;
 import com.example.admin1.gymtracker.models.Exercise;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +44,7 @@ public class ExerciseRVAdapter extends RecyclerView.Adapter<ExerciseRVAdapter.It
 
     private final String TAG = "ExerciseRVAdapter";
     private DatabaseReference tblRecord;
+    private HashMap<String, String> exerciseUsedLists;
 
     public ExerciseRVAdapter(HashMap<String, Exercise> exercises, DatabaseReference tblRecord,
                              Context mContext, FirebaseDatabase mFirbaseDatabase,
@@ -51,6 +56,8 @@ public class ExerciseRVAdapter extends RecyclerView.Adapter<ExerciseRVAdapter.It
         this.fmError          = fmError;
         keysList = new ArrayList<>(exercises.keySet());
         exerciseList = new ArrayList<>(exercises.values());
+        getUsedExercises();
+
     }
 
     public interface OnItemClickListener {
@@ -96,7 +103,11 @@ public class ExerciseRVAdapter extends RecyclerView.Adapter<ExerciseRVAdapter.It
 
         try{
             // Check if exercises that are used in workouts
-            if (mFirbaseDatabase.getReference().child("IdxExWrk").child(stKey) == null){
+            if ((exerciseUsedLists == null) || (
+                exerciseUsedLists.get(stKey) != null &&
+                exerciseUsedLists.get(stKey).equals("false")) ) {
+
+                // Delete the row
                 exerciseList.remove(index);
                 keysList.remove(index);
                 exercises.remove(stKey);
@@ -155,6 +166,35 @@ public class ExerciseRVAdapter extends RecyclerView.Adapter<ExerciseRVAdapter.It
         mAdConfirm = mAdbConfirm.create();
         mAdConfirm.show();
     }
+
+    //Check if an exercise is used in a workout for delete prevention
+    private void getUsedExercises(){
+        //Get the current workout id
+        Query mQuery = mFirbaseDatabase.getReference().child("IdxExWrk");
+
+        mQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    exerciseUsedLists = new HashMap<String, String>();
+                    for (int iCnt = 0; iCnt < keysList.size(); iCnt++)
+                        if (dataSnapshot.hasChild(keysList.get(iCnt))) {
+                            exerciseUsedLists.put(keysList.get(iCnt), "true");
+                        }
+                        else {
+                            exerciseUsedLists.put(keysList.get(iCnt), "false");
+                        }// else
+                } // for
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "Data Write Error");
+
+            }
+        });
+
+    }// End of method
 
     class ItemViewActivity extends RecyclerView.ViewHolder implements View.OnClickListener{
         private LinearLayout placeHolder;

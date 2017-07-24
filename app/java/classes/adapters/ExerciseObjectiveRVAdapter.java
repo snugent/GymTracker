@@ -117,10 +117,10 @@ public class ExerciseObjectiveRVAdapter extends RecyclerView.Adapter<ExerciseObj
     }
 
     private void removeItemFromList(String ipExObjId){
-        for (int iCnt = 0; iCnt < objectiveKeysList.size();iCnt++){
-            if (objectiveKeysList.get(iCnt).equals(ipExObjId)){
-                objectiveKeysList.remove(iCnt);
-                objectiveList.remove(iCnt);
+        for (int iCnt = 0; iCnt < exObjKeysList.size();iCnt++){
+            if (exObjKeysList.get(iCnt).equals(ipExObjId)){
+                exObjKeysList.remove(iCnt);
+                exerciseObjectveList.remove(iCnt);
             }
         }
     }

@@ -3,6 +3,7 @@ import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,8 +17,12 @@ import android.widget.TextView;
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.fragments.MessageDialog;
 import com.example.admin1.gymtracker.models.Objective;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +44,8 @@ public class ObjectiveRVAdapter extends RecyclerView.Adapter<ObjectiveRVAdapter.
 
     private final String TAG = "ObjectiveRVAdapter";
     private DatabaseReference tblRecord;
+    private HashMap<String, String> objectiveUsedLists;
+    private HashMap<String, String> objectiveExerciseLists;
 
     public ObjectiveRVAdapter(HashMap<String, Objective> objectives, DatabaseReference tblRecord,
                               Context mContext, FirebaseDatabase mFirbaseDatabase,
@@ -50,6 +57,8 @@ public class ObjectiveRVAdapter extends RecyclerView.Adapter<ObjectiveRVAdapter.
         this.fmError          = fmError;
         keysList = new ArrayList<>(objectives.keySet());
         objectiveList = new ArrayList<>(objectives.values());
+        getUsedObjectives();
+        getLinkedObjectives();
     }
 
     public interface OnItemClickListener {
@@ -91,11 +100,36 @@ public class ObjectiveRVAdapter extends RecyclerView.Adapter<ObjectiveRVAdapter.
     }
 
     private void deleteRow(int index ){
-
         String stKey = keysList.get(index);
+        boolean blDeleteOk = false;
+        String stErrMsge = "";
         try{
             // Check if objective that are used in workouts
-            if (mFirbaseDatabase.getReference().child("IdxObjWrk").child(stKey) == null) {
+            if ((objectiveUsedLists == null ) ||
+                    (objectiveUsedLists.get(stKey) != null &&
+                    objectiveUsedLists.get(stKey).equals("false")) ) {
+                blDeleteOk = true;
+            }
+            else{
+                stErrMsge = mContext.getString(R.string.error_objective_delete1);
+                blDeleteOk = false;
+            }
+
+            // Check if objective is linked to an exercise
+            if (blDeleteOk){
+                if((objectiveExerciseLists == null ) ||
+                        (objectiveExerciseLists.get(stKey) != null &&
+                                objectiveExerciseLists.get(stKey).equals("false"))) {
+                    blDeleteOk = true;
+                }
+                else{
+                    stErrMsge = mContext.getString(R.string.error_objective_delete2);
+                    blDeleteOk = false;
+                }
+            }
+
+            if (blDeleteOk){
+                // Delete the row
                 objectiveList.remove(index);
                 keysList.remove(index);
                 objectives.remove(stKey);
@@ -106,7 +140,8 @@ public class ObjectiveRVAdapter extends RecyclerView.Adapter<ObjectiveRVAdapter.
             else{
                 DialogFragment mFragment = MessageDialog.newInstance(R.string.error_title_bar,
                         R.drawable.ic_error_24dp,
-                        mContext.getString(R.string.error_objective_delete1));
+                        stErrMsge
+                        );
 
 
                 mFragment.show(fmError, "dialog");
@@ -153,6 +188,65 @@ public class ObjectiveRVAdapter extends RecyclerView.Adapter<ObjectiveRVAdapter.
         mAdConfirm = mAdbConfirm.create();
         mAdConfirm.show();
     }
+
+    //Check if objectives are used in a workout for delete prevention
+    private void getUsedObjectives(){
+        //Get the current workout id
+        Query mQuery = mFirbaseDatabase.getReference().child("IdxObjWrk");
+
+        mQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    objectiveUsedLists = new HashMap<String, String>();
+                    for (int iCnt = 0; iCnt < keysList.size(); iCnt++)
+                        if (dataSnapshot.hasChild(keysList.get(iCnt))) {
+                            objectiveUsedLists.put(keysList.get(iCnt), "true");
+                        }
+                        else {
+                            objectiveUsedLists.put(keysList.get(iCnt), "false");
+                        }// else
+                } // for
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "Data Write Error");
+
+            }
+        });
+
+    }// End of method
+
+    //Check if objectives are linked to exercises in a workout for delete prevention
+    private void getLinkedObjectives(){
+        //Get the current workout id
+        Query mQuery = mFirbaseDatabase.getReference().child("IdxObjEx");
+
+        mQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    objectiveExerciseLists = new HashMap<String, String>();
+                    for (int iCnt = 0; iCnt < keysList.size(); iCnt++)
+                        if (dataSnapshot.hasChild(keysList.get(iCnt))) {
+                            objectiveExerciseLists.put(keysList.get(iCnt), "true");
+                        }
+                        else {
+                            objectiveExerciseLists.put(keysList.get(iCnt), "false");
+                        }// else
+                } // for
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "Data Write Error");
+
+            }
+        });
+
+    }// End of method
+
 
 
     class ItemViewActivity extends RecyclerView.ViewHolder implements View.OnClickListener{

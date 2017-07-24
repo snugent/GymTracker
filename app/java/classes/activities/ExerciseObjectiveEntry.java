@@ -19,7 +19,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ExerciseObjectiveEntry extends BaseClass {
     private TextView tvExerciseName;
@@ -44,6 +48,10 @@ public class ExerciseObjectiveEntry extends BaseClass {
     private HashMap<String, Exercise> exercises;
     private ValueEventListener elExercise;
 
+    // For buliding Index for Objective Exerercise Link
+    private DatabaseReference  tblObjExRef;
+    private List<String> idxObjExList;
+    private List<String> idxObjExKeyList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +125,7 @@ public class ExerciseObjectiveEntry extends BaseClass {
         tblExerciseRef  = dbRef.getReference().child("Exercise");
         tblObjectiveRef = dbRef.getReference().child("Objective");
         tblExObjRef = tblExerciseRef.child(stExerciseId).child("ExerciseObjective");
+        tblObjExRef = dbRef.getReference().child("IdxObjEx");
         createEventListeners();
 
         initialiseAdapter();
@@ -135,8 +144,26 @@ public class ExerciseObjectiveEntry extends BaseClass {
 
     //Saves Record Details to the database
     private void saveData(){
-        tblExObjRef.setValue(exerciseObjectives);
 
+        //Delete all removed Objective Exercise index records from the database
+        if (idxObjExList != null) {
+            for (int iCnt = 0; iCnt < idxObjExList.size(); iCnt++) {
+                if (exerciseObjectives == null) {
+                    tblObjExRef.getRef().child(idxObjExKeyList.get(iCnt)).child(idxObjExList.get(iCnt)).removeValue();
+                } else if (exerciseObjectives.get(idxObjExKeyList.get(iCnt)) == null) {
+                    tblObjExRef.getRef().child(idxObjExKeyList.get(iCnt)).child(idxObjExList.get(iCnt)).removeValue();
+                }
+            }
+        }
+
+        // Update Objective Exercise index with new values
+        if (exerciseObjectives != null && exerciseObjectives.size() > 0) {
+            for (Map.Entry<String, ExerciseObjective> currentRecord : exerciseObjectives.entrySet()){
+                tblObjExRef.child(currentRecord.getValue().getObjectiveId()).child(currentRecord.getKey()).setValue("");
+            }
+        }
+
+        tblExObjRef.setValue(exerciseObjectives);
 
     }// End Save Data
 
@@ -163,9 +190,14 @@ public class ExerciseObjectiveEntry extends BaseClass {
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                     exerciseObjectives = new HashMap<>();
+                    idxObjExKeyList    = new ArrayList<>();
+                    idxObjExList       = new ArrayList<>();
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         ExerciseObjective mExerciseObjective = child.getValue(ExerciseObjective.class);
                         exerciseObjectives.put(child.getKey(), mExerciseObjective);
+                        int iCnt = 0;
+                        idxObjExKeyList.add(iCnt,mExerciseObjective.getObjectiveId());
+                        idxObjExList.add(iCnt,child.getKey());
                     }
                     initialiseAdapter();
                 }
