@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.example.admin1.gymtracker.R;
+import com.example.admin1.gymtracker.browsers.WorkoutBrowse;
 import com.example.admin1.gymtracker.fragments.MessageDialog;
 import com.example.admin1.gymtracker.models.Member;
 import com.firebase.ui.auth.AuthUI;
@@ -96,8 +97,11 @@ public class BaseClass extends AppCompatActivity  {
         return mFirebaseDatabase;
     }
 
-    private void createAuthStateListener(){
+    private void onSignedInInitialise(){
+        mFirebaseAuth      = FirebaseAuth.getInstance();
+    }
 
+    private void createAuthStateListener(){
         //Authenticatin Listener
         mAuthStateListener = new FirebaseAuth.AuthStateListener(){
             @Override
@@ -108,26 +112,14 @@ public class BaseClass extends AppCompatActivity  {
                 }
                 else{
                     onSignedOutCleanUp();
-                    // Start Login Activity
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setIsSmartLockEnabled(false)
-                                    .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
-                                    .build(),
-                            RP_SIGN_IN_ID);
+                    //Start the home screen event
+                    Intent itHomeScreen = new Intent(getApplicationContext(), WorkoutBrowse.class);
+                    startActivity(itHomeScreen);
                 }
             }
         };
 
     } //End setmAuthSateListener method
-
-    private void onSignedInInitialise(){
-
-        mFirebaseAuth      = FirebaseAuth.getInstance();
-        createBaseEventListener();
-    }
 
     private void onSignedOutCleanUp(){
         // Removed Shared Preferences, no longer needed.
@@ -137,20 +129,6 @@ public class BaseClass extends AppCompatActivity  {
         deleteBaseEventListener();
 
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RP_SIGN_IN_ID){
-            if(resultCode == RESULT_OK){
-                //To do
-            }
-            else if( resultCode == RESULT_CANCELED){
-                Log.e(TAG, "Signed in cancelled");
-                finish();
-            }
-        } // if (requestCode == RC_SIGN_IN){
-    } // onActivityResult Method
 
     protected void setAuthStateListener(){
         if (mFirebaseAuth != null){
@@ -170,9 +148,6 @@ public class BaseClass extends AppCompatActivity  {
         String uId ="";
         if (user != null) {
             uId = user.getUid();
-        }
-        else {
-            signOut();
         }
         return uId;
     }
@@ -233,6 +208,7 @@ public class BaseClass extends AppCompatActivity  {
                         setHasProfile(false);
                     }
 
+
                 }
 
                 @Override
@@ -292,6 +268,18 @@ public class BaseClass extends AppCompatActivity  {
         edPref = mPref.edit();
         edPref.putBoolean("hasProfile", hasProfile);
         edPref.apply();
+    }
+    protected void login(){
+        // Start Login Activity
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setIsSmartLockEnabled(false)
+                        .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                        .build(),
+                RP_SIGN_IN_ID);
+
     }
 
 }

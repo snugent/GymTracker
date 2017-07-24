@@ -73,8 +73,7 @@ public class WorkoutBrowse extends MenuClass implements DatePicker.setDateText {
         //Sets up the database in Base class for later use
         initialiseDatabase();
         initialiseScreen();
-        createEventListeners();
-        initialiseAdapter();
+        checkLogin();
 
         //Forward 1 week button
         ivForward.setOnClickListener(new View.OnClickListener() {
@@ -134,9 +133,14 @@ public class WorkoutBrowse extends MenuClass implements DatePicker.setDateText {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent itWorkoutEntry = new Intent(getApplicationContext(), WorkoutHeadEntry.class);
-                itWorkoutEntry.putExtra("workoutId", "");
-                startActivity(itWorkoutEntry);
+                if (hasProfile(getCurrentUserId())) {
+                    Intent itWorkoutEntry = new Intent(getApplicationContext(), WorkoutHeadEntry.class);
+                    itWorkoutEntry.putExtra("workoutId", "");
+                    startActivity(itWorkoutEntry);
+                }
+                else {
+                    showErrorMessageDialog(getString(R.string.profile_error));
+                }
             }
         });
     }
@@ -164,30 +168,24 @@ public class WorkoutBrowse extends MenuClass implements DatePicker.setDateText {
         super.onActivityResult(requestCode, resultCode, data);
         // Reload the current screen if successful login.
         if (resultCode == RESULT_OK && requestCode == RP_SIGN_IN_ID) {
+            setAuthStateListener();
+            createEventListeners();
+            checkLogin();
         }
     }
 
-    private void login(){
-        // No Account
+    // Check if the user is logged in
+    private void checkLogin(){
+        // No Account or not logged in run login.
         if (getCurrentUserId().equals("")){
-            setAuthStateListener();
-            createEventListeners();
-
+            login();
         }
-        // Has an account but no Profile Setup (first login)
-        else if (!hasProfile(getCurrentUserId())) {
-            Intent itMember = new Intent(getApplicationContext(), MemberEntry.class);
-            itMember.putExtra("memberId", getCurrentUserId());
-            startActivity(itMember);
+        // Otherwise just log into the system
+        else {
+            initialiseAdapter();
         }
-        // Otherwise log in Log in
-        else if(hasProfile(getCurrentUserId())){
-            setAuthStateListener();
-            createEventListeners();
-        }
-
-
     }
+
 
     // Sets up the initial values for the screen
     private  void initialiseScreen(){
