@@ -17,11 +17,11 @@
     <string name="cardio">Cardiovascular</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
-    <string name="exercise">Exercise</string>
+    <string name="exercise">Exercise Setup</string>
     <string name="title_activity_objective_browse">Objectives</string>
     <string name="objective_name">Objective Name</string>
     <string name="view_label">View Label</string>
-    <string name="objective">Objective</string>
+    <string name="objective">Objective Setup</string>
     <string name="time">Time</string>
     <string name="number">Number</string>
     <string name="title_activity_member_browse">Members</string>

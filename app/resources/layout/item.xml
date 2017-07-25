@@ -37,7 +37,8 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginEnd="@dimen/card_padding_standard"
-            android:background="@color/cardview_dark_background" />
+            android:background="@color/colorPrimary"
+            android:src="@drawable/ic_fitness_24dp"/>
 
         <TextView
             android:id="@+id/tvHeading"

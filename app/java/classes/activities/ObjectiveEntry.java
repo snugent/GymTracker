@@ -44,6 +44,17 @@ public class ObjectiveEntry extends BaseClass {
         setContentView(R.layout.activity_objective_entry);
         initialiseScreen();
 
+        etLabel.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    if (etLabel.getText().toString().equals("")){
+                        etLabel.setText(etObjectiveName.getText().toString());
+                    }// if (et Label
+                } // if (hasFocus
+            } // public voic onFcused Changed
+        });
+
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
