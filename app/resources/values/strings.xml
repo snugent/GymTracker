@@ -54,6 +54,7 @@
     <string name="title_workout_browse">Workouts</string>
     <string name="title_workout_entry">Workout Entry</string>
     <string name="title_workout_line_entry">Workout Line Entry</string>
+    <string name="title_achievement_report">Achievement Report</string>
     <string name="error_title_bar">Error</string>
     <string name="warning_title_bar">Warning</string>
     <string name="confirm_title_bar">Confirm</string>
@@ -67,11 +68,14 @@
     <string name="error_workout_line_save1">Can\'t save, no exercises are setup</string>
     <string name="error_workout_line_save2">Can\'t save, no objectives are setup</string>
     <string name="error_workout_line_save3">Can\'t save, no values entered</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="yes">Yes</string>
     <string name="add_details_hint">Press + to Add workout entry details</string>
     <string name="add_head_hint">Press + to Add a workout</string>
     <string name="profile_error">You must setup your profile first</string>
+    <string name="run">Run</string>
+    <string name="lbl_objective">Objective</string>
+    <string name="lbl_exercise">Exercise</string>
+    <string name="no_results">No Results to display</string>
+    <string name="reporttype">ReportType</string>
 </resources>

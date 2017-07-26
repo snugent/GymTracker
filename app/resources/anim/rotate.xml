@@ -1,0 +1,17 @@
+<!--
+This animation was used as part of a carousel I used for my CA3 in advanceed mobile application development.
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- For carousel Rotate the images 360 degrees for haf a second -->
+    <rotate xmlns:android="http://schemas.android.com/apk/res/android"
+        android:fromDegrees="0"
+        android:toDegrees="360"
+        android:pivotX="50%"
+        android:pivotY="0%"
+        android:duration="500"
+        android:repeatCount="infinite"
+        android:repeatMode="restart"
+        />
+
+</set>

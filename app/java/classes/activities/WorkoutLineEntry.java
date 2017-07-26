@@ -326,7 +326,6 @@ public class WorkoutLineEntry extends BaseClass {
 
     private void createAllEventListeners(){
         int iSpnPos;
-        launchBaseEventListener();
         createAllLinesEventListener();
         createExerciseEventListener();
         createObjectiveEventListener();
@@ -338,7 +337,6 @@ public class WorkoutLineEntry extends BaseClass {
 
 
     private void deleteAllEventListeners(){
-        destroyBaseEventListener();
         deleteAllLinesEventListener();
         deleteExerciseEventListener();
         deleteObjectiveEventListener();

@@ -1,0 +1,13 @@
+<!--
+This animation was used as part of a carousel I used for my CA3 in advanceed mobile application development.
+-->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="@dimen/default_image_width"
+        android:height="@dimen/default_image_height"
+        android:viewportWidth="24.0"
+        android:viewportHeight="24.0">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M19,13H5v-2h14v2z"/>
+</vector>
