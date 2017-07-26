@@ -58,6 +58,7 @@ public class WorkoutBrowse extends MenuClass implements DatePicker.setDateText {
     private ImageView ivDate;
     private DateTime dtFilterDateStart;
     private DateTime dtFilterDateEnd;
+    private TextView tvHint;
 
     private static final int DAYS_IN_WEEK = 7;
     private static final String DATE_TIME_FORMAT = "dd/MM/yyyy";
@@ -195,6 +196,7 @@ public class WorkoutBrowse extends MenuClass implements DatePicker.setDateText {
         ivForward = (ImageView) findViewById(R.id.ivForward);
         ivBack = (ImageView) findViewById(R.id.ivBack);
         ivDate = (ImageView) findViewById(R.id.ivDate);
+        tvHint = (TextView) findViewById(R.id.tvHint);
 
         //Set Initial value for Date
         dtFilterDateStart = new DateTime();
@@ -312,6 +314,12 @@ public class WorkoutBrowse extends MenuClass implements DatePicker.setDateText {
                         (dtFmt.parseDateTime(currentItem.getWorkoutDate()).isBefore(dtEnd))) {
                     chosenWorkouts.put(keysList.get(iCnt), workoutList.get(iCnt));
                 }
+            }
+            if (chosenWorkouts .size() > 0){
+                tvHint.setVisibility(View.GONE);
+            }
+            else{
+                tvHint.setVisibility(View.VISIBLE);
             }
             initialiseAdapter();
         }

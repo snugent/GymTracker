@@ -149,9 +149,9 @@ public class ExerciseObjectiveEntry extends BaseClass {
         if (idxObjExList != null) {
             for (int iCnt = 0; iCnt < idxObjExList.size(); iCnt++) {
                 if (exerciseObjectives == null) {
-                    tblObjExRef.getRef().child(idxObjExKeyList.get(iCnt)).child(idxObjExList.get(iCnt)).removeValue();
+                    tblObjExRef.getRef().child(idxObjExKeyList.get(iCnt)).child(stExerciseId).removeValue();
                 } else if (exerciseObjectives.get(idxObjExKeyList.get(iCnt)) == null) {
-                    tblObjExRef.getRef().child(idxObjExKeyList.get(iCnt)).child(idxObjExList.get(iCnt)).removeValue();
+                    tblObjExRef.getRef().child(idxObjExKeyList.get(iCnt)).child(stExerciseId).removeValue();
                 }
             }
         }
@@ -159,7 +159,7 @@ public class ExerciseObjectiveEntry extends BaseClass {
         // Update Objective Exercise index with new values
         if (exerciseObjectives != null && exerciseObjectives.size() > 0) {
             for (Map.Entry<String, ExerciseObjective> currentRecord : exerciseObjectives.entrySet()){
-                tblObjExRef.child(currentRecord.getValue().getObjectiveId()).child(currentRecord.getKey()).setValue("");
+                tblObjExRef.child(currentRecord.getValue().getObjectiveId()).child(stExerciseId).setValue("");
             }
         }
 
