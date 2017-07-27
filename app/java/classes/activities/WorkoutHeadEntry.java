@@ -250,9 +250,12 @@ public class WorkoutHeadEntry extends BaseClass implements DatePicker.setDateTex
             dbNewRef.setValue(savingData);
         }
         else{
-            tableWkHeadRef.child(ipstWorkoutId).child("memberId").setValue(savingData.getMemberId());
-            tableWkHeadRef.child(ipstWorkoutId).child("workoutDate").setValue(savingData.getWorkoutDate());
-            tableWkHeadRef.child(ipstWorkoutId).child("comment").setValue(savingData.getComment());
+            tableWkHeadRef.child(ipstWorkoutId).child("memberId")
+                            .setValue(savingData.getMemberId());
+            tableWkHeadRef.child(ipstWorkoutId).child("workoutDate")
+                            .setValue(savingData.getWorkoutDate());
+            tableWkHeadRef.child(ipstWorkoutId).child("comment")
+                            .setValue(savingData.getComment());
         }
 
     }// End Save Profile

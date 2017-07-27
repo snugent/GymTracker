@@ -28,7 +28,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import org.joda.time.DateTime;
@@ -284,7 +283,7 @@ public class WorkoutBrowse extends MenuClass implements DatePicker.setDateText {
 
     // Creates an event listener for when we change data
     private void createEventListener(){
-        Query qryWorkout = tableRef.getRef().orderByChild("memberId").equalTo(getCurrentUserId());
+        tableRef.getRef().orderByChild("memberId").equalTo(getCurrentUserId());
         if (eventListener == null) {
             ValueEventListener mEventListener = new ValueEventListener() {
                 @Override
@@ -303,7 +302,7 @@ public class WorkoutBrowse extends MenuClass implements DatePicker.setDateText {
 
                 }
             };
-            qryWorkout.addValueEventListener(mEventListener);
+            tableRef.addValueEventListener(mEventListener);
             eventListener = mEventListener;
         }
     }
