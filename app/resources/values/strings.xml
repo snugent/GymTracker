@@ -78,4 +78,10 @@
     <string name="lbl_exercise">Exercise</string>
     <string name="no_results">No Results to display</string>
     <string name="reporttype">ReportType</string>
+    <string name="highest">Highest</string>
+    <string name="lowest">Lowest</string>
+    <string name="achievements_report">Achievements Report</string>
+    <string name="export">Export</string>
+    <string name="export_file_msg">Export file has been saved to pictures folder</string>
+    <string name="write_permission_denied">You must grant permission to write export the CSV file</string>
 </resources>

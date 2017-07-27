@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.admin1.gymtracker">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -30,7 +32,8 @@
             android:label="@string/title_activity_member_browse" />
         <activity android:name=".activities.WorkoutHeadEntry" />
         <activity android:name=".activities.WorkoutLineEntry" />
-        <activity android:name=".activities.ExerciseObjectiveEntry"></activity>
+        <activity android:name=".activities.ExerciseObjectiveEntry" />
+        <activity android:name=".activities.AchivementReport"></activity>
     </application>
 
 </manifest>

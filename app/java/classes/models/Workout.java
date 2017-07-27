@@ -50,4 +50,12 @@ public class Workout {
     public void setComment(String comment) {
         this.comment = comment;
     }
+
+    public Map<String, WorkoutLine> getLine() {
+        return line;
+    }
+
+    public void setLine(Map<String, WorkoutLine> line) {
+        this.line = line;
+    }
 }

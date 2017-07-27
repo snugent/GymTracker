@@ -2,8 +2,11 @@ package com.example.admin1.gymtracker.browsers;
 
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin1.gymtracker.R;
-import com.example.admin1.gymtracker.activities.MemberEntry;
 import com.example.admin1.gymtracker.activities.MenuClass;
 import com.example.admin1.gymtracker.activities.WorkoutHeadEntry;
 import com.example.admin1.gymtracker.adapters.WorkoutRVAdapter;
@@ -35,11 +37,13 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 public class WorkoutBrowse extends MenuClass implements DatePicker.setDateText {
+    private final static int RP_INTERNET_PERMISSION = 500;
+    private final static String stInternetPermission = "android.permission.INTERNET";
+    private boolean blHasPermissions;
 
     private RecyclerView rvList;
     private final String TAG = "WorkoutBrowse";
@@ -214,6 +218,45 @@ public class WorkoutBrowse extends MenuClass implements DatePicker.setDateText {
         rvList.setHasFixedSize(true);
         tableRef = dbRef.getReference().child("Workout");
     }
+
+    private void getInternetPermission(){
+        // API 23 Manually request permissions.
+        // Check if permission to write to photos directory on the phone
+            /* Manual Permission Check API 23 only*/
+        if (ActivityCompat.checkSelfPermission(this, stInternetPermission) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this ,
+                    new String[]{stInternetPermission},
+                    RP_INTERNET_PERMISSION);
+
+        }
+        else {
+            blHasPermissions = true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        blHasPermissions = true;
+        switch (requestCode) {
+            case RP_INTERNET_PERMISSION: {
+                blHasPermissions = (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED);
+
+                break;
+            }
+        } // Switch
+
+        if (!blHasPermissions){
+            blHasPermissions = false;
+            signOut();
+        }
+        else{
+            blHasPermissions = true;
+        }
+
+    }// onRequestPermission Result
+
 
 
     //Connect to adapter for List Items

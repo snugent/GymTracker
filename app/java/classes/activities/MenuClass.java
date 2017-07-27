@@ -68,6 +68,10 @@ public class MenuClass extends BaseClass{
                 launchMemberActivity();
                 blResult = true;
                 break;
+            case R.id.achievement_report:
+                launchAchievementReport();
+                blResult = true;
+                break;
             case R.id.sign_out:
                 signOut();
                 blResult = true;
@@ -105,6 +109,11 @@ public class MenuClass extends BaseClass{
     // Promote and delete Member functionality
     private void launchMemberActivity() {
         Intent itBrowse = new Intent(getApplicationContext(), MemberBrowse.class);
+        startActivity(itBrowse);
+    }
+    //Calls the Achievements Report
+    private void launchAchievementReport() {
+        Intent itBrowse = new Intent(getApplicationContext(), AchivementReport.class);
         startActivity(itBrowse);
     }
 }

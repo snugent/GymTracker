@@ -1,26 +1,45 @@
 package com.example.admin1.gymtracker.activities;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
+import com.example.admin1.gymtracker.Manifest;
 import com.example.admin1.gymtracker.R;
 import com.example.admin1.gymtracker.adapters.WorkoutLineEntryRVAdapter;
 import com.example.admin1.gymtracker.models.Exercise;
 import com.example.admin1.gymtracker.models.Objective;
+import com.example.admin1.gymtracker.models.Workout;
+import com.example.admin1.gymtracker.models.WorkoutLine;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class AchivementReport extends BaseClass {
+    private final static int RP_WRITE_PERMISSION = 400;
+    private final static String stWritePermission = "android.permission.WRITE_EXTERNAL_STORAGE";
+    private boolean blHasPermissions;
     //Database variables
     private FirebaseDatabase dbRef;
 
@@ -43,13 +62,38 @@ public class AchivementReport extends BaseClass {
     private DatabaseReference tblObjectiveRef;
     private ValueEventListener elObjective;
 
+    //Adapter for Report Type spinner
+    private ArrayAdapter<String> stTypeAdapter;
+
+    // Workout Head Database queries
+    private DatabaseReference tblHeadRef;
+    private HashMap<String, Workout> workouts;
+    private List<Workout> workoutList;
+    private List<String> workoutKeysList;
+
+    private ValueEventListener elHead;
+
     private WorkoutLineEntryRVAdapter exObjAdapter;
     private Button btnRun;
     private Button btnCancel;
+    private Button btnExport;
     private Spinner spnExercise;
     private Spinner spnObjective;
+    private Spinner spnType;
+    private TextView tvResDate;
+    private TextView tvResExercise;
+    private TextView tvResObjective;
+    private TextView tvResValue;
+    private ImageView ivProgress;
+
     private final String TAG = "AchievementReport";
     private final int INVALID_POSITION = -1;
+
+    //Result Variables
+    private String stWorkoutDate = "";
+    private String stExerciseName = "";
+    private String stObjectiveName = "";
+    private double entryValue = 0;
 
 
 
@@ -61,7 +105,14 @@ public class AchivementReport extends BaseClass {
         btnRun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (spnExercise.)
+                if (spnExercise.getSelectedItem() != null && spnObjective.getSelectedItem() != null){
+                    if(spnType.getSelectedItem().toString().equals(getString(R.string.highest)) ){
+                        generateHighestReport(spnExercise.getSelectedItem().toString(),spnObjective.getSelectedItem().toString());
+                    }
+                    else{
+                        generateLowestReport();
+                    }
+                }
 
             }
         });
@@ -70,6 +121,12 @@ public class AchivementReport extends BaseClass {
             public void onClick(View v) {
                 // Return workout Id to parent
                 finish();
+            }
+        });
+        btnExport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getWritePermission();
             }
         });
     }
@@ -97,12 +154,27 @@ public class AchivementReport extends BaseClass {
 
         spnExercise = (Spinner) findViewById(R.id.spnExercise);
         spnObjective = (Spinner) findViewById(R.id.spnObjective);
+        spnType = (Spinner) findViewById(R.id.spnType);
         btnRun      = (Button)  findViewById(R.id.btnRun);
         btnCancel   = (Button)  findViewById(R.id.btnCancel);
+        btnExport   = (Button)  findViewById(R.id.btnExport);
+
+        //Initialise
+        tvResDate       = (TextView)  findViewById(R.id.tvResDate);
+        tvResExercise   = (TextView)  findViewById(R.id.tvResExercise);
+        tvResObjective  = (TextView)  findViewById(R.id.tvResObjective);
+        tvResValue      = (TextView)  findViewById(R.id.tvResValue);
+        ivProgress      = (ImageView) findViewById(R.id.ivProgress);
 
 
-        // Populates Exercise GUI spinner
-        initialiseExerciseAdapter();
+        tblExerciseRef = dbRef.getReference().child("Exercise");
+        tblObjectiveRef = dbRef.getReference().child("Objective");
+        tblHeadRef = dbRef.getReference().child("Workout");
+        stWorkoutDate = getString(R.string.no_results);
+
+
+        // populated the report type GUI spinner
+        initialiseTypeAdapter();
         // Populate the database tables
         createAllEventListeners();
     }
@@ -163,10 +235,254 @@ public class AchivementReport extends BaseClass {
         }
     }
 
+    //Populates the exercise spinner at top o screen
+    private void initialiseTypeAdapter() {
+        String stType[] = {getString(R.string.highest), getString(R.string.lowest)};
+        int iStartPos = 0;
+
+        stTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, stType);
+        stTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spnType.setAdapter(stTypeAdapter);
+        spnType.setSelection(iStartPos);
+    }
+
+    // Returns the highest values for an objective done by a memeber
+    // E.g. Heaviest Weight
+    private void generateHighestReport(final String ipExerciseId, final String ipObjectiveId){
+        DatabaseReference tblLine;
+        final Animation anRotate = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate);
+
+        workoutList     = new ArrayList<>(workouts.values());
+        workoutKeysList  = new ArrayList<>(workouts.keySet());
+        Query qryWorkoutLine[];
+        qryWorkoutLine = new Query[workoutKeysList.size()];
+
+        // Set Initial values
+        tvResDate.setText(getString(R.string.no_results));
+        tvResExercise.setText("");
+        tvResObjective.setText("");
+        tvResValue.setText("");
+        stWorkoutDate = "";
+        stExerciseId = "";
+        stObjectiveId = "";
+        entryValue = -1;  // Chose a large value to get a lower value
+
+
+
+
+        for (int iCnt = 0; iCnt < workoutKeysList.size(); iCnt++){
+
+            qryWorkoutLine[iCnt] = tblHeadRef.getRef().orderByChild("memberId").equalTo(getCurrentUserId());
+
+            ValueEventListener mEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    ivProgress.setVisibility(View.VISIBLE);
+                    ivProgress.startAnimation(anRotate);
+
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Workout mWorkout = child.getValue(Workout.class);
+                        for (DataSnapshot lineChild : child.child("WorkoutLine").getChildren()){
+
+                            WorkoutLine mLine = lineChild.getValue(WorkoutLine.class);
+                            if (mLine.getEntryValue() >= entryValue ){
+                                stWorkoutDate = mWorkout.getWorkoutDate();
+                                stExerciseName = exercises.get(mLine.getExerciseId()).getName();
+                                stObjectiveName = objectives.get(mLine.getObjectiveId()).getName();
+                                entryValue = mLine.getEntryValue();
+                                tvResDate.setText(stWorkoutDate);
+                                tvResExercise.setText(stExerciseName);
+                                tvResObjective.setText(stObjectiveName);
+                                tvResValue.setText("" + entryValue);
+                            } //if
+
+                        } // inner for
+                    } //outer for
+
+                    ivProgress.clearAnimation();
+                    ivProgress.setVisibility(View.GONE);
+
+                } //onDataChanged
+
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            qryWorkoutLine[iCnt].addListenerForSingleValueEvent(mEventListener);
+
+        } // for (Workout
+
+    }// End of method
+
+    // Returns the lowest values for an objective done by a memeber
+    // E.g. Fastest time
+    private void generateLowestReport(){
+        DatabaseReference tblLine;
+
+        workoutList     = new ArrayList<>(workouts.values());
+        workoutKeysList  = new ArrayList<>(workouts.keySet());
+        Query qryWorkoutLine[];
+        qryWorkoutLine = new Query[workoutKeysList.size()];
+        final Animation anRotate = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate);
+
+
+
+        // Set Initial values
+        tvResDate.setText(getString(R.string.no_results));
+        tvResExercise.setText("");
+        tvResObjective.setText("");
+        tvResValue.setText("");
+        stWorkoutDate = "";
+        stExerciseId = "";
+        stObjectiveId = "";
+        entryValue = 999999999;  // Chose a large value to ensure a lower value is returned
+
+
+
+        for (int iCnt = 0; iCnt < workoutKeysList.size(); iCnt++) {
+            qryWorkoutLine[iCnt] = tblHeadRef.getRef().orderByChild("memberId").equalTo(getCurrentUserId());
+            ValueEventListener mEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    ivProgress.setVisibility(View.VISIBLE);
+                    ivProgress.startAnimation(anRotate);
+
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Workout mWorkout = child.getValue(Workout.class);
+                        for (DataSnapshot lineChild : child.child("WorkoutLine").getChildren()) {
+
+                            WorkoutLine mLine = lineChild.getValue(WorkoutLine.class);
+                            if (mLine.getEntryValue() <= entryValue) {
+                                stWorkoutDate = mWorkout.getWorkoutDate();
+                                stExerciseName = exercises.get(mLine.getExerciseId()).getName();
+                                stObjectiveName = objectives.get(mLine.getObjectiveId()).getName();
+                                entryValue = mLine.getEntryValue();
+                                tvResDate.setText(stWorkoutDate);
+                                tvResExercise.setText(stExerciseName);
+                                tvResObjective.setText(stObjectiveName);
+                                tvResValue.setText("" + entryValue);
+                            } //if
+
+                        } // inner for
+                    } //outer for
+
+                    ivProgress.clearAnimation();
+                    ivProgress.setVisibility(View.GONE);
+
+                } //onDataChanged
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            qryWorkoutLine[iCnt].addListenerForSingleValueEvent(mEventListener);
+        }
+
+    }
+
+    private void exportFile(){
+        String stFileName = "export.csv";
+        String stPath     = null;
+        String stFullPath = null;
+
+        if (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) !=null) {
+            stPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+            stFullPath = stPath + File.separator + stFileName;
+        }
+
+        try {
+
+            if (stFullPath != null && isExternalStorageWritable()) {
+                File mFile = new File(stFullPath );
+                mFile.setReadable(true, false);
+                FileOutputStream fsOut = new FileOutputStream (mFile, false);
+                String stLine = tvResDate.getText().toString() +
+                        "," +
+                        tvResExercise.getText().toString() +
+                        "," +
+                        tvResObjective.getText().toString() +
+                        "," +
+                        tvResValue.getText().toString();
+
+                fsOut.write(stLine.getBytes());
+                fsOut.flush();
+                fsOut.close();
+                showWarningMessageDialog(getString(R.string.export_file_msg));
+
+            }
+
+
+
+        }
+        catch (IOException e){
+            Log.d(TAG, e.getMessage());
+        }
+
+    }
+
+    private void getWritePermission(){
+        // API 23 Manually request permissions.
+        // Check if permission to write to photos directory on the phone
+            /* Manual Permission Check API 23 only*/
+        if (ActivityCompat.checkSelfPermission(this, stWritePermission) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this ,
+                    new String[]{stWritePermission},
+                    RP_WRITE_PERMISSION);
+
+        }
+        else {
+            blHasPermissions = true;
+            //Export Report to a file
+            exportFile();
+        }
+    }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        blHasPermissions = true;
+        switch (requestCode) {
+            case RP_WRITE_PERMISSION: {
+                blHasPermissions = (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED);
+
+                break;
+            }
+        } // Switch
+
+        if (blHasPermissions){
+            //Export Report to a file
+            exportFile();
+
+        }
+        else{
+            showWarningMessageDialog(getString(R.string.write_permission_denied));
+        }
+    }// onRequestPermission Result
+
+    /*  Checks if external storage is available for read and write
+        This method was copied from the android developers guide
+        https://developer.android.com/guide/topics/data/data-storage.html#filesExternal
+    */
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
     private void createAllEventListeners(){
         launchBaseEventListener();
         createExerciseEventListener();
         createObjectiveEventListener();
+        createHeadEventListener();
     }
 
 
@@ -174,12 +490,11 @@ public class AchivementReport extends BaseClass {
         destroyBaseEventListener();
         deleteExerciseEventListener();
         deleteObjectiveEventListener();
+        deleteHeadEventListener();
     }
 
     //Retrieves all Exercise records
     private void createExerciseEventListener() {
-        tblExerciseRef = dbRef.getReference().child("Exercise");
-
         if (elExercises == null) {
 
             elExercises = new ValueEventListener() {
@@ -201,9 +516,8 @@ public class AchivementReport extends BaseClass {
             };
             tblExerciseRef.addValueEventListener(elExercises);
         }
-
-
     }
+
     // Detaches the event listener when activity goes into background
     private void deleteExerciseEventListener(){
         if(elExercises  != null){
@@ -213,25 +527,26 @@ public class AchivementReport extends BaseClass {
 
     //Gets a list of Objectives
     private void createObjectiveEventListener(){
-        dbRef = getmFirebaseDatabase();
-        tblObjectiveRef = dbRef.getReference().child("Objective");
-        elObjective = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+        if (elObjective == null){
+            elObjective = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                objectives = new HashMap<>();
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    Objective mObjective = child.getValue(Objective.class);
-                    objectives.put(child.getKey(), mObjective);
+                    objectives = new HashMap<>();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Objective mObjective = child.getValue(Objective.class);
+                        objectives.put(child.getKey(), mObjective);
+                    }
+                    initialiseObjectiveAdapter();
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        };
-        tblObjectiveRef.addValueEventListener(elObjective);
+                }
+            };
+            tblObjectiveRef.addValueEventListener(elObjective);
+        }
     }
 
     // Detaches the event listener when activity goes into background
@@ -241,11 +556,35 @@ public class AchivementReport extends BaseClass {
         }
     }
 
+    // Creates an event listener to retrieve Workout Head information
+    private void createHeadEventListener(){
+        Query qryWorkout = tblHeadRef.getRef().orderByChild("memberId").equalTo(getCurrentUserId());
+        if (elHead == null) {
+            ValueEventListener mEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
-    private void higherReport(){
+                    workouts = new HashMap<>();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Workout mWorkout = child.getValue(Workout.class);
+                        workouts.put(child.getKey(), mWorkout);
+                    }
+                }
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            qryWorkout.addValueEventListener(mEventListener);
+            elHead = mEventListener;
+        }
     }
-    private void lowerReport(){
 
+    // Detaches the event listener when activity goes into background
+    private void deleteHeadEventListener(){
+        if(elHead  != null){
+            tblHeadRef.removeEventListener(elHead);
+        }
     }
-}
+} //end of method

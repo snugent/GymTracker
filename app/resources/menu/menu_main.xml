@@ -28,6 +28,11 @@
         android:title="@string/edit_member"
         app:showAsAction="never" />
     <item
+        android:id="@+id/achievement_report"
+        android:orderInCategory="150"
+        android:title="@string/achievements_report"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/sign_out"
         android:orderInCategory="160"
         android:title="@string/sign_out"

@@ -29,7 +29,7 @@
 
         <Spinner
             android:id="@+id/spnExercise"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/tvExercise"
@@ -46,7 +46,7 @@
 
         <Spinner
             android:id="@+id/spnObjective"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/tvObjective"
@@ -62,7 +62,7 @@
 
         <Spinner
             android:id="@+id/spnType"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/tvType"
@@ -85,6 +85,15 @@
             android:layout_alignBaseline="@+id/btnRun"
             android:layout_alignBottom="@+id/btnRun"
             android:layout_toEndOf="@+id/btnRun" />
+
+        <Button
+            android:id="@+id/btnExport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/export"
+            android:layout_toEndOf="@+id/btnCancel"
+            android:layout_alignBaseline="@+id/btnRun"
+            android:layout_alignBottom="@+id/btnRun"/>
 
 
     </RelativeLayout>
@@ -133,7 +142,7 @@
             android:text="" />
 
         <TextView
-            android:id="@+id/tvValue"
+            android:id="@+id/tvResValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/tvResDate"
