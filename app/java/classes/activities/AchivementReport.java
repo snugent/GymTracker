@@ -107,7 +107,7 @@ public class AchivementReport extends BaseClass {
             public void onClick(View v) {
                 if (spnExercise.getSelectedItem() != null && spnObjective.getSelectedItem() != null){
                     if(spnType.getSelectedItem().toString().equals(getString(R.string.highest)) ){
-                        generateHighestReport(spnExercise.getSelectedItem().toString(),spnObjective.getSelectedItem().toString());
+                        generateHighestReport();
                     }
                     else{
                         generateLowestReport();
@@ -249,7 +249,7 @@ public class AchivementReport extends BaseClass {
 
     // Returns the highest values for an objective done by a memeber
     // E.g. Heaviest Weight
-    private void generateHighestReport(final String ipExerciseId, final String ipObjectiveId){
+    private void generateHighestReport(){
         DatabaseReference tblLine;
         final Animation anRotate = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate);
 
@@ -268,9 +268,6 @@ public class AchivementReport extends BaseClass {
         stObjectiveId = "";
         entryValue = -1;  // Chose a large value to get a lower value
 
-
-
-
         for (int iCnt = 0; iCnt < workoutKeysList.size(); iCnt++){
 
             qryWorkoutLine[iCnt] = tblHeadRef.getRef().orderByChild("memberId").equalTo(getCurrentUserId());
@@ -280,21 +277,35 @@ public class AchivementReport extends BaseClass {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     ivProgress.setVisibility(View.VISIBLE);
                     ivProgress.startAnimation(anRotate);
+                    String stExId  = exerciseKeysList.get(spnExercise.getSelectedItemPosition());
+                    String stObjId = objectiveKeysList.get(spnObjective.getSelectedItemPosition());
+                    String stEntryValue = "";
 
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         Workout mWorkout = child.getValue(Workout.class);
                         for (DataSnapshot lineChild : child.child("WorkoutLine").getChildren()){
-
                             WorkoutLine mLine = lineChild.getValue(WorkoutLine.class);
-                            if (mLine.getEntryValue() >= entryValue ){
+
+                            if (mLine.getExerciseId().equals(stExId) &&
+                                mLine.getObjectiveId().equals(stObjId) &&
+                                mLine.getEntryValue() >= entryValue ){
+
                                 stWorkoutDate = mWorkout.getWorkoutDate();
                                 stExerciseName = exercises.get(mLine.getExerciseId()).getName();
                                 stObjectiveName = objectives.get(mLine.getObjectiveId()).getName();
-                                entryValue = mLine.getEntryValue();
+                                if (objectives.get(mLine.getObjectiveId()).getViewType()
+                                        .equalsIgnoreCase("Time")){
+                                    stEntryValue = showAsTime(mLine.getEntryValue());
+
+                                }
+                                else{
+                                    stEntryValue = "" + mLine.getEntryValue();
+                                }
+
                                 tvResDate.setText(stWorkoutDate);
                                 tvResExercise.setText(stExerciseName);
                                 tvResObjective.setText(stObjectiveName);
-                                tvResValue.setText("" + entryValue);
+                                tvResValue.setText("" + stEntryValue);
                             } //if
 
                         } // inner for
@@ -349,21 +360,35 @@ public class AchivementReport extends BaseClass {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     ivProgress.setVisibility(View.VISIBLE);
                     ivProgress.startAnimation(anRotate);
+                    String stExId  = exerciseKeysList.get(spnExercise.getSelectedItemPosition());
+                    String stObjId = objectiveKeysList.get(spnObjective.getSelectedItemPosition());
+                    String stEntryValue = "";
 
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         Workout mWorkout = child.getValue(Workout.class);
                         for (DataSnapshot lineChild : child.child("WorkoutLine").getChildren()) {
 
                             WorkoutLine mLine = lineChild.getValue(WorkoutLine.class);
-                            if (mLine.getEntryValue() <= entryValue) {
+                            if (mLine.getExerciseId().equals(stExId) &&
+                                mLine.getObjectiveId().equals(stObjId) &&
+                                mLine.getEntryValue() <= entryValue) {
+
                                 stWorkoutDate = mWorkout.getWorkoutDate();
                                 stExerciseName = exercises.get(mLine.getExerciseId()).getName();
                                 stObjectiveName = objectives.get(mLine.getObjectiveId()).getName();
-                                entryValue = mLine.getEntryValue();
+                                if (objectives.get(mLine.getObjectiveId()).getViewType()
+                                              .equalsIgnoreCase("Time")){
+                                    stEntryValue = showAsTime(mLine.getEntryValue());
+
+                                }
+                                else{
+                                    stEntryValue = "" + mLine.getEntryValue();
+                                }
+
                                 tvResDate.setText(stWorkoutDate);
                                 tvResExercise.setText(stExerciseName);
                                 tvResObjective.setText(stObjectiveName);
-                                tvResValue.setText("" + entryValue);
+                                tvResValue.setText("" + stEntryValue);
                             } //if
 
                         } // inner for
@@ -412,11 +437,7 @@ public class AchivementReport extends BaseClass {
                 fsOut.flush();
                 fsOut.close();
                 showWarningMessageDialog(getString(R.string.export_file_msg));
-
             }
-
-
-
         }
         catch (IOException e){
             Log.d(TAG, e.getMessage());
@@ -476,6 +497,36 @@ public class AchivementReport extends BaseClass {
             return true;
         }
         return false;
+    }
+
+    //Shows the value in Time format
+    private String showAsTime(double entryValue){
+        String timeValue = "";
+        // variables for time fields
+        final int HOURS_MILI = 3600000;
+        final int MINS_MILI =    60000;
+        final int SECS_MILI =     1000;
+
+        // variables for time fields
+        Double dblEntryVal = entryValue;
+        int    iEntryVal;
+        int    iHours;
+        int    iMins;
+        int    iSecs;
+        int    iMilis;
+
+
+        iEntryVal = dblEntryVal.intValue();
+        iHours = iEntryVal / HOURS_MILI;
+        iMins = (iEntryVal - (iHours * HOURS_MILI)) / MINS_MILI;
+        iSecs = (iEntryVal - (iHours * HOURS_MILI) - (iMins * MINS_MILI)) / SECS_MILI;
+        iMilis = (iEntryVal - (iHours * HOURS_MILI) - (iMins * MINS_MILI) - (iSecs * SECS_MILI));
+
+        timeValue = String.format("%02d", iHours)
+                    + ":" + String.format("%02d", iMins)
+                    + ":" + String.format("%02d", iSecs)
+                    + ":" + String.format("%03d", iMilis);
+        return timeValue;
     }
 
     private void createAllEventListeners(){
@@ -576,7 +627,7 @@ public class AchivementReport extends BaseClass {
 
                 }
             };
-            qryWorkout.addValueEventListener(mEventListener);
+            qryWorkout.addListenerForSingleValueEvent(mEventListener);
             elHead = mEventListener;
         }
     }
