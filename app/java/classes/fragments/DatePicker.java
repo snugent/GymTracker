@@ -60,7 +60,7 @@ public class DatePicker extends DialogFragment implements DatePickerDialog.OnDat
         }
         else{
             iYear = dtReceived.getYear();
-            iMonth = dtReceived.getMonthOfYear() + 1;
+            iMonth = dtReceived.getMonthOfYear() - 1;
             iDay   = dtReceived.getDayOfMonth();
         }
 

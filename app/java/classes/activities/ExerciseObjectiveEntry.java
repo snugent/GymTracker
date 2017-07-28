@@ -215,6 +215,7 @@ public class ExerciseObjectiveEntry extends BaseClass {
     private void deleteExObjEventListener(){
         if(elExObj  != null){
             tblExObjRef.removeEventListener(elExObj);
+            elExObj = null;
         }
     }
 
@@ -246,6 +247,7 @@ public class ExerciseObjectiveEntry extends BaseClass {
     private void deleteObjectiveEventListener(){
         if(elObjective  != null){
             tblObjectiveRef.removeEventListener(elObjective);
+            elObjective = null;
         }
     }
 
@@ -281,6 +283,7 @@ public class ExerciseObjectiveEntry extends BaseClass {
     private void deleteExerciseEventListener(){
         if(elExercise  != null){
             tblExerciseRef.removeEventListener(elExercise);
+            elExercise = null;
         }
     }
 

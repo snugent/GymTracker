@@ -155,6 +155,11 @@ public class WorkoutHeadEntry extends BaseClass implements DatePicker.setDateTex
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == RP_CREATE_LINE) {
             stWorkoutId = data.getStringExtra("workoutId");
+            // Notify the database that Lines exist and need to be checked for
+            deleteLineEventListener();
+            createLineEventListener();
+            initialiseAdapter();
+
         }
     }
 
@@ -303,6 +308,7 @@ public class WorkoutHeadEntry extends BaseClass implements DatePicker.setDateTex
     private void deleteEventListener(){
         if(eventListener  != null){
             tableWkHeadRef.removeEventListener(eventListener);
+            eventListener = null;
         }
     }
 
@@ -318,6 +324,7 @@ public class WorkoutHeadEntry extends BaseClass implements DatePicker.setDateTex
     };
     // Creates an event listener for when we change data
     private void createLineEventListener(){
+        tableLinesRef = tableWkHeadRef.child(stWorkoutId).child("WorkoutLine");
         if(elWorkoutLine == null) {
             final ValueEventListener elLine = new ValueEventListener() {
                 @Override
@@ -342,7 +349,6 @@ public class WorkoutHeadEntry extends BaseClass implements DatePicker.setDateTex
 
                 }
             };
-            tableLinesRef = tableWkHeadRef.child(stWorkoutId).child("WorkoutLine");
 
             if (tableLinesRef != null) {
                 tableLinesRef.addValueEventListener(elLine);
@@ -356,6 +362,7 @@ public class WorkoutHeadEntry extends BaseClass implements DatePicker.setDateTex
     private void deleteLineEventListener(){
         if(elWorkoutLine  != null){
             tableLinesRef.removeEventListener(elWorkoutLine);
+            elWorkoutLine = null;
         }
     }
 
@@ -387,6 +394,7 @@ public class WorkoutHeadEntry extends BaseClass implements DatePicker.setDateTex
     private void deleteExerciseEventListener(){
         if(elExercise  != null){
             tableExRef.removeEventListener(elExercise);
+            elExercise = null;
         }
     }
     private void createObjectiveEventListener(){
@@ -416,6 +424,7 @@ public class WorkoutHeadEntry extends BaseClass implements DatePicker.setDateTex
     private void deleteObjectiveEventListener(){
         if(elObjective  != null){
             tableExRef.removeEventListener(elObjective);
+            elObjective = null;
         }
     }
 

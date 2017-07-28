@@ -301,6 +301,7 @@ public class AchivementReport extends BaseClass {
                                 else{
                                     stEntryValue = "" + mLine.getEntryValue();
                                 }
+                                entryValue = mLine.getEntryValue();
 
                                 tvResDate.setText(stWorkoutDate);
                                 tvResExercise.setText(stExerciseName);
@@ -384,6 +385,7 @@ public class AchivementReport extends BaseClass {
                                 else{
                                     stEntryValue = "" + mLine.getEntryValue();
                                 }
+                                entryValue = mLine.getEntryValue();
 
                                 tvResDate.setText(stWorkoutDate);
                                 tvResExercise.setText(stExerciseName);
@@ -573,6 +575,7 @@ public class AchivementReport extends BaseClass {
     private void deleteExerciseEventListener(){
         if(elExercises  != null){
             tblExerciseRef.removeEventListener(elExercises);
+            elExercises = null;
         }
     }
 
@@ -604,6 +607,7 @@ public class AchivementReport extends BaseClass {
     private void deleteObjectiveEventListener(){
         if(elObjective  != null){
             tblObjectiveRef.removeEventListener(elObjective);
+            elObjective = null;
         }
     }
 
@@ -636,6 +640,7 @@ public class AchivementReport extends BaseClass {
     private void deleteHeadEventListener(){
         if(elHead  != null){
             tblHeadRef.removeEventListener(elHead);
+            elHead = null;
         }
     }
 } //end of method

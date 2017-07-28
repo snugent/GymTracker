@@ -1,6 +1,7 @@
 package com.example.admin1.gymtracker.browsers;
 
 
+import android.app.DownloadManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import org.joda.time.DateTime;
@@ -284,6 +286,7 @@ public class WorkoutBrowse extends MenuClass implements DatePicker.setDateText {
     // Creates an event listener for when we change data
     private void createEventListener(){
         tableRef.getRef().orderByChild("memberId").equalTo(getCurrentUserId());
+        Query qryWorkkuots = tableRef.getRef().orderByChild("memberId").equalTo(getCurrentUserId());
         if (eventListener == null) {
             ValueEventListener mEventListener = new ValueEventListener() {
                 @Override
@@ -302,7 +305,7 @@ public class WorkoutBrowse extends MenuClass implements DatePicker.setDateText {
 
                 }
             };
-            tableRef.addValueEventListener(mEventListener);
+            qryWorkkuots.addValueEventListener(mEventListener);
             eventListener = mEventListener;
         }
     }
@@ -341,8 +344,8 @@ public class WorkoutBrowse extends MenuClass implements DatePicker.setDateText {
 
     //getWorkoutTimePeriod
     private void getWorkoutTimePeriod(){
-        DateTime dtStart = dtFilterDateStart.minusDays(1);
-        DateTime dtEnd   = dtFilterDateEnd.plusDays(1);
+        DateTime dtStart = dtFilterDateStart.minusDays(1).withTimeAtStartOfDay();
+        DateTime dtEnd   = dtFilterDateEnd.plusDays(1).withTimeAtStartOfDay();
         Workout currentItem;
         List<String> keysList;
         List<Workout> workoutList;

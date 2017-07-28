@@ -380,6 +380,7 @@ public class WorkoutLineEntry extends BaseClass {
     private void deleteAllLinesEventListener(){
         if(elAllLines  != null){
             tblAllLines.removeEventListener(elAllLines);
+            elAllLines = null;
         }
     }
 
@@ -415,6 +416,7 @@ public class WorkoutLineEntry extends BaseClass {
     private void deleteExerciseEventListener(){
         if(elExercises  != null){
             tblExerciseRef.removeEventListener(elExercises);
+            elExercises = null;
         }
     }
 
@@ -492,9 +494,11 @@ public class WorkoutLineEntry extends BaseClass {
     private void deleteLineEventListener(){
         if(elExObj  != null){
             tblExObjRef.removeEventListener(elExObj);
+            elExObj = null;
         }
         if(elLine  != null){
             tblLineRef.removeEventListener(elLine);
+            elLine = null;
         }
     }
 
@@ -525,6 +529,7 @@ public class WorkoutLineEntry extends BaseClass {
     private void deleteObjectiveEventListener(){
         if(elObjective  != null){
             tblObjectiveRef.removeEventListener(elObjective);
+            elObjective = null;
         }
     }
 }

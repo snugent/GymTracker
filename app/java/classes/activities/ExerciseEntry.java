@@ -218,6 +218,7 @@ public class ExerciseEntry extends BaseClass {
     private void deleteEventListener(){
         if(eventListener  != null){
             tableExRef.removeEventListener(eventListener);
+            eventListener = null;
         }
     }
 }

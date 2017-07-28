@@ -45,6 +45,7 @@ public class ExerciseRVAdapter extends RecyclerView.Adapter<ExerciseRVAdapter.It
     private final String TAG = "ExerciseRVAdapter";
     private DatabaseReference tblRecord;
     private HashMap<String, String> exerciseUsedLists;
+    private HashMap<String, String> exerciseObjectivesList;
 
     public ExerciseRVAdapter(HashMap<String, Exercise> exercises, DatabaseReference tblRecord,
                              Context mContext, FirebaseDatabase mFirbaseDatabase,
@@ -57,6 +58,7 @@ public class ExerciseRVAdapter extends RecyclerView.Adapter<ExerciseRVAdapter.It
         keysList = new ArrayList<>(exercises.keySet());
         exerciseList = new ArrayList<>(exercises.values());
         getUsedExercises();
+        getLinkedObjectives();
 
     }
 
@@ -98,15 +100,42 @@ public class ExerciseRVAdapter extends RecyclerView.Adapter<ExerciseRVAdapter.It
         });
     }
 
+    /*
+
+     */
+
     private void deleteRow(int index ){
+        boolean blDeleteOk = false;
         String stKey = keysList.get(index);
+        String stErrMsge = "";
 
         try{
+            getLinkedObjectives();
             // Check if exercises that are used in workouts
             if ((exerciseUsedLists == null) || (
                 exerciseUsedLists.get(stKey) != null &&
                 exerciseUsedLists.get(stKey).equals("false")) ) {
+                blDeleteOk = true;
+            }
+            else{
+                stErrMsge = mContext.getString(R.string.error_exercise_delete1);
+                blDeleteOk = false;
+            }
 
+            // Check if objective is linked to an exercise
+            if (blDeleteOk){
+                if((exerciseObjectivesList == null ) ||
+                    (exerciseObjectivesList.get(stKey) != null &&
+                      exerciseObjectivesList.get(stKey).equals("false"))) {
+                    blDeleteOk = true;
+                }
+                else{
+                    stErrMsge = mContext.getString(R.string.error_exercise_delete2);
+                    blDeleteOk = false;
+                }
+            }
+
+            if (blDeleteOk){
                 // Delete the row
                 exerciseList.remove(index);
                 keysList.remove(index);
@@ -118,7 +147,7 @@ public class ExerciseRVAdapter extends RecyclerView.Adapter<ExerciseRVAdapter.It
             else{
                 DialogFragment mFragment = MessageDialog.newInstance(R.string.error_title_bar,
                         R.drawable.ic_error_24dp,
-                        mContext.getString(R.string.error_exercise_delete1));
+                        stErrMsge);
 
 
                 mFragment.show(fmError, "dialog");
@@ -185,6 +214,38 @@ public class ExerciseRVAdapter extends RecyclerView.Adapter<ExerciseRVAdapter.It
                             exerciseUsedLists.put(keysList.get(iCnt), "false");
                         }// else
                 } // for
+                getLinkedObjectives();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "Data Write Error");
+
+            }
+        });
+
+    }// End of method
+
+    //Check if objectives are linked to exercises in a workout for delete prevention
+    private void getLinkedObjectives(){
+        //Get the current workout id
+        Query mQuery = tblRecord.getRef();
+
+        mQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                exerciseObjectivesList = new HashMap<String, String>();
+                for (DataSnapshot currentRecord : dataSnapshot.getChildren()){
+                    if (dataSnapshot.exists()){
+                        if (currentRecord.hasChild("ExerciseObjective")){
+                            exerciseObjectivesList.put(currentRecord.getKey(), "true");
+                        }
+                        else{
+                            exerciseObjectivesList.put(currentRecord.getKey(), "false");
+                        }
+
+                    }
+                }// for
             }
 
             @Override

@@ -291,6 +291,7 @@ public class MemberEntry extends BaseClass implements DatePicker.setDateText{
     private void deleteEventListener(){
         if(eventListener != null){
             tableRef.removeEventListener(eventListener);
+            eventListener = null;
         }
     }
 }

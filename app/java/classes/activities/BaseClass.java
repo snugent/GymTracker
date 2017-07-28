@@ -226,6 +226,7 @@ public class BaseClass extends AppCompatActivity  {
     private void deleteBaseEventListener(){
         if(eventListener  != null){
             tableRef.removeEventListener(eventListener);
+            eventListener = null;
         }
     }// End DeleteEventListener
 
